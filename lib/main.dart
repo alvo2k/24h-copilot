@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:copilot/internal/application.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'internal/application.dart';
 
 void main() {
   runZonedGuarded(() async {

@@ -2,22 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 class Activity extends Equatable {
-  final int id;
-
-  final String name;
-
-  final Color color;
-
-  final DateTime startTime;
-
-  final List<String>? tags;
-
-  final DateTime? endTime;
-
-  final int? goal;
-
-  final String? emoji;
-
   const Activity({
     required this.id,
     required this.name,
@@ -28,6 +12,15 @@ class Activity extends Equatable {
     this.goal,
     this.emoji,
   });
+
+  final Color color;
+  final String? emoji;
+  final DateTime? endTime;
+  final int? goal;
+  final int id;
+  final String name;
+  final DateTime startTime;
+  final List<String>? tags;
 
   @override
   List<Object?> get props => [

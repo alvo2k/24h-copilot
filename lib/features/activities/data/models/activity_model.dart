@@ -3,11 +3,6 @@ import 'dart:ui';
 import '../../domain/entities/activity.dart';
 
 class ActivityModel extends Activity {
-  final int startTimeUnix;
-  final int? endTimeUnix;
-  final int colorHex;
-  final String? inLineTags;
-
   ActivityModel({
     required super.name,
     required this.colorHex,
@@ -25,4 +20,9 @@ class ActivityModel extends Activity {
               ? DateTime.fromMillisecondsSinceEpoch(endTimeUnix, isUtc: true)
               : null,
         );
+
+  final int colorHex;
+  final int? endTimeUnix;
+  final String? inLineTags;
+  final int startTimeUnix;
 }

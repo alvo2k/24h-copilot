@@ -1,4 +1,3 @@
-import 'package:copilot/core/error/return_types.dart';
 import 'package:copilot/features/activities/domain/entities/activity.dart';
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart';
 import 'package:copilot/features/activities/domain/usecases/load_activities_usecase.dart';

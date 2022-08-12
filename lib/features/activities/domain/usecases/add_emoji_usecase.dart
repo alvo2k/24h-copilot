@@ -21,6 +21,6 @@ class AddEmojiUsecase extends UseCase<Success, AddEmojiParams> {
 class AddEmojiParams {
   const AddEmojiParams(this.activity, this.emoji);
 
-  final String emoji;
   final Activity activity;
+  final String emoji;
 }

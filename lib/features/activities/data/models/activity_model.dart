@@ -14,10 +14,12 @@ class ActivityModel extends Activity {
   }) : super(
           color: Color(colorHex),
           startTime:
-              DateTime.fromMillisecondsSinceEpoch(startTimeUnix, isUtc: true),
+              DateTime.fromMillisecondsSinceEpoch(startTimeUnix, isUtc: true)
+                  .toLocal(),
           tags: inLineTags?.split(';'),
           endTime: endTimeUnix != null
               ? DateTime.fromMillisecondsSinceEpoch(endTimeUnix, isUtc: true)
+                  .toLocal()
               : null,
         );
 

@@ -30,7 +30,8 @@ void main() {
       'startTime',
       () => expect(
         sut.startTime,
-        DateTime.fromMillisecondsSinceEpoch(sut.startTimeUnix, isUtc: true),
+        DateTime.fromMillisecondsSinceEpoch(sut.startTimeUnix, isUtc: true)
+          .toLocal(),
       ),
     );
     test(
@@ -42,7 +43,8 @@ void main() {
       () {
         expect(
           sut.endTime,
-          DateTime.fromMillisecondsSinceEpoch(sut.endTimeUnix!, isUtc: true),
+          DateTime.fromMillisecondsSinceEpoch(sut.endTimeUnix!, isUtc: true)
+            .toLocal(),
         );
       },
     );

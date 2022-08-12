@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 class Activity extends Equatable {
-  const Activity({
+  Activity({
     required this.name,
     required this.color,
     required this.startTime,
@@ -10,7 +10,13 @@ class Activity extends Equatable {
     this.endTime,
     this.goal,
     this.emoji,
-  });
+  })  : assert(startTime.isUtc == false,
+          'startTime in [Activity] should always be local',
+        ),
+        assert(
+          endTime == null || endTime.isUtc == false,
+          'endTime in [Activity] should always be local',
+        );
 
   final Color color;
   final String? emoji;

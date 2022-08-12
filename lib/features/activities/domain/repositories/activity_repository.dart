@@ -11,9 +11,9 @@ abstract class ActivityRepository {
   Future<Either<Failure, Activity>> switchActivities(String nextActivityName);
 
   /// Adds chosen emoji to a selected [Activity]
-  Future<Either<Failure, Success>> addEmoji(int idActivity, String emoji);
+  Future<Either<Failure, Success>> addEmoji(Activity activity, String emoji);
 
-  Future<Either<Failure, Success>> editName(int idActivity, String name);
+  Future<Either<Failure, Success>> editName(Activity activity, String name);
 
   /// Inserts new activity and returns it entity
   Future<Either<Failure, Activity>> insertActivity({

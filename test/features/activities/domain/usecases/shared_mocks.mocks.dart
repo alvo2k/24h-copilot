@@ -51,15 +51,15 @@ class MockActivityRepository extends _i1.Mock
           as _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, _i5.Success>> addEmoji(
-          int? idActivity, String? emoji) =>
-      (super.noSuchMethod(Invocation.method(#addEmoji, [idActivity, emoji]),
+          _i6.Activity? activity, String? emoji) =>
+      (super.noSuchMethod(Invocation.method(#addEmoji, [activity, emoji]),
               returnValue: Future<_i2.Either<_i5.Failure, _i5.Success>>.value(
                   _FakeEither_0<_i5.Failure, _i5.Success>()))
           as _i4.Future<_i2.Either<_i5.Failure, _i5.Success>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, _i5.Success>> editName(
-          int? idActivity, String? name) =>
-      (super.noSuchMethod(Invocation.method(#editName, [idActivity, name]),
+          _i6.Activity? activity, String? name) =>
+      (super.noSuchMethod(Invocation.method(#editName, [activity, name]),
               returnValue: Future<_i2.Either<_i5.Failure, _i5.Success>>.value(
                   _FakeEither_0<_i5.Failure, _i5.Success>()))
           as _i4.Future<_i2.Either<_i5.Failure, _i5.Success>>);

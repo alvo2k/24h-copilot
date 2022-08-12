@@ -31,7 +31,6 @@ void main() {
       'without end time',
       () async {
         var returnWithoutEndTime = Right<Failure, Activity>(Activity(
-          id: 1,
           name: '',
           color: Colors.black,
           startTime: DateTime(1),
@@ -58,7 +57,6 @@ void main() {
       'with end time',
       () async {
         var returnWithEndTime = Right<Failure, Activity>(Activity(
-          id: 1,
           name: '',
           color: Colors.black,
           startTime: DateTime(1),

@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/return_types.dart';
 import '../../../../core/usecases/usecase.dart';
+import '../entities/activity.dart';
 import '../repositories/activity_repository.dart';
 
 @LazySingleton()
@@ -13,13 +14,13 @@ class EditNameUsecase extends UseCase<Success, EditNameParams> {
 
   @override
   Future<Either<Failure, Success>> call(EditNameParams params) async {
-    return await repository.editName(params.idActivity, params.name);
+    return await repository.editName(params.activity, params.name);
   }
 }
 
 class EditNameParams {
-  const EditNameParams(this.idActivity, this.name);
+  const EditNameParams(this.activity, this.name);
 
-  final int idActivity;
+  final Activity activity;
   final String name;
 }

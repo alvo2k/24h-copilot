@@ -26,7 +26,7 @@ void main() {
     () async {
       when(mockRepository.addEmoji(any, any)).thenAnswer((_) async => const Right(Success()));
 
-      var result = await sut(const AddEmojiParams(1, '🍆'));
+      var result = await sut(AddEmojiParams(tActivity, '🍆'));
 
       verify(mockRepository.addEmoji(any, any)).called(1);
       verifyNoMoreInteractions(mockRepository);

@@ -1,14 +1,17 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/widgets.dart';
+import 'dart:ui';
 
-class Activity extends Equatable {
+import 'package:equatable/equatable.dart';
+
+part 'activity_settings.dart';
+
+class Activity extends ActivitySettings with EquatableMixin {
   Activity({
-    required this.name,
-    required this.color,
+    required super.name,
+    required super.color,
     required this.startTime,
-    this.tags,
+    super.tags,
     this.endTime,
-    this.goal,
+    super.goal,
     this.emoji,
   })  : assert(startTime.isUtc == false,
           'startTime in [Activity] should always be local',
@@ -18,13 +21,9 @@ class Activity extends Equatable {
           'endTime in [Activity] should always be local',
         );
 
-  final Color color;
   final String? emoji;
   final DateTime? endTime;
-  final int? goal;
-  final String name;
   final DateTime startTime;
-  final List<String>? tags;
 
   @override
   List<Object?> get props => [

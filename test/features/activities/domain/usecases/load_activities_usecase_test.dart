@@ -21,11 +21,27 @@ void main() {
     "should accept instance of ActivityRepository",
     () => expect(sut.repository, isA<ActivityRepository>()),
   );
+  test(
+    'should call repository with DateTime in UTC format',
+    () async {
+      when(mockRepository.getActivities(any)).thenAnswer(
+        (_) async => const Right(<Activity>[]),
+      );
 
+      await sut(LoadActivitiesParams(DateTime(1)));
+
+      var result = verify(mockRepository.getActivities(captureAny))
+          .captured
+          .first;
+      expect(result.isUtc, true);
+    },
+  );
   test(
     "should call repository and return its value",
     () async {
-      when(mockRepository.getActivities(any)).thenAnswer((_) async => const Right(<Activity>[]));
+      when(mockRepository.getActivities(any)).thenAnswer(
+        (_) async => const Right(<Activity>[]),
+      );
 
       var result = await sut(LoadActivitiesParams(DateTime(1)));
 

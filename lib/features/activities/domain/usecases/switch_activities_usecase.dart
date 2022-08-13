@@ -15,7 +15,10 @@ class SwitchActivitiesUsecase
 
   @override
   Future<Either<Failure, Activity>> call(SwitchActivitiesParams params) async {
-    return await repository.switchActivities(params.nextActivityName);
+    return await repository.switchActivities(
+      params.nextActivityName,
+      DateTime.now().toUtc(),
+    );
   }
 }
 

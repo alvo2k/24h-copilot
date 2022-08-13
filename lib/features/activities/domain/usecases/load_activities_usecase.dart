@@ -16,7 +16,7 @@ class LoadActivitiesUsecase
   @override
   Future<Either<Failure, List<Activity>>> call(
       LoadActivitiesParams params) async {
-    return await repository.getActivities(params.forTheDay);
+    return await repository.getActivities(params.forTheDay.toUtc());
   }
 }
 

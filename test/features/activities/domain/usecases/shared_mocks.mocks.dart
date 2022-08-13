@@ -2,13 +2,13 @@
 // in copilot/test/features/activities/domain/usecases/shared_mocks.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i5;
+import 'dart:async' as _i4;
 
-import 'package:copilot/core/error/return_types.dart' as _i6;
+import 'package:copilot/core/error/return_types.dart' as _i5;
 import 'package:copilot/features/activities/domain/entities/activity.dart'
-    as _i3;
+    as _i6;
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart'
-    as _i4;
+    as _i3;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -24,61 +24,52 @@ import 'package:mockito/mockito.dart' as _i1;
 
 class _FakeEither_0<L, R> extends _i1.Fake implements _i2.Either<L, R> {}
 
-class _FakeActivitySettings_1 extends _i1.Fake implements _i3.ActivitySettings {
-}
-
 /// A class which mocks [ActivityRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockActivityRepository extends _i1.Mock
-    implements _i4.ActivityRepository {
+    implements _i3.ActivityRepository {
   MockActivityRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i3.Activity>>> getActivities(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Activity>>> getActivities(
           DateTime? forTheDay) =>
       (super.noSuchMethod(Invocation.method(#getActivities, [forTheDay]),
               returnValue:
-                  Future<_i2.Either<_i6.Failure, List<_i3.Activity>>>.value(
-                      _FakeEither_0<_i6.Failure, List<_i3.Activity>>()))
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i3.Activity>>>);
+                  Future<_i2.Either<_i5.Failure, List<_i6.Activity>>>.value(
+                      _FakeEither_0<_i5.Failure, List<_i6.Activity>>()))
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Activity>>>);
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i3.Activity>> switchActivities(
-          String? nextActivityName) =>
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>> switchActivities(
+          String? nextActivityName, DateTime? startTime) =>
       (super.noSuchMethod(
-              Invocation.method(#switchActivities, [nextActivityName]),
-              returnValue: Future<_i2.Either<_i6.Failure, _i3.Activity>>.value(
-                  _FakeEither_0<_i6.Failure, _i3.Activity>()))
-          as _i5.Future<_i2.Either<_i6.Failure, _i3.Activity>>);
+          Invocation.method(#switchActivities, [nextActivityName, startTime]),
+          returnValue: Future<_i2.Either<_i5.Failure, _i6.Activity>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Activity>())) as _i4
+          .Future<_i2.Either<_i5.Failure, _i6.Activity>>);
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i6.Success>> addEmoji(
+  _i4.Future<_i2.Either<_i5.Failure, _i5.Success>> addEmoji(
           int? recordId, String? emoji) =>
       (super.noSuchMethod(Invocation.method(#addEmoji, [recordId, emoji]),
-              returnValue: Future<_i2.Either<_i6.Failure, _i6.Success>>.value(
-                  _FakeEither_0<_i6.Failure, _i6.Success>()))
-          as _i5.Future<_i2.Either<_i6.Failure, _i6.Success>>);
+              returnValue: Future<_i2.Either<_i5.Failure, _i5.Success>>.value(
+                  _FakeEither_0<_i5.Failure, _i5.Success>()))
+          as _i4.Future<_i2.Either<_i5.Failure, _i5.Success>>);
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i3.Activity>> editName(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>> editName(
           int? recordId, String? newName) =>
       (super.noSuchMethod(Invocation.method(#editName, [recordId, newName]),
-              returnValue: Future<_i2.Either<_i6.Failure, _i3.Activity>>.value(
-                  _FakeEither_0<_i6.Failure, _i3.Activity>()))
-          as _i5.Future<_i2.Either<_i6.Failure, _i3.Activity>>);
+              returnValue: Future<_i2.Either<_i5.Failure, _i6.Activity>>.value(
+                  _FakeEither_0<_i5.Failure, _i6.Activity>()))
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>>);
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i3.Activity>> insertActivity(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>> insertActivity(
           {String? name, DateTime? startTime, DateTime? endTime}) =>
       (super.noSuchMethod(
               Invocation.method(#insertActivity, [],
                   {#name: name, #startTime: startTime, #endTime: endTime}),
-              returnValue: Future<_i2.Either<_i6.Failure, _i3.Activity>>.value(
-                  _FakeEither_0<_i6.Failure, _i3.Activity>()))
-          as _i5.Future<_i2.Either<_i6.Failure, _i3.Activity>>);
-  @override
-  _i5.Future<_i3.ActivitySettings> findActivityByName(String? name) =>
-      (super.noSuchMethod(Invocation.method(#findActivityByName, [name]),
-              returnValue:
-                  Future<_i3.ActivitySettings>.value(_FakeActivitySettings_1()))
-          as _i5.Future<_i3.ActivitySettings>);
+              returnValue: Future<_i2.Either<_i5.Failure, _i6.Activity>>.value(
+                  _FakeEither_0<_i5.Failure, _i6.Activity>()))
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>>);
 }

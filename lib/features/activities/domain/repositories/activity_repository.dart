@@ -8,7 +8,10 @@ abstract class ActivityRepository {
   Future<Either<Failure, List<Activity>>> getActivities(DateTime forTheDay);
 
   /// Saves the current [Activity] and returns a new one
-  Future<Either<Failure, Activity>> switchActivities(String nextActivityName);
+  Future<Either<Failure, Activity>> switchActivities(
+    String nextActivityName,
+    DateTime startTime,
+  );
 
   /// Adds chosen emoji to a selected [Activity]
   Future<Either<Failure, Success>> addEmoji(int recordId, String emoji);

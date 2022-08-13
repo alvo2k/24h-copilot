@@ -6,6 +6,7 @@ part 'activity_settings.dart';
 
 class Activity extends ActivitySettings with EquatableMixin {
   Activity({
+    required this.recordId,
     required super.name,
     required super.color,
     required this.startTime,
@@ -13,7 +14,8 @@ class Activity extends ActivitySettings with EquatableMixin {
     this.endTime,
     super.goal,
     this.emoji,
-  })  : assert(startTime.isUtc == false,
+  })  : assert(
+          startTime.isUtc == false,
           'startTime in [Activity] should always be local',
         ),
         assert(
@@ -23,6 +25,7 @@ class Activity extends ActivitySettings with EquatableMixin {
 
   final String? emoji;
   final DateTime? endTime;
+  final int recordId;
   final DateTime startTime;
 
   @override

@@ -26,11 +26,7 @@ void main() {
   test(
     "should call repository and return its value",
     () async {
-      var returned = Right<Failure, Activity>(Activity(
-        name: '',
-        color: Colors.black,
-        startTime: DateTime(1),
-      ));
+      var returned = Right<Failure, Activity>(tActivity);
       when(mockRepository.switchActivities(any))
           .thenAnswer((_) async => returned);
 

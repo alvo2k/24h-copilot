@@ -25,13 +25,13 @@ void main() {
     "should call repository and return its value",
     () async {
       when(mockRepository.editName(any, any))
-          .thenAnswer((_) async => const Right(Success()));
+          .thenAnswer((_) async => Right(tActivity));
 
-      var result = await sut(EditNameParams(tActivity, 'new name'));
+      var result = await sut(EditNameParams(tActivity.recordId, 'new name'));
 
       verify(mockRepository.editName(any, any)).called(1);
       verifyNoMoreInteractions(mockRepository);
-      expect(result, const Right(Success()));
+      expect(result, Right(tActivity));
     },
   );
 }

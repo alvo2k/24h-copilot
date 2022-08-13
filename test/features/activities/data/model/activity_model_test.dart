@@ -8,6 +8,7 @@ void main() {
 
   setUp(() {
     sut = ActivityModel(
+      recordId: 1,
       name: 'Workout',
       colorHex: Colors.black.value,
       startTimeUnix: DateTime(1).millisecondsSinceEpoch,

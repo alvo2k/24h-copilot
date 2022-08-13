@@ -7,6 +7,7 @@ import 'package:mockito/annotations.dart';
 export 'shared_mocks.mocks.dart';
 
 final Activity tActivity = Activity(
+  recordId: 1,
   name: 'name',
   color: Colors.black,
   startTime: DateTime(1),

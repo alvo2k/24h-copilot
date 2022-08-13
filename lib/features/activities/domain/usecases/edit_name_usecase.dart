@@ -7,20 +7,20 @@ import '../entities/activity.dart';
 import '../repositories/activity_repository.dart';
 
 @LazySingleton()
-class EditNameUsecase extends UseCase<Success, EditNameParams> {
+class EditNameUsecase extends UseCase<Activity, EditNameParams> {
   EditNameUsecase(this.repository);
 
   final ActivityRepository repository;
 
   @override
-  Future<Either<Failure, Success>> call(EditNameParams params) async {
-    return await repository.editName(params.activity, params.name);
+  Future<Either<Failure, Activity>> call(EditNameParams params) async {
+    return await repository.editName(params.recordId, params.name);
   }
 }
 
 class EditNameParams {
-  const EditNameParams(this.activity, this.name);
+  const EditNameParams(this.recordId, this.name);
 
-  final Activity activity;
   final String name;
+  final int recordId;
 }

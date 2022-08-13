@@ -4,6 +4,7 @@ import '../../domain/entities/activity.dart';
 
 class ActivityModel extends Activity {
   ActivityModel({
+    required super.recordId,
     required super.name,
     required this.colorHex,
     required this.startTimeUnix,

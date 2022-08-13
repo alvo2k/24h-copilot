@@ -30,11 +30,7 @@ void main() {
     test(
       'without end time',
       () async {
-        var returnWithoutEndTime = Right<Failure, Activity>(Activity(
-          name: '',
-          color: Colors.black,
-          startTime: DateTime(1),
-        ));
+        var returnWithoutEndTime = Right<Failure, Activity>(tActivity);
         when(mockRepository.insertActivity(
           name: anyNamed('name'),
           startTime: anyNamed('startTime'),
@@ -57,6 +53,7 @@ void main() {
       'with end time',
       () async {
         var returnWithEndTime = Right<Failure, Activity>(Activity(
+          recordId: 1,
           name: '',
           color: Colors.black,
           startTime: DateTime(1),

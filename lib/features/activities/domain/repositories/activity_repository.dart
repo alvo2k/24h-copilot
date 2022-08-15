@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/return_types.dart';
@@ -10,8 +12,9 @@ abstract class ActivityRepository {
   /// Saves the current [Activity] and returns a new one
   Future<Either<Failure, Activity>> switchActivities(
     String nextActivityName,
-    DateTime startTime,
-  );
+    DateTime startTime, [
+    Color color,
+  ]);
 
   /// Adds chosen emoji to a selected [Activity]
   Future<Either<Failure, Success>> addEmoji(int recordId, String emoji);
@@ -25,5 +28,8 @@ abstract class ActivityRepository {
     required String name,
     required DateTime startTime,
     DateTime endTime,
+    Color color,
   });
+
+  Future<Either<Failure, bool>> hasActivitySettings(String activityName);
 }

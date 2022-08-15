@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/return_types.dart';
 import '../../../../core/usecases/usecase.dart';
+import '../../../../core/utils/random_color.dart';
 import '../entities/activity.dart';
 import '../repositories/activity_repository.dart';
 
@@ -14,14 +17,53 @@ class InsertActivityUsecase extends UseCase<Activity, InsertActivityParams> {
 
   @override
   Future<Either<Failure, Activity>> call(InsertActivityParams params) async {
+    return await repository.hasActivitySettings(params.name).then(
+          (value) => value.fold(
+            (l) => Left(l),
+            (r) {
+              if (r) {
+                return _repoInsertParamsChooser(params);
+              } else {
+                final color = RandomColor.generate;
+                return _repoInsertParamsChooser(params, color);
+              }
+            },
+          ),
+        );
+  }
+
+  Future<Either<Failure, Activity>> _repoInsertParamsChooser(
+    InsertActivityParams params, [
+    Color? color,
+  ]) {
     if (params.endTime != null) {
-      return await repository.insertActivity(
+      if (color != null) {
+        return repository.insertActivity(
           name: params.name,
           startTime: params.startTime,
-          endTime: params.endTime!);
+          endTime: params.endTime!,
+          color: color,
+        );
+      } else {
+        return repository.insertActivity(
+          name: params.name,
+          startTime: params.startTime,
+          endTime: params.endTime!,
+        );
+      }
     } else {
-      return await repository.insertActivity(
-          name: params.name, startTime: params.startTime);
+      if (color != null) {
+        return repository.insertActivity(
+          name: params.name,
+          startTime: params.startTime,
+          color: color,
+        );
+      } else {
+        return repository.insertActivity(
+          name: params.name,
+          startTime: params.startTime,
+        );
+      }
     }
   }
 }

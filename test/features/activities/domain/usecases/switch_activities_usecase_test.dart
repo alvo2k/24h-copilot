@@ -16,6 +16,9 @@ void main() {
   setUp(() {
     mockRepository = MockActivityRepository();
     sut = SwitchActivitiesUsecase(mockRepository);
+    when(mockRepository.hasActivitySettings(any)).thenAnswer(
+      (_) async => const Right<Failure, bool>(true),
+    );
   });
 
   test(
@@ -32,11 +35,33 @@ void main() {
       await sut(const SwitchActivitiesParams(''));
 
       var result = verify(mockRepository.switchActivities(any, captureAny))
-          .captured.first;
+          .captured
+          .first;
       expect(result.isUtc, true);
     },
   );
+  test(
+    'should generate color if repository cant find it',
+    () async {
+      var returnActivity = Right<Failure, Activity>(tActivity);
+      when(mockRepository.switchActivities(
+        any,
+        any,
+        any,
+      )).thenAnswer((_) async => returnActivity);
+      when(mockRepository.hasActivitySettings(any)).thenAnswer(
+        (_) async => const Right<Failure, bool>(false),
+      );
 
+      await sut(const SwitchActivitiesParams(''));
+
+      expect(
+          verify(mockRepository.switchActivities(any, any, captureAny))
+              .captured
+              .first,
+          isA<Color>());
+    },
+  );
   test(
     "should call repository and return its value",
     () async {
@@ -47,6 +72,7 @@ void main() {
       var result = await sut(const SwitchActivitiesParams(''));
 
       verify(mockRepository.switchActivities(any, any)).called(1);
+      verify(mockRepository.hasActivitySettings(any)).called(1);
       verifyNoMoreInteractions(mockRepository);
       expect(result, returned);
     },

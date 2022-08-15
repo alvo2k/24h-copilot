@@ -3,6 +3,7 @@
 // Do not manually edit this file.
 
 import 'dart:async' as _i4;
+import 'dart:ui' as _i7;
 
 import 'package:copilot/core/error/return_types.dart' as _i5;
 import 'package:copilot/features/activities/domain/entities/activity.dart'
@@ -43,12 +44,13 @@ class MockActivityRepository extends _i1.Mock
           as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Activity>>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>> switchActivities(
-          String? nextActivityName, DateTime? startTime) =>
+          String? nextActivityName, DateTime? startTime, [_i7.Color? color]) =>
       (super.noSuchMethod(
-          Invocation.method(#switchActivities, [nextActivityName, startTime]),
-          returnValue: Future<_i2.Either<_i5.Failure, _i6.Activity>>.value(
-              _FakeEither_0<_i5.Failure, _i6.Activity>())) as _i4
-          .Future<_i2.Either<_i5.Failure, _i6.Activity>>);
+              Invocation.method(
+                  #switchActivities, [nextActivityName, startTime, color]),
+              returnValue: Future<_i2.Either<_i5.Failure, _i6.Activity>>.value(
+                  _FakeEither_0<_i5.Failure, _i6.Activity>()))
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, _i5.Success>> addEmoji(
           int? recordId, String? emoji) =>
@@ -65,11 +67,26 @@ class MockActivityRepository extends _i1.Mock
           as _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>> insertActivity(
-          {String? name, DateTime? startTime, DateTime? endTime}) =>
+          {String? name,
+          DateTime? startTime,
+          DateTime? endTime,
+          _i7.Color? color}) =>
       (super.noSuchMethod(
-              Invocation.method(#insertActivity, [],
-                  {#name: name, #startTime: startTime, #endTime: endTime}),
+              Invocation.method(#insertActivity, [], {
+                #name: name,
+                #startTime: startTime,
+                #endTime: endTime,
+                #color: color
+              }),
               returnValue: Future<_i2.Either<_i5.Failure, _i6.Activity>>.value(
                   _FakeEither_0<_i5.Failure, _i6.Activity>()))
           as _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>>);
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, bool>> hasActivitySettings(
+          String? activityName) =>
+      (super.noSuchMethod(
+              Invocation.method(#hasActivitySettings, [activityName]),
+              returnValue: Future<_i2.Either<_i5.Failure, bool>>.value(
+                  _FakeEither_0<_i5.Failure, bool>()))
+          as _i4.Future<_i2.Either<_i5.Failure, bool>>);
 }

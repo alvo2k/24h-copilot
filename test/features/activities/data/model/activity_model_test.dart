@@ -8,7 +8,7 @@ void main() {
 
   setUp(() {
     sut = ActivityModel(
-      recordId: 1,
+      idRecord: 1,
       name: 'Workout',
       colorHex: Colors.black.value,
       startTimeUnix: DateTime(1).millisecondsSinceEpoch,
@@ -32,7 +32,7 @@ void main() {
       () => expect(
         sut.startTime,
         DateTime.fromMillisecondsSinceEpoch(sut.startTimeUnix, isUtc: true)
-          .toLocal(),
+            .toLocal(),
       ),
     );
     test(
@@ -45,8 +45,33 @@ void main() {
         expect(
           sut.endTime,
           DateTime.fromMillisecondsSinceEpoch(sut.endTimeUnix!, isUtc: true)
-            .toLocal(),
+              .toLocal(),
         );
+      },
+    );
+  });
+  group('json serializable', () {
+    test(
+      'to JSON',
+      () {
+        final json = sut.toJson();
+
+        expect(json[ActivityModel.colIdRecord], sut.idRecord);
+        expect(json[ActivityModel.colName], sut.name);
+        expect(json[ActivityModel.colColor], sut.colorHex);
+        expect(json[ActivityModel.colStartTime], sut.startTimeUnix);
+        expect(json[ActivityModel.colTags], sut.inLineTags);
+        expect(json[ActivityModel.colEndTime], sut.endTimeUnix);
+        expect(json[ActivityModel.colGoal], sut.goal);
+        expect(json[ActivityModel.colEmoji], sut.emoji);
+      },
+    );
+    test(
+      'from JSON',
+      () {
+        final json = sut.toJson();
+
+        expect(ActivityModel.fromJson(json), sut);
       },
     );
   });

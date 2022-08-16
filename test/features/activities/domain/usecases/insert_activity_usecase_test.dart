@@ -109,5 +109,32 @@ void main() {
         expect(result, returnWithEndTime);
       },
     );
+    test(
+      'in UTC format',
+      () async {
+        var returned = Right<Failure, Activity>(tActivity);
+        when(mockRepository.insertActivity(
+          name: anyNamed('name'),
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        )).thenAnswer((_) async => returned);
+
+        await sut(
+          InsertActivityParams(
+            name: name,
+            startTime: startTime,
+            endTime: endTime,
+          ),
+        );
+
+        var result = verify(mockRepository.insertActivity(
+          name: anyNamed('name'),
+          startTime: captureAnyNamed('startTime'),
+          endTime: captureAnyNamed('endTime'),
+        )).captured;
+        expect(result[0].isUtc, true);
+        expect(result[1].isUtc, true);
+      },
+    );
   });
 }

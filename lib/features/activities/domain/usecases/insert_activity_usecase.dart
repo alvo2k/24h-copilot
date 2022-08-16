@@ -40,28 +40,28 @@ class InsertActivityUsecase extends UseCase<Activity, InsertActivityParams> {
       if (color != null) {
         return repository.insertActivity(
           name: params.name,
-          startTime: params.startTime,
-          endTime: params.endTime!,
+          startTime: params.startTime.toUtc(),
+          endTime: params.endTime!.toUtc(),
           color: color,
         );
       } else {
         return repository.insertActivity(
           name: params.name,
-          startTime: params.startTime,
-          endTime: params.endTime!,
+          startTime: params.startTime.toUtc(),
+          endTime: params.endTime!.toUtc(),
         );
       }
     } else {
       if (color != null) {
         return repository.insertActivity(
           name: params.name,
-          startTime: params.startTime,
+          startTime: params.startTime.toUtc(),
           color: color,
         );
       } else {
         return repository.insertActivity(
           name: params.name,
-          startTime: params.startTime,
+          startTime: params.startTime.toUtc(),
         );
       }
     }

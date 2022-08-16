@@ -9,6 +9,10 @@ abstract class Failure extends Equatable {
   List<Object> get props => [properties];
 }
 
+class CacheFailure extends Failure {
+  const CacheFailure([super.properties]);
+}
+
 class Success extends Equatable {
   const Success([this.properties = const <dynamic>[]]);
 

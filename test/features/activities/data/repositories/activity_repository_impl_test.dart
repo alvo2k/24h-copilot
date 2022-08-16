@@ -1,0 +1,72 @@
+import 'package:copilot/core/error/exceptions.dart';
+import 'package:copilot/core/error/return_types.dart';
+import 'package:copilot/features/activities/data/datasources/activity_local_data_source.dart';
+import 'package:copilot/features/activities/data/models/activity_model.dart';
+import 'package:copilot/features/activities/data/repositories/activity_repository_impl.dart';
+import 'package:dartz/dartz.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+
+import 'activity_repository_impl_test.mocks.dart';
+
+@GenerateMocks([ActivityLocalDataSource])
+void main() {
+  late ActivityRepositoryImpl sut;
+  late MockActivityLocalDataSource mockLocalDataSource;
+
+  final tActivityModel = ActivityModel(
+    idRecord: 0,
+    name: 'name',
+    colorHex: 0xFF000000,
+    startTimeUnix: DateTime(1).toUtc().millisecondsSinceEpoch,
+    inLineTags: 'sport;body',
+    emoji: '🤪',
+    endTimeUnix: DateTime(2).toUtc().millisecondsSinceEpoch,
+    goal: 1,
+  );
+  final List<Map<String, dynamic>> rawActivities = [
+    tActivityModel.toJson(),
+    tActivityModel.toJson(),
+  ];
+  final date = DateTime(1).toUtc();
+
+  setUp(() {
+    mockLocalDataSource = MockActivityLocalDataSource();
+    sut = ActivityRepositoryImpl(localDataSource: mockLocalDataSource);
+  });
+
+  group('Load Activities:', () {
+    test(
+      'should return List<Activities> for the day',
+      () async {
+        when(mockLocalDataSource.getActivities(
+          from: date.millisecondsSinceEpoch,
+          to: date
+              .add(const Duration(
+                  hours: 23, minutes: 59, seconds: 59, milliseconds: 999))
+              .millisecondsSinceEpoch,
+        )).thenAnswer((_) async => rawActivities);
+
+        final result = await sut.getActivities(date);
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, [tActivityModel, tActivityModel]);
+      },
+    );
+    test(
+      'should return CacheFailure on CacheException',
+      () async {
+        when(mockLocalDataSource.getActivities(
+          from: anyNamed('from'),
+          to: anyNamed('to'),
+        )).thenThrow(CacheException());
+
+        final result = await sut.getActivities(date);
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, isA<CacheFailure>());
+      },
+    );
+  });
+}

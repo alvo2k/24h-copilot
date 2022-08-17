@@ -53,17 +53,18 @@ class ActivityRepositoryImpl implements ActivityRepository {
     }
   }
 
-  Future<List<ActivityModel>> getActititiesFromDataSource(
-      int from, int to) async {
-    return await localDataSource
-        .getActivities(from: from, to: to)
-        .then((value) => value.map((e) => ActivityModel.fromJson(e)).toList());
-  }
-
   @override
-  Future<Either<Failure, bool>> hasActivitySettings(String activityName) {
-    // TODO: implement hasActivitySettings
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> hasActivitySettings(String activityName) async {
+    try {
+      final result = await localDataSource.findActivitySettings(activityName);
+      if (result == null) {
+        return const Right(false);
+      } else {
+        return const Right(true);
+      }
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override
@@ -85,5 +86,12 @@ class ActivityRepositoryImpl implements ActivityRepository {
   ]) {
     // TODO: implement switchActivities
     throw UnimplementedError();
+  }
+
+  Future<List<ActivityModel>> getActititiesFromDataSource(
+      int from, int to) async {
+    return await localDataSource
+        .getActivities(from: from, to: to)
+        .then((value) => value.map((e) => ActivityModel.fromJson(e)).toList());
   }
 }

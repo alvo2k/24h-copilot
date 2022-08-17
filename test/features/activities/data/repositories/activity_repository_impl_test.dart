@@ -69,4 +69,42 @@ void main() {
       },
     );
   });
+  group('Has activity settings:', () {
+    test(
+      'should return false on null',
+      () async {
+        when(mockLocalDataSource.findActivitySettings(any))
+            .thenAnswer((_) async => null);
+
+        final result = await sut.hasActivitySettings('');
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, false);
+      },
+    );
+    test(
+      'should return true on found activity',
+      () async {
+        when(mockLocalDataSource.findActivitySettings(any))
+            .thenAnswer((_) async => {});
+
+        final result = await sut.hasActivitySettings('');
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, true);
+      },
+    );
+    test(
+      'should return CacheFailure on CacheException',
+      () async {
+        when(mockLocalDataSource.findActivitySettings(any))
+            .thenThrow(CacheException());
+
+        final result = await sut.hasActivitySettings('');
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, const CacheFailure());
+      },
+    );
+  });
 }

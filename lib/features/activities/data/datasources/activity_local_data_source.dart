@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 abstract class ActivityLocalDataSource {
   /// Gets List of raw [Activities].
   /// where [from] & [to] - DateTime().millisecondsSinceEpoch in UTC
@@ -32,11 +34,70 @@ abstract class ActivityLocalDataSource {
   /// Trys to find [Activity] fields (id, color, tags, goal...)
   Future<Map<String, dynamic>?> findActivitySettings(String name);
 
-  /// Saves [Activity] fields (id, color, tags, goal...)
-  Future<void> createActivity(Map<String, dynamic> activitySettings);
+  /// Creates new [Activity] (id, name, color)
+  Future<void> createActivity(String name, int colorHex);
 
   Future<void> updateRecordEmoji(
     int idRecord,
     String emoji,
   );
+}
+
+@LazySingleton(as: ActivityLocalDataSource)
+class DriftDB extends ActivityLocalDataSource {
+  @override
+  Future<void> createActivity(String name, int colorHex) {
+    // TODO: implement createActivity
+    throw UnimplementedError();
+}
+
+  @override
+  Future<Map<String, dynamic>> createRecord({
+    required int idActivity,
+    required DateTime startTime,
+    DateTime? endTime,
+  }) {
+    // TODO: implement createRecord
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map<String, dynamic>?> findActivitySettings(String name) {
+    // TODO: implement findActivitySettings
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getActivities({
+    required int from,
+    required int to,
+  }) {
+    // TODO: implement getActivities
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateRecordEmoji(int idRecord, String emoji) {
+    // TODO: implement updateRecordEmoji
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map<String, dynamic>> updateRecordSettings({
+    required int idRecord,
+    required int idActivity,
+  }) {
+    // TODO: implement updateRecordSettings
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateRecordTime({
+    required int idRecord,
+    DateTime? startTime,
+    DateTime? endTime,
+  }) {
+    // TODO: implement updateRecordTime
+    throw UnimplementedError();
+  }
 }

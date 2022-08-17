@@ -208,4 +208,30 @@ void main() {
       },
     );
   });
+  group('Add emoji', () {
+    test(
+      'should update record with new emoji',
+      () async {
+        when(mockLocalDataSource.updateRecordEmoji(any, any))
+            .thenAnswer((_) async {});
+
+        final result = await sut.addEmoji(1, 'emoji');
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, const Success());
+      },
+    );
+    test(
+      'should return CacheFailure on CacheException',
+      () async {
+        when(mockLocalDataSource.updateRecordEmoji(any, any))
+            .thenThrow(CacheException());
+
+        final result = await sut.addEmoji(1, 'emoji');
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, const CacheFailure());
+      },
+    );
+  });
 }

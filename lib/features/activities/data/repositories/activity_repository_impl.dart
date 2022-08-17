@@ -20,9 +20,13 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<Either<Failure, Success>> addEmoji(
     int recordId,
     String emoji,
-  ) {
-    // TODO: implement addEmoji
-    throw UnimplementedError();
+  ) async {
+    try {
+      await localDataSource.updateRecordEmoji(recordId, emoji);
+      return const Right(Success());
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override

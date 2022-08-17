@@ -26,12 +26,27 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<Either<Failure, Activity>> editName(
-    int recordId,
-    String newName,
-  ) {
-    // TODO: implement editName
-    throw UnimplementedError();
+  Future<Either<Failure, Activity>> editName({
+    required int recordId,
+    required String newName,
+    Color? color,
+  }) async {
+    try {
+      if (color != null) {
+        localDataSource.createActivity(newName, color.value);
+      }
+      final activitySettings =
+          await localDataSource.findActivitySettings(newName);
+      if (activitySettings == null) {
+        return const Left(CacheFailure());
+      }
+      final id = activitySettings[ActivityModel.colIdActivity] as int;
+      final activityJson = await localDataSource.updateRecordSettings(
+          idRecord: recordId, idActivity: id);
+      return Right(ActivityModel.fromJson(activityJson));
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override
@@ -46,7 +61,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
         .millisecondsSinceEpoch;
 
     try {
-      final activities = await getActititiesFromDataSource(from, to);
+      final activities = await _getActititiesFromDataSource(from, to);
       return Right(activities);
     } on CacheException {
       return const Left(CacheFailure());
@@ -104,7 +119,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
     }
   }
 
-  Future<List<ActivityModel>> getActititiesFromDataSource(
+  Future<List<ActivityModel>> _getActititiesFromDataSource(
       int from, int to) async {
     return await localDataSource
         .getActivities(from: from, to: to)

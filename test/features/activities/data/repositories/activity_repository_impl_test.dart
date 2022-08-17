@@ -157,4 +157,55 @@ void main() {
       },
     );
   });
+  group('Edit name:', () {
+    setUp(() {
+      when(mockLocalDataSource.findActivitySettings(any))
+          .thenAnswer((_) async => {ActivityModel.colIdActivity: 1});
+      when(mockLocalDataSource.createActivity(any, any))
+          .thenAnswer((_) async => tActivityModel.toJson());
+    });
+    test(
+      'should create activity if color was passed',
+      () async {
+        when(mockLocalDataSource.updateRecordSettings(
+          idActivity: anyNamed('idActivity'),
+          idRecord: anyNamed('idRecord'),
+        )).thenAnswer((_) async => tActivityModel.toJson());
+
+        final result = await sut.editName(
+            recordId: 1, newName: '', color: const Color(0xFF000000));
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, tActivityModel);
+      },
+    );
+    test(
+      'should return CacheFailure if couldn\'t find activity settings',
+      () async {
+        when(mockLocalDataSource.findActivitySettings(any))
+            .thenAnswer((_) async => null);
+
+        final result = await sut.editName(recordId: 1, newName: '');
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, const CacheFailure());
+      },
+    );
+    test(
+      'should return CacheFailure on CacheException',
+      () async {
+        when(mockLocalDataSource.createActivity(any, any))
+            .thenThrow(CacheException());
+
+        final result = await sut.editName(
+          recordId: 1,
+          newName: '',
+          color: const Color(0xFF000000),
+        );
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, const CacheFailure());
+      },
+    );
+  });
 }

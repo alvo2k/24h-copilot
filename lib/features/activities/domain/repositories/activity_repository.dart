@@ -21,7 +21,11 @@ abstract class ActivityRepository {
 
   /// Changes the name of individual [Activity], returns a new one with
   /// new [ActivitySettings] or cached
-  Future<Either<Failure, Activity>> editName(int recordId, String newName);
+  Future<Either<Failure, Activity>> editName({
+    required int recordId,
+    required String newName,
+    Color? color,
+    });
 
   /// Inserts new activity and returns it entity
   Future<Either<Failure, Activity>> insertActivity({

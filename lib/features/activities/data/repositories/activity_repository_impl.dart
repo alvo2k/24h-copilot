@@ -83,9 +83,25 @@ class ActivityRepositoryImpl implements ActivityRepository {
     String nextActivityName,
     DateTime startTime, [
     Color? color,
-  ]) {
-    // TODO: implement switchActivities
-    throw UnimplementedError();
+  ]) async {
+    try {
+      if (color != null) {
+        localDataSource.createActivity(nextActivityName, color.value);
+      }
+      final activitySettings =
+          await localDataSource.findActivitySettings(nextActivityName);
+      if (activitySettings == null) {
+        return const Left(CacheFailure());
+      }
+      final id = activitySettings[ActivityModel.colIdActivity] as int;
+      final activityJson = await localDataSource.createRecord(
+        idActivity: id,
+        startTime: startTime,
+      );
+      return Right(ActivityModel.fromJson(activityJson));
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   Future<List<ActivityModel>> getActititiesFromDataSource(

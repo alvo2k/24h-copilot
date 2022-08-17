@@ -1,7 +1,7 @@
 abstract class ActivityLocalDataSource {
   /// Gets List of raw [Activities].
   /// where [from] & [to] - DateTime().millisecondsSinceEpoch in UTC
-  Future<List<Map<String, Object?>>> getActivities({
+  Future<List<Map<String, dynamic>>> getActivities({
     required int from,
     required int to,
   });
@@ -33,7 +33,7 @@ abstract class ActivityLocalDataSource {
   Future<Map<String, dynamic>?> findActivitySettings(String name);
 
   /// Saves [Activity] fields (id, color, tags, goal...)
-  Future<void> createActivity(Map<String, dynamic> activitySettings);
+  Future<void> createActivity(String name, int colorHex);
 
   Future<void> updateRecordEmoji(
     int idRecord,

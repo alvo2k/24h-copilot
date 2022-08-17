@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:copilot/core/error/exceptions.dart';
 import 'package:copilot/core/error/return_types.dart';
 import 'package:copilot/features/activities/data/datasources/activity_local_data_source.dart';
@@ -8,9 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+@GenerateMocks([ActivityLocalDataSource])
 import 'activity_repository_impl_test.mocks.dart';
 
-@GenerateMocks([ActivityLocalDataSource])
 void main() {
   late ActivityRepositoryImpl sut;
   late MockActivityLocalDataSource mockLocalDataSource;
@@ -101,6 +103,54 @@ void main() {
             .thenThrow(CacheException());
 
         final result = await sut.hasActivitySettings('');
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, const CacheFailure());
+      },
+    );
+  });
+  group('Switch activities:', () {
+    setUp(() {
+      when(mockLocalDataSource.findActivitySettings(any))
+          .thenAnswer((_) async => {ActivityModel.colIdActivity: 1});
+      when(mockLocalDataSource.createRecord(
+        idActivity: anyNamed('idActivity'),
+        startTime: anyNamed('startTime'),
+      )).thenAnswer((_) async => tActivityModel.toJson());
+    });
+    test(
+      'should create activity if color was passed',
+      () async {
+        when(mockLocalDataSource.createActivity(any, any))
+            .thenAnswer((_) async {});
+
+        final result = await sut.switchActivities(
+            'name', DateTime(1), const Color(0xFF000000));
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, tActivityModel);
+      },
+    );
+    test(
+      'should return CacheFailure if couldn\'t find activity settings',
+      () async {
+        when(mockLocalDataSource.findActivitySettings(any))
+            .thenAnswer((_) async => null);
+
+        final result = await sut.switchActivities('name', DateTime(1));
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, const CacheFailure());
+      },
+    );
+    test(
+      'should return CacheFailure on CacheException',
+      () async {
+        when(mockLocalDataSource.createActivity(any, any))
+            .thenThrow(CacheException());
+
+        final result = await sut.switchActivities(
+            'name', DateTime(1), const Color(0xFF000000));
 
         expect(result.isLeft(), true);
         expect((result as Left).value, const CacheFailure());

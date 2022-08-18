@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 abstract class ActivityLocalDataSource {
   /// Gets List of raw [Activities].
   /// where [from] & [to] - DateTime().millisecondsSinceEpoch in UTC
-  Future<List<Map<String, Object?>>> getActivities({
+  Future<List<Map<String, dynamic>>> getActivities({
     required int from,
     required int to,
   });

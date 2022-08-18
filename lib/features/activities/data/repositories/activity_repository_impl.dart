@@ -20,18 +20,37 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<Either<Failure, Success>> addEmoji(
     int recordId,
     String emoji,
-  ) {
-    // TODO: implement addEmoji
-    throw UnimplementedError();
+  ) async {
+    try {
+      await localDataSource.updateRecordEmoji(recordId, emoji);
+      return const Right(Success());
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override
-  Future<Either<Failure, Activity>> editName(
-    int recordId,
-    String newName,
-  ) {
-    // TODO: implement editName
-    throw UnimplementedError();
+  Future<Either<Failure, Activity>> editName({
+    required int recordId,
+    required String newName,
+    Color? color,
+  }) async {
+    try {
+      if (color != null) {
+        localDataSource.createActivity(newName, color.value);
+      }
+      final activitySettings =
+          await localDataSource.findActivitySettings(newName);
+      if (activitySettings == null) {
+        return const Left(CacheFailure());
+      }
+      final id = activitySettings[ActivityModel.colIdActivity] as int;
+      final activityJson = await localDataSource.updateRecordSettings(
+          idRecord: recordId, idActivity: id);
+      return Right(ActivityModel.fromJson(activityJson));
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override
@@ -46,24 +65,25 @@ class ActivityRepositoryImpl implements ActivityRepository {
         .millisecondsSinceEpoch;
 
     try {
-      final activities = await getActititiesFromDataSource(from, to);
+      final activities = await _getActititiesFromDataSource(from, to);
       return Right(activities);
     } on CacheException {
       return const Left(CacheFailure());
     }
   }
 
-  Future<List<ActivityModel>> getActititiesFromDataSource(
-      int from, int to) async {
-    return await localDataSource
-        .getActivities(from: from, to: to)
-        .then((value) => value.map((e) => ActivityModel.fromJson(e)).toList());
-  }
-
   @override
-  Future<Either<Failure, bool>> hasActivitySettings(String activityName) {
-    // TODO: implement hasActivitySettings
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> hasActivitySettings(String activityName) async {
+    try {
+      final result = await localDataSource.findActivitySettings(activityName);
+      if (result == null) {
+        return const Right(false);
+      } else {
+        return const Right(true);
+      }
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override
@@ -82,8 +102,31 @@ class ActivityRepositoryImpl implements ActivityRepository {
     String nextActivityName,
     DateTime startTime, [
     Color? color,
-  ]) {
-    // TODO: implement switchActivities
-    throw UnimplementedError();
+  ]) async {
+    try {
+      if (color != null) {
+        localDataSource.createActivity(nextActivityName, color.value);
+      }
+      final activitySettings =
+          await localDataSource.findActivitySettings(nextActivityName);
+      if (activitySettings == null) {
+        return const Left(CacheFailure());
+      }
+      final id = activitySettings[ActivityModel.colIdActivity] as int;
+      final activityJson = await localDataSource.createRecord(
+        idActivity: id,
+        startTime: startTime,
+      );
+      return Right(ActivityModel.fromJson(activityJson));
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
+  }
+
+  Future<List<ActivityModel>> _getActititiesFromDataSource(
+      int from, int to) async {
+    return await localDataSource
+        .getActivities(from: from, to: to)
+        .then((value) => value.map((e) => ActivityModel.fromJson(e)).toList());
   }
 }

@@ -60,8 +60,10 @@ class MockActivityRepository extends _i1.Mock
           as _i4.Future<_i2.Either<_i5.Failure, _i5.Success>>);
   @override
   _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>> editName(
-          int? recordId, String? newName) =>
-      (super.noSuchMethod(Invocation.method(#editName, [recordId, newName]),
+          {int? recordId, String? newName, _i7.Color? color}) =>
+      (super.noSuchMethod(
+              Invocation.method(#editName, [],
+                  {#recordId: recordId, #newName: newName, #color: color}),
               returnValue: Future<_i2.Either<_i5.Failure, _i6.Activity>>.value(
                   _FakeEither_0<_i5.Failure, _i6.Activity>()))
           as _i4.Future<_i2.Either<_i5.Failure, _i6.Activity>>);

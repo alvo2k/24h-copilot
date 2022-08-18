@@ -69,9 +69,8 @@ class MockActivityLocalDataSource extends _i1.Mock
               returnValue: Future<Map<String, dynamic>?>.value())
           as _i3.Future<Map<String, dynamic>?>);
   @override
-  _i3.Future<void> createActivity(Map<String, dynamic>? activitySettings) =>
-      (super.noSuchMethod(
-          Invocation.method(#createActivity, [activitySettings]),
+  _i3.Future<void> createActivity(String? name, int? colorHex) =>
+      (super.noSuchMethod(Invocation.method(#createActivity, [name, colorHex]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
   @override

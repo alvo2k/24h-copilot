@@ -28,9 +28,9 @@ class MockActivityLocalDataSource extends _i1.Mock
   }
 
   @override
-  _i3.Future<List<Map<String, dynamic>>> getActivities({int? from, int? to}) =>
+  _i3.Future<List<Map<String, dynamic>>> getRecords({int? from, int? to}) =>
       (super.noSuchMethod(
-              Invocation.method(#getActivities, [], {#from: from, #to: to}),
+              Invocation.method(#getRecords, [], {#from: from, #to: to}),
               returnValue: Future<List<Map<String, dynamic>>>.value(
                   <Map<String, dynamic>>[]))
           as _i3.Future<List<Map<String, dynamic>>>);

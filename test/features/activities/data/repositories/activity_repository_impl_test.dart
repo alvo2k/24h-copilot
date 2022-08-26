@@ -42,12 +42,9 @@ void main() {
     test(
       'should return List<Activities> for the day',
       () async {
-        when(mockLocalDataSource.getActivities(
+        when(mockLocalDataSource.getRecords(
           from: date.millisecondsSinceEpoch,
-          to: date
-              .add(const Duration(
-                  hours: 23, minutes: 59, seconds: 59, milliseconds: 999))
-              .millisecondsSinceEpoch,
+          to: date.add(const Duration(days: 1)).millisecondsSinceEpoch,
         )).thenAnswer((_) async => rawActivities);
 
         final result = await sut.getActivities(date);
@@ -59,7 +56,7 @@ void main() {
     test(
       'should return CacheFailure on CacheException',
       () async {
-        when(mockLocalDataSource.getActivities(
+        when(mockLocalDataSource.getRecords(
           from: anyNamed('from'),
           to: anyNamed('to'),
         )).thenThrow(CacheException());

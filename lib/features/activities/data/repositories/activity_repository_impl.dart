@@ -59,10 +59,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
     assert(forTheDay.isUtc, true);
 
     final from = forTheDay.millisecondsSinceEpoch;
-    final to = forTheDay
-        .add(const Duration(
-            hours: 23, minutes: 59, seconds: 59, milliseconds: 999))
-        .millisecondsSinceEpoch;
+    final to = forTheDay.add(const Duration(days: 1)).millisecondsSinceEpoch;
 
     try {
       final activities = await _getActititiesFromDataSource(from, to);
@@ -126,7 +123,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<List<ActivityModel>> _getActititiesFromDataSource(
       int from, int to) async {
     return await localDataSource
-        .getActivities(from: from, to: to)
+        .getRecords(from: from, to: to)
         .then((value) => value.map((e) => ActivityModel.fromJson(e)).toList());
   }
 }

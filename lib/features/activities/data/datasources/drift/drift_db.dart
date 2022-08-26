@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:injectable/injectable.dart';
@@ -35,10 +36,9 @@ class Activities extends Table {
   IntColumn get goal => integer().nullable()();
 }
 
-@LazySingleton()
+@LazySingleton(as: ActivityLocalDataSource)
 @DriftDatabase(tables: [Records, Activities])
-class ActivityDatabase extends _$ActivityDatabase {
-  // with ActivityLocalDataSource
+class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   ActivityDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override

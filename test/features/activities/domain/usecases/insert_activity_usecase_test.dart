@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:copilot/core/error/return_types.dart';
 import 'package:copilot/features/activities/domain/entities/activity.dart';
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart';
@@ -17,43 +15,12 @@ void main() {
   setUp(() {
     mockRepository = MockActivityRepository();
     sut = InsertActivityUsecase(mockRepository);
-    when(mockRepository.hasActivitySettings(any)).thenAnswer(
-      (_) async => const Right<Failure, bool>(true),
-    );
   });
 
   test(
     "should accept instance of ActivityRepository",
     () => expect(sut.repository, isA<ActivityRepository>()),
   );
-  test('should generate color if repository cant find it', () async {
-    var returnActivity = Right<Failure, Activity>(tActivity);
-    when(mockRepository.insertActivity(
-      name: anyNamed('name'),
-      startTime: anyNamed('startTime'),
-      color: anyNamed('color'),
-    )).thenAnswer((_) async => returnActivity);
-    when(mockRepository.hasActivitySettings(any)).thenAnswer(
-      (_) async => const Right<Failure, bool>(false),
-    );
-
-    await sut(
-      InsertActivityParams(
-        name: '',
-        startTime: DateTime(1),
-      ),
-    );
-
-    expect(
-        verify(
-          mockRepository.insertActivity(
-            name: anyNamed('name'),
-            startTime: anyNamed('startTime'),
-            color: captureAnyNamed('color'),
-          ),
-        ).captured.first,
-        isA<Color>());
-  });
   group('should call repository and return its value:', () {
     const name = '';
     var startTime = DateTime(1);
@@ -65,6 +32,7 @@ void main() {
         when(mockRepository.insertActivity(
           name: anyNamed('name'),
           startTime: anyNamed('startTime'),
+          color: anyNamed('color'),
         )).thenAnswer((_) async => returnWithoutEndTime);
 
         var result = await sut(InsertActivityParams(
@@ -75,8 +43,8 @@ void main() {
         verify(mockRepository.insertActivity(
           name: anyNamed('name'),
           startTime: anyNamed('startTime'),
+          color: anyNamed('color'),
         )).called(1);
-        verify(mockRepository.hasActivitySettings(any)).called(1);
         verifyNoMoreInteractions(mockRepository);
         expect(result, returnWithoutEndTime);
       },
@@ -89,6 +57,7 @@ void main() {
           name: anyNamed('name'),
           startTime: anyNamed('startTime'),
           endTime: anyNamed('endTime'),
+          color: anyNamed('color'),
         )).thenAnswer((_) async => returnWithEndTime);
 
         var result = await sut(
@@ -103,8 +72,8 @@ void main() {
           name: anyNamed('name'),
           startTime: anyNamed('startTime'),
           endTime: anyNamed('endTime'),
+          color: anyNamed('color'),
         )).called(1);
-        verify(mockRepository.hasActivitySettings(any)).called(1);
         verifyNoMoreInteractions(mockRepository);
         expect(result, returnWithEndTime);
       },
@@ -117,6 +86,7 @@ void main() {
           name: anyNamed('name'),
           startTime: anyNamed('startTime'),
           endTime: anyNamed('endTime'),
+          color: anyNamed('color'),
         )).thenAnswer((_) async => returned);
 
         await sut(
@@ -131,6 +101,7 @@ void main() {
           name: anyNamed('name'),
           startTime: captureAnyNamed('startTime'),
           endTime: captureAnyNamed('endTime'),
+          color: anyNamed('color'),
         )).captured;
         expect(result[0].isUtc, true);
         expect(result[1].isUtc, true);

@@ -15,25 +15,11 @@ class EditNameUsecase extends UseCase<Activity, EditNameParams> {
 
   @override
   Future<Either<Failure, Activity>> call(EditNameParams params) async {
-    return await repository
-        .hasActivitySettings(params.name)
-        .then((either) => either.fold(
-              (l) => Left(l),
-              (r) {
-                if (r) {
-                  return repository.editName(
-                    recordId: params.recordId,
-                    newName: params.name,
-                  );
-                } else {
-                  final color = RandomColor.generate;
-                  return repository.editName(
-                      recordId: params.recordId,
-                      newName: params.name,
-                      color: color);
-                }
-              },
-            ));
+    return repository.editName(
+      recordId: params.recordId,
+      newName: params.name,
+      color: RandomColor.generate,
+    );
   }
 }
 

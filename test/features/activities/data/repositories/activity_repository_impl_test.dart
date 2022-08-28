@@ -122,7 +122,10 @@ void main() {
             .thenAnswer((_) async {});
 
         final result = await sut.switchActivities(
-            'name', DateTime(1), const Color(0xFF000000));
+          nextActivityName: 'name',
+          startTime: DateTime(1),
+          color: const Color(0xFF000000),
+        );
 
         expect(result.isRight(), true);
         expect((result as Right).value, tActivityModel);
@@ -134,7 +137,11 @@ void main() {
         when(mockLocalDataSource.findActivitySettings(any))
             .thenAnswer((_) async => null);
 
-        final result = await sut.switchActivities('name', DateTime(1));
+        final result = await sut.switchActivities(
+          nextActivityName: 'name',
+          startTime: DateTime(1),
+          color: const Color(0xFF000000),
+        );
 
         expect(result.isLeft(), true);
         expect((result as Left).value, const CacheFailure());
@@ -147,7 +154,10 @@ void main() {
             .thenThrow(CacheException());
 
         final result = await sut.switchActivities(
-            'name', DateTime(1), const Color(0xFF000000));
+          nextActivityName: 'name',
+          startTime: DateTime(1),
+          color: const Color(0xFF000000),
+        );
 
         expect(result.isLeft(), true);
         expect((result as Left).value, const CacheFailure());
@@ -165,7 +175,7 @@ void main() {
       'should create activity if color was passed',
       () async {
         when(mockLocalDataSource.updateRecordSettings(
-          idActivity: anyNamed('idActivity'),
+          activityName: anyNamed('activityName'),
           idRecord: anyNamed('idRecord'),
         )).thenAnswer((_) async => tActivityModel.toJson());
 
@@ -182,7 +192,11 @@ void main() {
         when(mockLocalDataSource.findActivitySettings(any))
             .thenAnswer((_) async => null);
 
-        final result = await sut.editName(recordId: 1, newName: '');
+        final result = await sut.editName(
+          recordId: 1,
+          newName: '',
+          color: const Color(0xFFFFFFFF),
+        );
 
         expect(result.isLeft(), true);
         expect((result as Left).value, const CacheFailure());

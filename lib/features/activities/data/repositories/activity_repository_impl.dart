@@ -33,7 +33,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<Either<Failure, Activity>> editName({
     required int recordId,
     required String newName,
-    Color? color,
+    required Color color,
   }) async {
     try {
       if (color != null) {
@@ -87,6 +87,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<Either<Failure, Activity>> insertActivity({
     required String name,
     required DateTime startTime,
+    required Color color,
     DateTime? endTime,
     Color? color,
   }) {
@@ -95,11 +96,11 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<Either<Failure, Activity>> switchActivities(
-    String nextActivityName,
-    DateTime startTime, [
-    Color? color,
-  ]) async {
+  Future<Either<Failure, Activity>> switchActivities({
+    required Color color,
+    required String nextActivityName,
+    required DateTime startTime,
+  }) async {
     try {
       if (color != null) {
         localDataSource.createActivity(nextActivityName, color.value);

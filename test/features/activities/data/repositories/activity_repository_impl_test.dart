@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:copilot/core/error/exceptions.dart';
 import 'package:copilot/core/error/return_types.dart';
-import 'package:copilot/features/activities/data/datasources/activity_local_data_source.dart';
+import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart';
 import 'package:copilot/features/activities/data/models/activity_model.dart';
 import 'package:copilot/features/activities/data/repositories/activity_repository_impl.dart';
 import 'package:dartz/dartz.dart';
@@ -27,9 +27,38 @@ void main() {
     endTimeUnix: DateTime(2).toUtc().millisecondsSinceEpoch,
     goal: 1,
   );
-  final List<Map<String, dynamic>> rawActivities = [
-    tActivityModel.toJson(),
-    tActivityModel.toJson(),
+  final tDriftRow = RecordWithActivitySettings(
+    DriftRecordModel(
+      idRecord: 0,
+      activityName: 'name',
+      startTime: DateTime(1).toUtc().millisecondsSinceEpoch,
+      endTime: DateTime(2).toUtc().millisecondsSinceEpoch,
+      emoji: '🤪',
+    ),
+    const DriftActivityModel(
+      name: 'name',
+      color: 0xFF000000,
+      tags: 'sport;body',
+      goal: 1,
+    ),
+  );
+  final List<RecordWithActivitySettings> rawActivities = [
+    tDriftRow,
+    RecordWithActivitySettings(
+      DriftRecordModel(
+        idRecord: 1,
+        startTime: DateTime(2).toUtc().millisecondsSinceEpoch,
+        endTime: DateTime(3).toUtc().millisecondsSinceEpoch,
+        emoji: '🤪',
+        activityName: 'name2',
+      ),
+      const DriftActivityModel(
+        name: 'name2',
+        color: 0xFF000000,
+        tags: 'sport;body',
+        goal: 1,
+      ),
+    ),
   ];
   final date = DateTime(1).toUtc();
 
@@ -211,6 +240,81 @@ void main() {
         final result = await sut.editName(
           recordId: 1,
           newName: '',
+          color: const Color(0xFF000000),
+        );
+
+        expect(result.isLeft(), true);
+        expect((result as Left).value, const CacheFailure());
+      },
+    );
+  });
+  group('Insert activity', () {
+    setUp(() {
+      when(mockLocalDataSource.findActivitySettings(any))
+          .thenAnswer((_) async => tDriftRow.activity);
+      when(mockLocalDataSource.createRecord(
+        activityName: anyNamed('activityName'),
+        startTime: anyNamed('startTime'),
+      )).thenAnswer((_) async => tDriftRow);
+    });
+    test(
+      'should return ActivityModel on success (without endTime)',
+      () async {
+        final result = await sut.insertActivity(
+          name: 'name',
+          startTime: DateTime(1),
+          color: const Color(0xFF000000),
+        );
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, tActivityModel);
+      },
+    );
+    test(
+      'should return ActivityModel on success (with endTime)',
+      () async {
+        when(mockLocalDataSource.createRecord(
+          activityName: anyNamed('activityName'),
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        )).thenAnswer((_) async => tDriftRow);
+        final result = await sut.insertActivity(
+          name: 'name',
+          startTime: DateTime(1),
+          color: const Color(0xFF000000),
+          endTime: DateTime(2),
+        );
+
+        expect(result.isRight(), true);
+        expect((result as Right).value, tActivityModel);
+      },
+    );
+    test(
+      'should should call createActivity if couldn\'t find activity settings',
+      () async {
+        when(mockLocalDataSource.findActivitySettings(any))
+            .thenAnswer((_) async => null);
+        when(mockLocalDataSource.createActivity(any, any))
+            .thenAnswer((_) async => tDriftRow.activity);
+
+        await sut.insertActivity(
+          name: 'name',
+          startTime: DateTime(1),
+          color: const Color(0xFF000000),
+        );
+
+        verify(mockLocalDataSource.createActivity(any, any)).called(1);
+      },
+    );
+    test(
+      'should return CacheFailure on CacheException',
+      () async {
+        when(mockLocalDataSource.findActivitySettings(any))
+            .thenThrow(CacheException());
+
+        final result = await sut.insertActivity(
+          name: 'name',
+          startTime: DateTime(1),
           color: const Color(0xFF000000),
         );
 

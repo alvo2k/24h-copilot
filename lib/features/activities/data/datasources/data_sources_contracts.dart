@@ -28,11 +28,11 @@ abstract class ActivityLocalDataSource {
     required String activityName,
   });
 
-  /// Trys to find [Activity] fields (id, color, tags, goal...)
+  /// Trys to find [Activity] fields (color, tags, goal...)
   Future<DriftActivityModel?> findActivitySettings(String name);
 
   /// Creates new [Activity] (name, color)
-  Future<void> createActivity(String name, int colorHex);
+  Future<DriftActivityModel> createActivity(String name, int colorHex);
 
   Future<void> updateRecordEmoji(int idRecord, String emoji);
 }

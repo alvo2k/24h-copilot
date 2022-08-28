@@ -8,7 +8,8 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/repositories/activity_repository.dart';
-import '../datasources/activity_local_data_source.dart';
+import '../datasources/data_sources_contracts.dart';
+import '../datasources/drift/drift_db.dart';
 
 @LazySingleton(as: ActivityRepository)
 class ActivityRepositoryImpl implements ActivityRepository {
@@ -89,10 +90,30 @@ class ActivityRepositoryImpl implements ActivityRepository {
     required DateTime startTime,
     required Color color,
     DateTime? endTime,
-    Color? color,
-  }) {
-    // TODO: implement insertActivity
-    throw UnimplementedError();
+  }) async {
+    try {
+      final activitySettings =
+          await localDataSource.findActivitySettings(name) ??
+              await localDataSource.createActivity(name, color.value);
+
+      RecordWithActivitySettings row;
+      if (endTime != null) {
+        row = await localDataSource.createRecord(
+          activityName: activitySettings.name,
+          startTime: startTime.millisecondsSinceEpoch,
+          endTime: endTime.millisecondsSinceEpoch,
+        );
+      } else {
+        row = await localDataSource.createRecord(
+          activityName: activitySettings.name,
+          startTime: startTime.millisecondsSinceEpoch,
+        );
+      }
+
+      return Right(ActivityModel.fromDriftRow(row));
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override

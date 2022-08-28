@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../domain/entities/activity.dart';
+import '../datasources/drift/drift_db.dart';
 
 part 'activity_model.g.dart';
 
@@ -29,6 +30,18 @@ class ActivityModel extends Activity {
                   .toLocal()
               : null,
         );
+
+  factory ActivityModel.fromDriftRow(RecordWithActivitySettings row) =>
+      ActivityModel(
+        idRecord: row.record.idRecord,
+        name: row.activity.name,
+        colorHex: row.activity.color,
+        startTimeUnix: row.record.startTime,
+        endTimeUnix: row.record.endTime,
+        inLineTags: row.activity.tags,
+        goal: row.activity.goal,
+        emoji: row.record.emoji,
+      );
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) =>
       _$ActivityModelFromJson(json);
@@ -61,4 +74,19 @@ class ActivityModel extends Activity {
   final int startTimeUnix;
 
   Map<String, dynamic> toJson() => _$ActivityModelToJson(this);
+
+  DriftRecordModel toDriftRecord() => DriftRecordModel(
+        idRecord: idRecord,
+        activityName: name,
+        startTime: startTimeUnix,
+        endTime: endTimeUnix,
+        emoji: emoji,
+      );
+
+  DriftActivityModel toDriftActivity() => DriftActivityModel(
+        name: name,
+        color: colorHex,
+        tags: inLineTags,
+        goal: goal,
+      );
 }

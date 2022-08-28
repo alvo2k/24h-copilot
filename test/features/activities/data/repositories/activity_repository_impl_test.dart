@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:copilot/core/error/exceptions.dart';
 import 'package:copilot/core/error/return_types.dart';
 import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart';
+import 'package:copilot/features/activities/data/datasources/drift/drift_db.dart';
 import 'package:copilot/features/activities/data/models/activity_model.dart';
 import 'package:copilot/features/activities/data/repositories/activity_repository_impl.dart';
 import 'package:dartz/dartz.dart';
@@ -12,6 +13,20 @@ import 'package:mockito/mockito.dart';
 
 @GenerateMocks([ActivityLocalDataSource])
 import 'activity_repository_impl_test.mocks.dart';
+
+// Broken Mockito methods in .mocks.dart
+// _i4.Future<_i2.DriftActivityModel?> findActivitySettings(String? name) =>
+//       (super.noSuchMethod(Invocation.method(#findActivitySettings, [name]),
+//               returnValue: _i4.Future<_i2.DriftActivityModel?>.value(FakeDriftActivityModel()))
+//           as _i4.Future<_i2.DriftActivityModel?>);
+//   @override
+//   _i4.Future<_i2.DriftActivityModel> createActivity(
+//           String? name, int? colorHex) =>
+//       (super.noSuchMethod(Invocation.method(#createActivity, [name, colorHex]),
+//               returnValue: _i4.Future<_i2.DriftActivityModel>.value(FakeDriftActivityModel()))
+//           as _i4.Future<_i2.DriftActivityModel>);
+
+class FakeDriftActivityModel extends Fake implements DriftActivityModel {}
 
 void main() {
   late ActivityRepositoryImpl sut;
@@ -79,7 +94,10 @@ void main() {
         final result = await sut.getActivities(date);
 
         expect(result.isRight(), true);
-        expect((result as Right).value, [tActivityModel, tActivityModel]);
+        expect((result as Right).value, [
+          ActivityModel.fromDriftRow(rawActivities[0]),
+          ActivityModel.fromDriftRow(rawActivities[1]),
+        ]);
       },
     );
     test(
@@ -114,7 +132,7 @@ void main() {
       'should return true on found activity',
       () async {
         when(mockLocalDataSource.findActivitySettings(any))
-            .thenAnswer((_) async => {});
+            .thenAnswer((_) async => tDriftRow.activity);
 
         final result = await sut.hasActivitySettings('');
 
@@ -138,48 +156,45 @@ void main() {
   group('Switch activities:', () {
     setUp(() {
       when(mockLocalDataSource.findActivitySettings(any))
-          .thenAnswer((_) async => {ActivityModel.colIdActivity: 1});
+          .thenAnswer((_) async => tDriftRow.activity);
       when(mockLocalDataSource.createRecord(
-        idActivity: anyNamed('idActivity'),
+        activityName: anyNamed('activityName'),
         startTime: anyNamed('startTime'),
-      )).thenAnswer((_) async => tActivityModel.toJson());
+      )).thenAnswer((_) async => tDriftRow);
     });
     test(
-      'should create activity if color was passed',
+      'should return ActivityModel on success',
       () async {
-        when(mockLocalDataSource.createActivity(any, any))
-            .thenAnswer((_) async {});
-
         final result = await sut.switchActivities(
           nextActivityName: 'name',
           startTime: DateTime(1),
           color: const Color(0xFF000000),
         );
-
         expect(result.isRight(), true);
         expect((result as Right).value, tActivityModel);
       },
     );
     test(
-      'should return CacheFailure if couldn\'t find activity settings',
+      'should call createActivity if couldn\'t find activity settings',
       () async {
         when(mockLocalDataSource.findActivitySettings(any))
             .thenAnswer((_) async => null);
+        when(mockLocalDataSource.createActivity(any, any))
+            .thenAnswer((_) async => tDriftRow.activity);
 
-        final result = await sut.switchActivities(
+        await sut.switchActivities(
           nextActivityName: 'name',
           startTime: DateTime(1),
           color: const Color(0xFF000000),
         );
 
-        expect(result.isLeft(), true);
-        expect((result as Left).value, const CacheFailure());
+        verify(mockLocalDataSource.createActivity(any, any)).called(1);
       },
     );
     test(
       'should return CacheFailure on CacheException',
       () async {
-        when(mockLocalDataSource.createActivity(any, any))
+        when(mockLocalDataSource.findActivitySettings(any))
             .thenThrow(CacheException());
 
         final result = await sut.switchActivities(
@@ -196,18 +211,17 @@ void main() {
   group('Edit name:', () {
     setUp(() {
       when(mockLocalDataSource.findActivitySettings(any))
-          .thenAnswer((_) async => {ActivityModel.colIdActivity: 1});
+          .thenAnswer((_) async => tDriftRow.activity);
       when(mockLocalDataSource.createActivity(any, any))
-          .thenAnswer((_) async => tActivityModel.toJson());
+          .thenAnswer((_) async => tDriftRow.activity);
+      when(mockLocalDataSource.updateRecordSettings(
+        activityName: anyNamed('activityName'),
+        idRecord: anyNamed('idRecord'),
+      )).thenAnswer((_) async => tDriftRow);
     });
     test(
-      'should create activity if color was passed',
+      'should return ActivityModel on success',
       () async {
-        when(mockLocalDataSource.updateRecordSettings(
-          activityName: anyNamed('activityName'),
-          idRecord: anyNamed('idRecord'),
-        )).thenAnswer((_) async => tActivityModel.toJson());
-
         final result = await sut.editName(
             recordId: 1, newName: '', color: const Color(0xFF000000));
 
@@ -216,25 +230,24 @@ void main() {
       },
     );
     test(
-      'should return CacheFailure if couldn\'t find activity settings',
+      'should call createActivity if couldn\'t find activity settings',
       () async {
         when(mockLocalDataSource.findActivitySettings(any))
             .thenAnswer((_) async => null);
 
-        final result = await sut.editName(
+        await sut.editName(
           recordId: 1,
           newName: '',
           color: const Color(0xFFFFFFFF),
         );
 
-        expect(result.isLeft(), true);
-        expect((result as Left).value, const CacheFailure());
+        verify(mockLocalDataSource.createActivity(any, any)).called(1);
       },
     );
     test(
       'should return CacheFailure on CacheException',
       () async {
-        when(mockLocalDataSource.createActivity(any, any))
+        when(mockLocalDataSource.findActivitySettings(any))
             .thenThrow(CacheException());
 
         final result = await sut.editName(

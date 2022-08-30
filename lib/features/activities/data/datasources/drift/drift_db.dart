@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:copilot/core/error/exceptions.dart';
 import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -42,10 +43,62 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   ActivityDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  Future<DriftActivityModel> createActivity(String name, int colorHex) async {
+    final activity = ActivitiesCompanion(
+      name: Value(name),
+      color: Value(colorHex),
+    );
+
+    await into(activities).insert(activity, mode: InsertMode.insertOrIgnore);
+
+    return await (select(activities)..where((a) => a.name.equals(name)))
+        .getSingle();
+  }
+
+  @override
+  Future<RecordWithActivitySettings> createRecord({
+    required String activityName,
+    required int startTime,
+    int? endTime,
+  }) async {
+    final nameExist = await (select(activities)
+                  ..where((a) => a.name.equals(activityName)))
+                .getSingleOrNull() ==
+            null
+        ? false
+        : true;
+    if (!nameExist) {
+      throw CacheException();
+    }
+
+    final record = RecordsCompanion(
+      activityName: Value(activityName),
+      startTime: Value(startTime),
+      endTime: endTime == null ? const Value.absent() : Value(endTime),
+    );
+
+    final recordId = await into(records).insert(record);
+
+    return RecordWithActivitySettings(
+      await _getRecordModel(recordId),
+      await _getActivityModel(activityName),
+    );
+  }
+
+  @override
+  Future<DriftActivityModel?> findActivitySettings(String name) {
+    final query = (select(activities)..where((a) => a.name.equals(name)))
+        .getSingleOrNull();
+
+    return query;
+  }
 
   /// Includes [from], excluding [to]
-  Future<List<RecordWithActivity>> getRecords(int from, int to) {
+  @override
+  Future<List<RecordWithActivitySettings>> getRecords({
+    required int from,
+    required int to,
+  }) {
     final query = select(records).join([
       innerJoin(activities, activities.name.equalsExp(records.activityName))
     ])
@@ -53,50 +106,66 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
       ..where(records.startTime.isSmallerThanValue(to));
 
     final result = query.get().then((rows) => rows
-        .map((row) => RecordWithActivity(
+        .map((row) => RecordWithActivitySettings(
             row.readTable(records), row.readTable(activities)))
         .toList());
-
-    //final result = await query.get().then((value) => value.map((e) => e.rawData).toList());
 
     return result;
   }
 
-  Future<int> addRecord(RecordsCompanion record) {
-    return into(records).insert(record);
+  @override
+  int get schemaVersion => 1;
+
+  @override
+  Future<void> updateRecordEmoji(int idRecord, String emoji) async {
+    await (update(records)..where((r) => r.idRecord.equals(idRecord)))
+        .write(RecordsCompanion(emoji: Value(emoji)));
+
+    return;
   }
 
-  Future<int> addActivitySettings(ActivitiesCompanion settings) {
-    return into(activities).insert(settings, mode: InsertMode.insertOrIgnore);
+  @override
+  Future<RecordWithActivitySettings> updateRecordSettings({
+    required int idRecord,
+    required String activityName,
+  }) async {
+    await (update(records)..where((r) => r.idRecord.equals(idRecord)))
+        .write(RecordsCompanion(activityName: Value(activityName)));
+
+    return RecordWithActivitySettings(
+      await _getRecordModel(idRecord),
+      await _getActivityModel(activityName),
+    );
   }
 
-  Future<bool> updateRecordTime(RecordsCompanion record) {
-    return update(records).replace(record);
+  @override
+  Future<void> updateRecordTime({
+    required int idRecord,
+    int? startTime,
+    int? endTime,
+  }) async {
+    final Value<int> valueStartTime =
+        startTime == null ? const Value.absent() : Value(startTime);
+    final Value<int> valueEndTime =
+        endTime == null ? const Value.absent() : Value(endTime);
+
+    await (update(records)..where((r) => r.idRecord.equals(idRecord))).write(
+        RecordsCompanion(startTime: valueStartTime, endTime: valueEndTime));
+
+    return;
   }
 
-  Future<bool> updateRecordSettings(RecordsCompanion record) {
-    return update(records).replace(record);
+  Future<DriftRecordModel> _getRecordModel(int id) {
+    return (select(records)..where((r) => r.idRecord.equals(id))).getSingle();
   }
 
-  Future<DriftActivityModel> findActivitySettings(String name) {
-    final query = select(activities)
-      ..where((a) => a.name.equals(name))
-      ..getSingle();
-
-    return query.getSingle();
-  }
-
-  Future<bool> updateActivitySettings(ActivitiesCompanion settings) {
-    return update(activities).replace(settings);
-  }
-
-  Future<bool> updateRecordEmoji(RecordsCompanion record) {
-    return update(records).replace(record);
+  Future<DriftActivityModel> _getActivityModel(String name) {
+    return (select(activities)..where((a) => a.name.equals(name))).getSingle();
   }
 }
 
-class RecordWithActivity {
-  RecordWithActivity(this.record, this.activity);
+class RecordWithActivitySettings {
+  RecordWithActivitySettings(this.record, this.activity);
 
   final DriftActivityModel activity;
   final DriftRecordModel record;

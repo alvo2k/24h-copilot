@@ -1,3 +1,5 @@
+import 'package:copilot/core/error/exceptions.dart';
+import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart';
 import 'package:copilot/features/activities/data/datasources/drift/drift_db.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -16,47 +18,242 @@ void main() {
     await sut.close();
   });
 
-  const activity = ActivitiesCompanion(
-    name: Value('test'),
-    color: Value(0),
-    tags: Value('test'),
-    goal: Value(1),
-  );
+  const name = 'name';
+  const color = 0xFFFFFFFF;
+  final startTime = DateTime.now().toUtc().millisecondsSinceEpoch;
 
-  final record = RecordsCompanion(
-    activityName: activity.name,
-    startTime: const Value(1),
-    endTime: const Value(2),
-    emoji: const Value('test'),
-  );
+  populateDB() async {
+    await sut.createActivity(name, color);
+    await sut.createRecord(
+      activityName: name,
+      startTime: startTime,
+    );
+  }
+
   test(
-    'should add records and activity settings',
+    'should be instance of [ActivityLocalDataSource]',
     () async {
-      final activityId = await sut.addActivitySettings(activity);
-      final recordId = await sut.addRecord(record);
-
-      expect(activityId, 1);
-      expect(recordId, 1);
+      expect(sut, isA<ActivityLocalDataSource>());
     },
   );
   test(
-    'should get records with activity',
+    'should create activity',
     () async {
-      await sut.addActivitySettings(activity);
-      await sut.addRecord(record);
+      await populateDB();
 
-      final result = await sut.getRecords(1, 2);
-
-      for (final e in result) {
-        expect(e.activity.name, activity.name.value);
-        expect(e.activity.color, activity.color.value);
-        expect(e.activity.tags, activity.tags.value);
-        expect(e.activity.goal, activity.goal.value);
-        expect(e.record.activityName, record.activityName.value);
-        expect(e.record.startTime, record.startTime.value);
-        expect(e.record.endTime, record.endTime.value);
-        expect(e.record.emoji, record.emoji.value);
-      }
+      expect(
+        await sut.activities.select().getSingle(),
+        const DriftActivityModel(name: name, color: color),
+      );
     },
   );
+  group('Create record:', () {
+    test(
+      'should throw CacheException when activity is not found',
+      () async {
+        expect(
+          () => sut.createRecord(
+            activityName: name,
+            startTime: startTime,
+          ),
+          throwsA(isA<CacheException>()),
+        );
+      },
+    );
+    test(
+      'should insert record when activity is found',
+      () async {
+        await populateDB();
+
+        expect(
+          await sut.records.select().getSingle(),
+          DriftRecordModel(
+            idRecord: 1,
+            activityName: name,
+            startTime: startTime,
+          ),
+        );
+      },
+    );
+    test(
+      'should return complete row',
+      () async {
+        await sut.createActivity(name, color);
+
+        final result = await sut.createRecord(
+          activityName: name,
+          startTime: startTime,
+        );
+
+        expect(
+          result.activity,
+          const DriftActivityModel(name: name, color: color),
+        );
+        expect(
+          result.record,
+          DriftRecordModel(
+              idRecord: 1, activityName: name, startTime: startTime),
+        );
+      },
+    );
+  });
+  group('Find activity settings:', () {
+    test(
+      'should return activity model when activity is found',
+      () async {
+        await populateDB();
+
+        final result = await sut.findActivitySettings(name);
+
+        expect(
+          result,
+          const DriftActivityModel(name: name, color: color),
+        );
+      },
+    );
+    test(
+      'should return null when activity is not found',
+      () async {
+        final result = await sut.findActivitySettings(name);
+
+        expect(result, null);
+      },
+    );
+  });
+  group('Get records:', () {
+    late RecordWithActivitySettings row;
+    final minute = const Duration(minutes: 1).inMilliseconds;
+    final endTime = startTime + minute;
+    setUp(() async {
+      await sut.createActivity(name, color);
+      row = await sut.createRecord(
+        activityName: name,
+        startTime: startTime,
+        endTime: endTime,
+      );
+    });
+    test(
+      'should get records including endTime',
+      () async {
+        final result = await sut.getRecords(
+          from: endTime,
+          to: endTime + minute,
+        );
+
+        expect(
+          result.first.activity,
+          row.activity,
+        );
+        expect(
+          result.first.record,
+          row.record,
+        );
+      },
+    );
+    test(
+      'should get records excluding startTime',
+      () async {
+        final result = await sut.getRecords(
+          from: startTime - minute,
+          to: startTime,
+        );
+
+        expect(
+          result.isEmpty,
+          true,
+        );
+      },
+    );
+  });
+  test(
+    'should add emoji',
+    () async {
+      await populateDB();
+
+      await sut.updateRecordEmoji(
+        1,
+        'emoji',
+      );
+
+      expect(
+        await sut.records.select().getSingle(),
+        DriftRecordModel(
+          idRecord: 1,
+          activityName: name,
+          startTime: startTime,
+          emoji: 'emoji',
+        ),
+      );
+    },
+  );
+  test(
+    'should update record settings',
+    () async {
+      await populateDB();
+      await sut.createActivity('name1', color);
+
+      final result = await sut.updateRecordSettings(
+        idRecord: 1,
+        activityName: 'name1',
+      );
+
+      expect(result.record.activityName, 'name1');
+    },
+  );
+  group('Update record time', () {
+    final minute = const Duration(minutes: 1).inMilliseconds;
+    final endTime = startTime + minute;
+    test(
+      'should update both record times',
+      () async {
+        await populateDB();
+
+        await sut.updateRecordTime(
+          idRecord: 1,
+          startTime: startTime,
+          endTime: endTime,
+        );
+
+        expect(
+            await sut.records.select().getSingle(),
+            DriftRecordModel(
+              idRecord: 1,
+              activityName: name,
+              startTime: startTime,
+              endTime: endTime,
+            ));
+      },
+    );
+    test(
+      'should update records start time',
+      () async {
+        await populateDB();
+
+        await sut.updateRecordTime(idRecord: 1, startTime: startTime + minute);
+
+        expect(await sut.records.select().getSingle(),
+            DriftRecordModel(
+              idRecord: 1,
+              activityName: name,
+              startTime: startTime + minute,
+            ));
+      },
+    );
+    test(
+      'should update records end time',
+      () async {
+        await populateDB();
+
+        await sut.updateRecordTime(idRecord: 1, endTime: endTime);
+
+        expect(await sut.records.select().getSingle(),
+            DriftRecordModel(
+              idRecord: 1,
+              activityName: name,
+              startTime: startTime,
+              endTime: endTime,
+            ));
+      },
+    );
+  });
 }

@@ -15,12 +15,13 @@ dependencies:
   equatable: ^2.0.3
   flutter:
     sdk: flutter
-  flutter_bloc: ^8.0.1
+  flutter_bloc: ^8.1.1
   get_it: ^7.2.0
   injectable: ^1.5.3
   json_annotation: ^4.6.0
   path: ^1.8.1
   path_provider: ^2.0.11
+  sealed_flutter_bloc: ^8.0.0
   sqlite3_flutter_libs: ^0.5.9
 
 dev_dependencies:

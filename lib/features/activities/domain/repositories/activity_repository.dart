@@ -10,11 +10,11 @@ abstract class ActivityRepository {
   Future<Either<Failure, List<Activity>>> getActivities(DateTime forTheDay);
 
   /// Saves the current [Activity] and returns a new one
-  Future<Either<Failure, Activity>> switchActivities(
-    String nextActivityName,
-    DateTime startTime, [
-    Color color,
-  ]);
+  Future<Either<Failure, Activity>> switchActivities({
+    required String nextActivityName,
+    required DateTime startTime,
+    required Color color,
+  });
 
   /// Adds chosen emoji to a selected [Activity]
   Future<Either<Failure, Success>> addEmoji(int recordId, String emoji);
@@ -24,15 +24,15 @@ abstract class ActivityRepository {
   Future<Either<Failure, Activity>> editName({
     required int recordId,
     required String newName,
-    Color? color,
-    });
+    required Color color,
+  });
 
   /// Inserts new activity and returns it entity
   Future<Either<Failure, Activity>> insertActivity({
     required String name,
     required DateTime startTime,
+    required Color color,
     DateTime endTime,
-    Color color,
   });
 
   Future<Either<Failure, bool>> hasActivitySettings(String activityName);

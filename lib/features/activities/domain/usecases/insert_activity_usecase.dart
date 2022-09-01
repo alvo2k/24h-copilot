@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -17,53 +15,19 @@ class InsertActivityUsecase extends UseCase<Activity, InsertActivityParams> {
 
   @override
   Future<Either<Failure, Activity>> call(InsertActivityParams params) async {
-    return await repository.hasActivitySettings(params.name).then(
-          (value) => value.fold(
-            (l) => Left(l),
-            (r) {
-              if (r) {
-                return _repoInsertParamsChooser(params);
-              } else {
-                final color = RandomColor.generate;
-                return _repoInsertParamsChooser(params, color);
-              }
-            },
-          ),
-        );
-  }
-
-  Future<Either<Failure, Activity>> _repoInsertParamsChooser(
-    InsertActivityParams params, [
-    Color? color,
-  ]) {
     if (params.endTime != null) {
-      if (color != null) {
-        return repository.insertActivity(
-          name: params.name,
-          startTime: params.startTime.toUtc(),
-          endTime: params.endTime!.toUtc(),
-          color: color,
-        );
-      } else {
-        return repository.insertActivity(
-          name: params.name,
-          startTime: params.startTime.toUtc(),
-          endTime: params.endTime!.toUtc(),
-        );
-      }
+      return repository.insertActivity(
+        name: params.name,
+        startTime: params.startTime.toUtc(),
+        endTime: params.endTime!.toUtc(),
+        color: RandomColor.generate,
+      );
     } else {
-      if (color != null) {
-        return repository.insertActivity(
-          name: params.name,
-          startTime: params.startTime.toUtc(),
-          color: color,
-        );
-      } else {
-        return repository.insertActivity(
-          name: params.name,
-          startTime: params.startTime.toUtc(),
-        );
-      }
+      return repository.insertActivity(
+        name: params.name,
+        startTime: params.startTime.toUtc(),
+        color: RandomColor.generate,
+      );
     }
   }
 }

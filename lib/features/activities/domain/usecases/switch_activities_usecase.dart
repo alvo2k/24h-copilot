@@ -16,26 +16,11 @@ class SwitchActivitiesUsecase
 
   @override
   Future<Either<Failure, Activity>> call(SwitchActivitiesParams params) async {
-    return await repository
-        .hasActivitySettings(params.nextActivityName)
-        .then((value) => value.fold(
-              (l) => Left(l),
-              (r) {
-                if (r) {
-                  return repository.switchActivities(
-                    params.nextActivityName,
-                    DateTime.now().toUtc(),
-                  );
-                } else {
-                  final color = RandomColor.generate;
-                  return repository.switchActivities(
-                    params.nextActivityName,
-                    DateTime.now().toUtc(),
-                    color,
-                  );
-                }
-              },
-            ));
+    return repository.switchActivities(
+      nextActivityName: params.nextActivityName,
+      startTime: DateTime.now().toUtc(),
+      color: RandomColor.generate,
+    );
   }
 }
 

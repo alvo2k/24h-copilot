@@ -8,7 +8,8 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/repositories/activity_repository.dart';
-import '../datasources/activity_local_data_source.dart';
+import '../datasources/data_sources_contracts.dart';
+import '../datasources/drift/drift_db.dart';
 
 @LazySingleton(as: ActivityRepository)
 class ActivityRepositoryImpl implements ActivityRepository {
@@ -33,21 +34,18 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<Either<Failure, Activity>> editName({
     required int recordId,
     required String newName,
-    Color? color,
+    required Color color,
   }) async {
     try {
-      if (color != null) {
-        localDataSource.createActivity(newName, color.value);
-      }
       final activitySettings =
-          await localDataSource.findActivitySettings(newName);
-      if (activitySettings == null) {
-        return const Left(CacheFailure());
-      }
-      final id = activitySettings[ActivityModel.colIdActivity] as int;
-      final activityJson = await localDataSource.updateRecordSettings(
-          idRecord: recordId, idActivity: id);
-      return Right(ActivityModel.fromJson(activityJson));
+          await localDataSource.findActivitySettings(newName) ??
+              await localDataSource.createActivity(newName, color.value);
+
+      final row = await localDataSource.updateRecordSettings(
+        idRecord: recordId,
+        activityName: activitySettings.name,
+      );
+      return Right(ActivityModel.fromDriftRow(row));
     } on CacheException {
       return const Left(CacheFailure());
     }
@@ -87,34 +85,50 @@ class ActivityRepositoryImpl implements ActivityRepository {
   Future<Either<Failure, Activity>> insertActivity({
     required String name,
     required DateTime startTime,
+    required Color color,
     DateTime? endTime,
-    Color? color,
-  }) {
-    // TODO: implement insertActivity
-    throw UnimplementedError();
+  }) async {
+    try {
+      final activitySettings =
+          await localDataSource.findActivitySettings(name) ??
+              await localDataSource.createActivity(name, color.value);
+
+      RecordWithActivitySettings row;
+      if (endTime != null) {
+        row = await localDataSource.createRecord(
+          activityName: activitySettings.name,
+          startTime: startTime.millisecondsSinceEpoch,
+          endTime: endTime.millisecondsSinceEpoch,
+        );
+      } else {
+        row = await localDataSource.createRecord(
+          activityName: activitySettings.name,
+          startTime: startTime.millisecondsSinceEpoch,
+        );
+      }
+
+      return Right(ActivityModel.fromDriftRow(row));
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
   }
 
   @override
-  Future<Either<Failure, Activity>> switchActivities(
-    String nextActivityName,
-    DateTime startTime, [
-    Color? color,
-  ]) async {
+  Future<Either<Failure, Activity>> switchActivities({
+    required String nextActivityName,
+    required DateTime startTime,
+    required Color color,
+  }) async {
     try {
-      if (color != null) {
-        localDataSource.createActivity(nextActivityName, color.value);
-      }
-      final activitySettings =
-          await localDataSource.findActivitySettings(nextActivityName);
-      if (activitySettings == null) {
-        return const Left(CacheFailure());
-      }
-      final id = activitySettings[ActivityModel.colIdActivity] as int;
-      final activityJson = await localDataSource.createRecord(
-        idActivity: id,
-        startTime: startTime,
+      final activitySettings = await localDataSource
+              .findActivitySettings(nextActivityName) ??
+          await localDataSource.createActivity(nextActivityName, color.value);
+
+      final row = await localDataSource.createRecord(
+        activityName: activitySettings.name,
+        startTime: startTime.millisecondsSinceEpoch,
       );
-      return Right(ActivityModel.fromJson(activityJson));
+      return Right(ActivityModel.fromDriftRow(row));
     } on CacheException {
       return const Left(CacheFailure());
     }
@@ -122,8 +136,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
 
   Future<List<ActivityModel>> _getActititiesFromDataSource(
       int from, int to) async {
-    return await localDataSource
-        .getRecords(from: from, to: to)
-        .then((value) => value.map((e) => ActivityModel.fromJson(e)).toList());
+    return await localDataSource.getRecords(from: from, to: to).then(
+        (value) => value.map((e) => ActivityModel.fromDriftRow(e)).toList());
   }
 }

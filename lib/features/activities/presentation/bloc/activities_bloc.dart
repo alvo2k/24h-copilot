@@ -42,7 +42,16 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
           result.fold(
             (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (r) {
+              final prevActivityIndex = loadedActivities.length - 1;
               loadedActivities.add(r);
+              final prevActivity = loadedActivities[prevActivityIndex];
+              loadedActivities[prevActivityIndex] = Activity(
+                recordId: prevActivity.recordId,
+                name: prevActivity.name,
+                color: prevActivity.color,
+                startTime: prevActivity.startTime,
+                endTime: r.startTime,
+              );
               emit(ActivitiesState.loaded(loadedActivities));
             },
           );

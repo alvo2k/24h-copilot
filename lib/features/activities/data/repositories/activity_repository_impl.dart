@@ -128,6 +128,10 @@ class ActivityRepositoryImpl implements ActivityRepository {
         activityName: activitySettings.name,
         startTime: startTime.millisecondsSinceEpoch,
       );
+      await localDataSource.updateRecordTime(
+        idRecord: row.record.idRecord - 1,
+        endTime: startTime.millisecondsSinceEpoch,
+      );
       return Right(ActivityModel.fromDriftRow(row));
     } on CacheException {
       return const Left(CacheFailure());

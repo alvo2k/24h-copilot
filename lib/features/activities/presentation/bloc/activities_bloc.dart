@@ -25,7 +25,8 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         (loadActivities) async {
           emit(ActivitiesState.loading());
           final result = await loadActivitiesUsecase(
-              LoadActivitiesParams(loadActivities.forTheDay));
+              LoadActivitiesParams(DateTime(loadActivities.forTheDay.year,
+                  loadActivities.forTheDay.month, loadActivities.forTheDay.day)));
           result.fold(
             (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (r) {

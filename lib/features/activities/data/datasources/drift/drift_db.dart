@@ -108,7 +108,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     final query = select(records).join([
       innerJoin(activities, activities.name.equalsExp(records.activityName))
     ])
-      ..where(records.endTime.isBiggerOrEqualValue(from))
+      ..where(records.endTime.isBiggerOrEqualValue(from) | records.endTime.isNull())
       ..where(records.startTime.isSmallerThanValue(to));
 
     final result = query.get().then((rows) => rows

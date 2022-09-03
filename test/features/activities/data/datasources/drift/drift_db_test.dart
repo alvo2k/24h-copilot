@@ -9,7 +9,7 @@ void main() {
   late ActivityDatabase sut;
 
   setUp(() {
-    sut = ActivityDatabase(NativeDatabase.memory(
+    sut = ActivityDatabase.testConnection(NativeDatabase.memory(
       //logStatements: true,
     ));
   });

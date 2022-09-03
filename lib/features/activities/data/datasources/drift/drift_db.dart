@@ -40,7 +40,13 @@ class Activities extends Table {
 @LazySingleton(as: ActivityLocalDataSource)
 @DriftDatabase(tables: [Records, Activities])
 class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
-  ActivityDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
+  ActivityDatabase() : super(_openConnection());
+
+  ActivityDatabase._(QueryExecutor e) : super(e);
+
+  factory ActivityDatabase.testConnection(QueryExecutor e) {
+    return ActivityDatabase._(e);
+  }
 
   @override
   Future<DriftActivityModel> createActivity(String name, int colorHex) async {

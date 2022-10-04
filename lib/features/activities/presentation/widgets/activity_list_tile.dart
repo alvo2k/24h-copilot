@@ -138,11 +138,8 @@ class ActivityListTile extends StatelessWidget {
     const hourValue = 28.0;
     // todo: make this dynamic (maxHeight - appBarHeight - bottomBarHeight)
     final maxHeight = MediaQuery.of(context).size.height - 200;
-    final height = hourValue * duration.inHours;
+    final height = _cardHeight + (hourValue * duration.inHours);
 
-    if (height < _cardHeight) return _cardHeight;
-    if (height > maxHeight) return maxHeight;
-
-    return duration.inHours * hourValue;
+    return height > maxHeight ? maxHeight : height;
   }
 }

@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/activities_bloc.dart';
 
 class NewActivityField extends StatefulWidget {
-  const NewActivityField({super.key});
+  const NewActivityField(this.listViewController, {super.key});
+
+  final ScrollController listViewController;
 
   @override
   State<NewActivityField> createState() => _NewActivityFieldState();
@@ -28,6 +30,13 @@ class _NewActivityFieldState extends State<NewActivityField> {
 
     _controller.clear();
     _focusNode.unfocus();
+    // delay is needed to first load next activity and then scroll to it
+    Future.delayed(const Duration(milliseconds: 500))
+        .then((_) => widget.listViewController.animateTo(
+              widget.listViewController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.easeOut,
+            ));
   }
 
   @override

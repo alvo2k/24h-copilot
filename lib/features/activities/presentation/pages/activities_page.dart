@@ -8,6 +8,8 @@ class ActivitiesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final controller = ScrollController(initialScrollOffset: 9999);
+    final controller = ScrollController();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white70,
@@ -37,9 +39,9 @@ class ActivitiesPage extends StatelessWidget {
       //   ),
       // ),
       body: Column(
-        children: const [
-          Expanded(child: ActivityListView()),
-          NewActivityField(),
+        children: [
+          Expanded(child: ActivityListView(controller)),
+          NewActivityField(controller),
         ],
       ),
     );

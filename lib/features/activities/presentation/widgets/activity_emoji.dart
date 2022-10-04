@@ -16,6 +16,26 @@ class ActivityEmoji extends StatefulWidget {
 }
 
 class _ActivityEmojiState extends State<ActivityEmoji> {
+  String? emoji;
+
+  Future<void> showDialogPicker(
+      BuildContext context, ActivitiesBloc activityBloc) {
+    return showPlatformDialog(
+      context: context,
+      builder: (context) {
+        return EmojiDialogPicker(
+          onEmojiSelected: (selectedEmoji) {
+            activityBloc.add(ActivitiesEvent.addEmoji(
+                widget.activity.recordId, selectedEmoji));
+            setState(() {
+              emoji = selectedEmoji;
+            });
+          },
+        );
+      },
+    );
+  }
+
   bool _shouldBuild() {
     if (widget.activity.endTime == null) return false;
 
@@ -23,8 +43,6 @@ class _ActivityEmojiState extends State<ActivityEmoji> {
         .isBefore(DateTime.now().subtract(const Duration(hours: 1)));
     return !tooOld;
   }
-
-  String? emoji;
 
   @override
   Widget build(BuildContext context) {
@@ -48,23 +66,5 @@ class _ActivityEmojiState extends State<ActivityEmoji> {
               ),
             ),
           );
-  }
-
-  Future<void> showDialogPicker(
-      BuildContext context, ActivitiesBloc activityBloc) {
-    return showPlatformDialog(
-      context: context,
-      builder: (context) {
-        return EmojiDialogPicker(
-          onEmojiSelected: (selectedEmoji) {
-            activityBloc.add(ActivitiesEvent.addEmoji(
-                widget.activity.recordId, selectedEmoji));
-            setState(() {
-              emoji = selectedEmoji;
-            });
-          },
-        );
-      },
-    );
   }
 }

@@ -5,10 +5,56 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/activity.dart';
 
 class ActivityListTile extends StatelessWidget {
-  final Activity activity;
   const ActivityListTile(this.activity, {super.key});
 
+  final Activity activity;
+
   static const _cardHeight = 120.0;
+
+  Widget _buildCircle() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16),
+      child: Container(
+        width: 18,
+        height: 18,
+        decoration: BoxDecoration(
+          color: activity.color, // border color
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildTags(List<String> tags) {
+    if (tags.isEmpty) {
+      return [];
+    }
+    return tags
+        .map((tag) => Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
+                child: Text(
+                  '#$tag',
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(fontSize: 12, color: Colors.green),
+                ),
+              ),
+            ))
+        .toList();
+  }
+
+  double _determineHeight(Duration duration, BuildContext context) {
+    const hourValue = 28.0;
+    // todo: make this dynamic (maxHeight - appBarHeight - bottomBarHeight)
+    final maxHeight = MediaQuery.of(context).size.height - 200;
+    final height = _cardHeight + (hourValue * duration.inHours);
+
+    return height > maxHeight ? maxHeight : height;
+  }
+
   @override
   Widget build(BuildContext context) {
     const leftPadding = 40.0;
@@ -81,7 +127,7 @@ class ActivityListTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         activity.goal == null
-                            ? Container()
+                            ? const SizedBox.shrink()
                             : Text('Goal: ${activity.goal}'),
                         ActivityTime(
                           startTime: activity.startTime,
@@ -97,49 +143,5 @@ class ActivityListTile extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget _buildCircle() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16),
-      child: Container(
-        width: 18,
-        height: 18,
-        decoration: BoxDecoration(
-          color: activity.color, // border color
-          shape: BoxShape.circle,
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildTags(List<String> tags) {
-    if (tags.isEmpty) {
-      return [];
-    }
-    return tags
-        .map((tag) => Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100)),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
-                child: Text(
-                  '#$tag',
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(fontSize: 12, color: Colors.green),
-                ),
-              ),
-            ))
-        .toList();
-  }
-
-  double _determineHeight(Duration duration, BuildContext context) {
-    const hourValue = 28.0;
-    // todo: make this dynamic (maxHeight - appBarHeight - bottomBarHeight)
-    final maxHeight = MediaQuery.of(context).size.height - 200;
-    final height = _cardHeight + (hourValue * duration.inHours);
-
-    return height > maxHeight ? maxHeight : height;
   }
 }

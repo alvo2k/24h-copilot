@@ -20,11 +20,22 @@ class _NewActivityFieldState extends State<NewActivityField> {
     super.dispose();
   }
 
+  void _submitActivity(BuildContext context, String name) {
+    if (name.isEmpty) return;
+
+    BlocProvider.of<ActivitiesBloc>(context)
+        .add(ActivitiesEvent.switchActivity(name));
+
+    _controller.clear();
+    _focusNode.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        textCapitalization: TextCapitalization.sentences,
         focusNode: _focusNode,
         controller: _controller,
         onSubmitted: (name) => _submitActivity(context, name),
@@ -46,15 +57,5 @@ class _NewActivityFieldState extends State<NewActivityField> {
         ),
       ),
     );
-  }
-
-  void _submitActivity(BuildContext context, String name) {
-    if (name.isEmpty) return;
-
-    BlocProvider.of<ActivitiesBloc>(context)
-        .add(ActivitiesEvent.switchActivity(name));
-
-    _controller.clear();
-    _focusNode.unfocus();
   }
 }

@@ -18,18 +18,19 @@ class ActivityEmoji extends StatefulWidget {
 class _ActivityEmojiState extends State<ActivityEmoji> {
   bool _shouldBuild() {
     if (widget.activity.endTime == null) return false;
-    
+
     final bool tooOld = widget.activity.endTime!
-        .isAfter(DateTime.now().subtract(const Duration(days: 1)));
-    return tooOld;
+        .isBefore(DateTime.now().subtract(const Duration(hours: 1)));
+    return !tooOld;
   }
 
   String? emoji;
 
   @override
   Widget build(BuildContext context) {
-    if (!_shouldBuild()) return Container();
-    if (widget.activity.emoji != null) {
+    final bool hasEmoji = widget.activity.emoji != null;
+    if (!_shouldBuild() && !hasEmoji) return Container();
+    if (hasEmoji) {
       emoji = widget.activity.emoji;
     }
     final activityBloc = BlocProvider.of<ActivitiesBloc>(context);

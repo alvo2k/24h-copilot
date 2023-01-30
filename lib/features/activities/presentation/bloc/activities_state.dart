@@ -7,9 +7,10 @@ class ActivitiesState extends Union4Impl<Initial, Loading, Loaded, Failure> {
   factory ActivitiesState.failure(String message) =>
       ActivitiesState._(unions.fourth(Failure(message)));
 
-  factory ActivitiesState.initial() => ActivitiesState._(unions.first(Initial()));
+  factory ActivitiesState.initial() =>
+      ActivitiesState._(unions.first(Initial()));
 
-  factory ActivitiesState.loaded(List<Activity> activities) =>
+  factory ActivitiesState.loaded(List<ActivityDay> activities) =>
       ActivitiesState._(unions.third(Loaded(activities)));
 
   factory ActivitiesState.loading() =>
@@ -38,10 +39,10 @@ class Loading extends Equatable {
 }
 
 class Loaded extends Equatable {
-  const Loaded(this.activities);
+  const Loaded(this.days);
 
-  final List<Activity> activities;
+  final List<ActivityDay> days;
 
   @override
-  List<Object?> get props => [activities];
+  List<Object?> get props => [days];
 }

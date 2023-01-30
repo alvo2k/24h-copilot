@@ -75,6 +75,17 @@ class ActivityModel extends Activity {
 
   Map<String, dynamic> toJson() => _$ActivityModelToJson(this);
 
+  ActivityModel changeEndTime(DateTime endTime) => ActivityModel(
+        idRecord: idRecord,
+        name: name,
+        colorHex: colorHex,
+        startTimeUnix: startTimeUnix,
+        emoji: emoji,
+        endTimeUnix: endTime.toUtc().millisecondsSinceEpoch,
+        goal: goal,
+        inLineTags: inLineTags,
+      );
+
   DriftRecordModel toDriftRecord() => DriftRecordModel(
         idRecord: idRecord,
         activityName: name,

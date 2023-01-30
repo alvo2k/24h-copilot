@@ -1,8 +1,9 @@
-import 'package:copilot/features/activities/presentation/widgets/activity_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
 import '../bloc/activities_bloc.dart';
+import 'activity_day.dart';
+import 'date_format.dart';
 
 class ActivityListView extends StatelessWidget {
   const ActivityListView(this.controller, {super.key});
@@ -20,49 +21,57 @@ class ActivityListView extends StatelessWidget {
         },
         (loading) => const Center(child: CircularProgressIndicator()),
         (loaded) {
-          Future.delayed(const Duration(milliseconds: 500))
-              .then((_) => controller.animateTo(
-                    controller.position.maxScrollExtent,
-                    duration: const Duration(milliseconds: 1000),
-                    curve: Curves.easeOut,
-                  ));
-          return ListView.separated(
+          return ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            reverse: true,
             controller: controller,
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            itemCount: loaded.activities.length + 1,
+            itemCount: loaded.days.length,
             itemBuilder: (context, index) {
-              // in order to display last icon in separatorBuilder
-              if (index == loaded.activities.length) {
-                return Container();
+              // if (loaded.days.length == 1 &&
+              //     loaded.days[0].activitiesInThisDay.isEmpty) {
+              //   // app launches for the first time
+              //   return const Text('First launch');
+              // }
+              final day = loaded.days[index];
+              if (day.activitiesInThisDay.isEmpty) {
+                return const SizedBox.shrink();
               }
-              return ActivityListTile(loaded.activities[index]);
-            },
-            separatorBuilder: (context, index) {
-              late Widget separator;
-              try {
-                final endTimeText = loaded.activities[index].endTime
-                    .toString()
-                    .substring(11, 16);
-                separator = Text(endTimeText);
-              } on RangeError catch (_) {
-                separator = Row(
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Icon(
-                        Icons.access_time,
-                        color: Colors.black38,
-                      ),
+              if (index == loaded.days.length - 1 &&
+                  day.activitiesInThisDay.isNotEmpty) {
+                return Column(children: [
+                  // adds loading indicator at top of the list. Empty activitiesDay means all data was loaded and no indicator needed 
+                  const CircularProgressIndicator(),
+                  DateFormat(day.date),
+                  ActivityDayWidget(day),
+                ]);
+              }
+              if (index == 0) {
+                // if this is today, print icon at the end
+                return Column(
+                  children: [
+                    DateFormat(day.date),
+                    ActivityDayWidget(day),
+                    Row(
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 29.0, vertical: 16),
+                          child: Icon(
+                            Icons.access_time,
+                            color: Colors.black38,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 );
               }
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18.0,
-                  vertical: 16,
-                ),
-                child: separator,
+              return Column(
+                children: [
+                  DateFormat(day.date),
+                  ActivityDayWidget(day),
+                ],
               );
             },
           );

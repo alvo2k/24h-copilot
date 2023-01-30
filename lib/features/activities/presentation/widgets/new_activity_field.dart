@@ -33,7 +33,7 @@ class _NewActivityFieldState extends State<NewActivityField> {
     // delay is needed to first load next activity and then scroll to it
     Future.delayed(const Duration(milliseconds: 500))
         .then((_) => widget.listViewController.animateTo(
-              widget.listViewController.position.maxScrollExtent,
+              widget.listViewController.position.minScrollExtent,
               duration: const Duration(milliseconds: 1000),
               curve: Curves.easeOut,
             ));

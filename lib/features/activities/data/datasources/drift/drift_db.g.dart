@@ -2,11 +2,90 @@
 
 part of 'drift_db.dart';
 
-// **************************************************************************
-// DriftDatabaseGenerator
-// **************************************************************************
-
 // ignore_for_file: type=lint
+class $ActivitiesTable extends Activities
+    with TableInfo<$ActivitiesTable, DriftActivityModel> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ActivitiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<int> color = GeneratedColumn<int>(
+      'color', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+      'tags', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _goalMeta = const VerificationMeta('goal');
+  @override
+  late final GeneratedColumn<int> goal = GeneratedColumn<int>(
+      'goal', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [name, color, tags, goal];
+  @override
+  String get aliasedName => _alias ?? 'activities';
+  @override
+  String get actualTableName => 'activities';
+  @override
+  VerificationContext validateIntegrity(Insertable<DriftActivityModel> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    } else if (isInserting) {
+      context.missing(_colorMeta);
+    }
+    if (data.containsKey('tags')) {
+      context.handle(
+          _tagsMeta, tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta));
+    }
+    if (data.containsKey('goal')) {
+      context.handle(
+          _goalMeta, goal.isAcceptableOrUnknown(data['goal']!, _goalMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {name};
+  @override
+  DriftActivityModel map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftActivityModel(
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      color: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
+      tags: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tags']),
+      goal: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}goal']),
+    );
+  }
+
+  @override
+  $ActivitiesTable createAlias(String alias) {
+    return $ActivitiesTable(attachedDatabase, alias);
+  }
+}
+
 class DriftActivityModel extends DataClass
     implements Insertable<DriftActivityModel> {
   final String name;
@@ -168,86 +247,111 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
   }
 }
 
-class $ActivitiesTable extends Activities
-    with TableInfo<$ActivitiesTable, DriftActivityModel> {
+class $RecordsTable extends Records
+    with TableInfo<$RecordsTable, DriftRecordModel> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ActivitiesTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  $RecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idRecordMeta =
+      const VerificationMeta('idRecord');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  final VerificationMeta _colorMeta = const VerificationMeta('color');
+  late final GeneratedColumn<int> idRecord = GeneratedColumn<int>(
+      'id_record', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _activityNameMeta =
+      const VerificationMeta('activityName');
   @override
-  late final GeneratedColumn<int> color = GeneratedColumn<int>(
-      'color', aliasedName, false,
+  late final GeneratedColumn<String> activityName = GeneratedColumn<String>(
+      'activity_name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES activities (name)'));
+  static const VerificationMeta _startTimeMeta =
+      const VerificationMeta('startTime');
+  @override
+  late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
+      'start_time', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  final VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  static const VerificationMeta _endTimeMeta =
+      const VerificationMeta('endTime');
   @override
-  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
-      'tags', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  final VerificationMeta _goalMeta = const VerificationMeta('goal');
-  @override
-  late final GeneratedColumn<int> goal = GeneratedColumn<int>(
-      'goal', aliasedName, true,
+  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
+      'end_time', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _emojiMeta = const VerificationMeta('emoji');
   @override
-  List<GeneratedColumn> get $columns => [name, color, tags, goal];
+  late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
+      'emoji', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  String get aliasedName => _alias ?? 'activities';
+  List<GeneratedColumn> get $columns =>
+      [idRecord, activityName, startTime, endTime, emoji];
   @override
-  String get actualTableName => 'activities';
+  String get aliasedName => _alias ?? 'records';
   @override
-  VerificationContext validateIntegrity(Insertable<DriftActivityModel> instance,
+  String get actualTableName => 'records';
+  @override
+  VerificationContext validateIntegrity(Insertable<DriftRecordModel> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('name')) {
+    if (data.containsKey('id_record')) {
+      context.handle(_idRecordMeta,
+          idRecord.isAcceptableOrUnknown(data['id_record']!, _idRecordMeta));
+    }
+    if (data.containsKey('activity_name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+          _activityNameMeta,
+          activityName.isAcceptableOrUnknown(
+              data['activity_name']!, _activityNameMeta));
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_activityNameMeta);
     }
-    if (data.containsKey('color')) {
-      context.handle(
-          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    if (data.containsKey('start_time')) {
+      context.handle(_startTimeMeta,
+          startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta));
     } else if (isInserting) {
-      context.missing(_colorMeta);
+      context.missing(_startTimeMeta);
     }
-    if (data.containsKey('tags')) {
-      context.handle(
-          _tagsMeta, tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta));
+    if (data.containsKey('end_time')) {
+      context.handle(_endTimeMeta,
+          endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta));
     }
-    if (data.containsKey('goal')) {
+    if (data.containsKey('emoji')) {
       context.handle(
-          _goalMeta, goal.isAcceptableOrUnknown(data['goal']!, _goalMeta));
+          _emojiMeta, emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta));
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {name};
+  Set<GeneratedColumn> get $primaryKey => {idRecord};
   @override
-  DriftActivityModel map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DriftRecordModel map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DriftActivityModel(
-      name: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      color: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
-      tags: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}tags']),
-      goal: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}goal']),
+    return DriftRecordModel(
+      idRecord: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id_record'])!,
+      activityName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}activity_name'])!,
+      startTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}start_time'])!,
+      endTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}end_time']),
+      emoji: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}emoji']),
     );
   }
 
   @override
-  $ActivitiesTable createAlias(String alias) {
-    return $ActivitiesTable(attachedDatabase, alias);
+  $RecordsTable createAlias(String alias) {
+    return $RecordsTable(attachedDatabase, alias);
   }
 }
 
@@ -440,114 +544,12 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
   }
 }
 
-class $RecordsTable extends Records
-    with TableInfo<$RecordsTable, DriftRecordModel> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $RecordsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idRecordMeta = const VerificationMeta('idRecord');
-  @override
-  late final GeneratedColumn<int> idRecord = GeneratedColumn<int>(
-      'id_record', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _activityNameMeta =
-      const VerificationMeta('activityName');
-  @override
-  late final GeneratedColumn<String> activityName = GeneratedColumn<String>(
-      'activity_name', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: 'REFERENCES activities (name)');
-  final VerificationMeta _startTimeMeta = const VerificationMeta('startTime');
-  @override
-  late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
-      'start_time', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  final VerificationMeta _endTimeMeta = const VerificationMeta('endTime');
-  @override
-  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
-      'end_time', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  final VerificationMeta _emojiMeta = const VerificationMeta('emoji');
-  @override
-  late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
-      'emoji', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [idRecord, activityName, startTime, endTime, emoji];
-  @override
-  String get aliasedName => _alias ?? 'records';
-  @override
-  String get actualTableName => 'records';
-  @override
-  VerificationContext validateIntegrity(Insertable<DriftRecordModel> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id_record')) {
-      context.handle(_idRecordMeta,
-          idRecord.isAcceptableOrUnknown(data['id_record']!, _idRecordMeta));
-    }
-    if (data.containsKey('activity_name')) {
-      context.handle(
-          _activityNameMeta,
-          activityName.isAcceptableOrUnknown(
-              data['activity_name']!, _activityNameMeta));
-    } else if (isInserting) {
-      context.missing(_activityNameMeta);
-    }
-    if (data.containsKey('start_time')) {
-      context.handle(_startTimeMeta,
-          startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta));
-    } else if (isInserting) {
-      context.missing(_startTimeMeta);
-    }
-    if (data.containsKey('end_time')) {
-      context.handle(_endTimeMeta,
-          endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta));
-    }
-    if (data.containsKey('emoji')) {
-      context.handle(
-          _emojiMeta, emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {idRecord};
-  @override
-  DriftRecordModel map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DriftRecordModel(
-      idRecord: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}id_record'])!,
-      activityName: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}activity_name'])!,
-      startTime: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}start_time'])!,
-      endTime: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}end_time']),
-      emoji: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}emoji']),
-    );
-  }
-
-  @override
-  $RecordsTable createAlias(String alias) {
-    return $RecordsTable(attachedDatabase, alias);
-  }
-}
-
 abstract class _$ActivityDatabase extends GeneratedDatabase {
   _$ActivityDatabase(QueryExecutor e) : super(e);
   late final $ActivitiesTable activities = $ActivitiesTable(this);
   late final $RecordsTable records = $RecordsTable(this);
   @override
-  Iterable<TableInfo<Table, dynamic>> get allTables =>
+  Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [activities, records];

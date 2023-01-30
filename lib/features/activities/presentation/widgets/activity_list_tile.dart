@@ -1,15 +1,15 @@
-import 'activity_emoji.dart';
-import 'activity_time.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/activity.dart';
+import 'activity_emoji.dart';
+import 'activity_time.dart';
 
 class ActivityListTile extends StatelessWidget {
   const ActivityListTile(this.activity, {super.key});
 
   final Activity activity;
 
-  static const _cardHeight = 120.0;
+  static const _cardHeight = 122.0;
 
   Widget _buildCircle() {
     return Padding(

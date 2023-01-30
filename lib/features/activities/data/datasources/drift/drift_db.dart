@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:copilot/core/error/exceptions.dart';
-import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart';
+import '../../../../../core/error/exceptions.dart';
+import '../data_sources_contracts.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:injectable/injectable.dart';
@@ -108,7 +108,8 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     final query = select(records).join([
       innerJoin(activities, activities.name.equalsExp(records.activityName))
     ])
-      ..where(records.endTime.isBiggerOrEqualValue(from) | records.endTime.isNull())
+      ..where(
+          records.endTime.isBiggerOrEqualValue(from) | records.endTime.isNull())
       ..where(records.startTime.isSmallerThanValue(to));
 
     final result = query.get().then((rows) => rows
@@ -179,8 +180,14 @@ class RecordWithActivitySettings {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dbFolder.path, 'activities.sqlite'));
-    return NativeDatabase(file);
+    try {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(path.join(dbFolder.path, 'activities.sqlite'));
+      return NativeDatabase(file);
+    } on MissingPlatformDirectoryException {
+      return NativeDatabase(
+        File(path.join(Directory.current.path, 'activities.sqlite')),
+      );
+    }
   });
 }

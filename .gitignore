@@ -33,6 +33,7 @@ migrate_working_dir/
 /build/
 /coverage/
 flutter-stylizer-for-linux
+activities.sqlite
 
 # Web related
 lib/generated_plugin_registrant.dart

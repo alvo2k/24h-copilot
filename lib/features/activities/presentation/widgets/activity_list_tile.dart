@@ -1,5 +1,5 @@
-import 'package:copilot/features/activities/presentation/widgets/activity_emoji.dart';
-import 'package:copilot/features/activities/presentation/widgets/activity_time.dart';
+import 'activity_emoji.dart';
+import 'activity_time.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/activity.dart';

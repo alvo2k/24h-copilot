@@ -1,4 +1,4 @@
-import 'package:copilot/features/activities/presentation/widgets/emoji_button.dart';
+import 'emoji_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 

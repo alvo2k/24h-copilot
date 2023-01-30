@@ -1,4 +1,4 @@
-import 'package:copilot/features/activities/presentation/bloc/minute_timer_cubit.dart';
+import '../bloc/minute_timer_cubit.dart';
 import 'package:flutter/widgets.dart';
 
 class ActivityTime extends StatefulWidget {

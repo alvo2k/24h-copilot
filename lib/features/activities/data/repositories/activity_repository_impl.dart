@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:copilot/core/error/exceptions.dart';
-import 'package:copilot/features/activities/data/models/activity_model.dart';
+import '../../../../core/error/exceptions.dart';
+import '../models/activity_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 

@@ -34,9 +34,12 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
             prevActivityWithEndTime;
       } on StateError {
         // first activity ever
-        DateTime now = DateTime.now();
-        loadedActivities.first.activitiesInThisDay.add(newActivity);
-        return;
+      }
+      if (loadedActivities.isEmpty) {
+        final now = DateTime.now();
+        loadedActivities
+            // ignore: prefer_const_literals_to_create_immutables
+            .add(ActivityDay([], DateTime(now.year, now.month, now.day)));
       }
       // add activity at the end of the day
       loadedActivities.first.activitiesInThisDay.add(newActivity);
@@ -56,12 +59,10 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
           result.fold(
             (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (r) {
-              //if (r.isNotEmpty) {
               var activitiesInThisDay =
                   ActivityDay(r, loadActivities.forTheDay);
 
               loadedActivities.add(activitiesInThisDay);
-              //}
               emit(ActivitiesState.loaded(loadedActivities));
             },
           );
@@ -70,9 +71,8 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
           emit(ActivitiesState.loading());
           final result = await switchActivityUsecase(
               SwitchActivitiesParams(switchActivity.nextActivityName));
-          await result.fold<Future<void>>(
-            (l) =>
-                Future(() => emit(ActivitiesState.failure(l.prop['message']))),
+          result.fold(
+            (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (newActivity) async {
               changeActivity(newActivity);
               emit(ActivitiesState.loaded(loadedActivities));

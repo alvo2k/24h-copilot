@@ -62,7 +62,13 @@ class _ActivityEmojiState extends State<ActivityEmoji> {
               onTap: () => showDialogPicker(context, activityBloc),
               child: Text(
                 emoji!,
-                style: const TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24, shadows: [
+                  Shadow(
+                    blurRadius: 8,
+                    offset: const Offset(4, 4),
+                    color: Colors.black38.withAlpha(60),
+                  )
+                ]),
               ),
             ),
           );

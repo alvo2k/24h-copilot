@@ -9,7 +9,14 @@ class EmojiButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      child: Text(emoji, style: const TextStyle(fontSize: 30)),
+      child: Text(emoji,
+          style: TextStyle(fontSize: 30, shadows: [
+            Shadow(
+              blurRadius: 8,
+              offset: const Offset(4, 4),
+              color: Colors.black38.withAlpha(60),
+            )
+          ])),
       onPressed: () {
         onEmojiSelected(emoji);
         Navigator.pop(context);

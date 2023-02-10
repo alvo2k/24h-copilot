@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/common/widgets/common_drawer.dart';
 import '../../domain/entities/activity_day.dart';
 import '../bloc/activities_bloc.dart';
 import '../widgets/activity_list_view.dart';
@@ -11,12 +12,12 @@ class ActivitiesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = ScrollController(initialScrollOffset: 9999);
     final controller = ScrollController();
 
     void loadMoreDays() {
       // load next day
-      if (controller.position.extentAfter < 20) {
+      if (controller.position.extentAfter < 20 &&
+          controller.position.outOfRange == false) {
         var activitiesBlock = BlocProvider.of<ActivitiesBloc>(context);
 
         late DateTime dateToLoad;
@@ -56,20 +57,7 @@ class ActivitiesPage extends StatelessWidget {
         //   ),
         // ],
       ),
-      // drawer: Drawer(
-      //   child: ListView(
-      //     padding: EdgeInsets.zero,
-      //     children: const [
-      //       DrawerHeader(
-      //         decoration: BoxDecoration(
-      //           color: Colors.blue,
-      //         ),
-      //         child: Text('Drawer Header'),
-      //       ),
-      //       TagsSetter(),
-      //     ],
-      //   ),
-      // ),
+      drawer: const CommonDrawer(),
       body: Column(
         children: [
           Expanded(child: ActivityListView(controller)),

@@ -1,5 +1,6 @@
-import '../bloc/minute_timer_cubit.dart';
 import 'package:flutter/widgets.dart';
+
+import '../bloc/minute_timer_cubit.dart';
 
 class ActivityTime extends StatefulWidget {
   const ActivityTime(

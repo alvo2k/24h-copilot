@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import '../../../../../core/error/exceptions.dart';
-import '../data_sources_contracts.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+
+import '../../../../../core/error/exceptions.dart';
+import '../data_sources_contracts.dart';
 
 part 'drift_db.g.dart';
 

@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import '../../domain/entities/activity_day.dart';
 import 'activity_list_tile.dart';
-import 'package:flutter/material.dart';
 
 class ActivityDayWidget extends StatelessWidget {
   const ActivityDayWidget(this.activities, {super.key});

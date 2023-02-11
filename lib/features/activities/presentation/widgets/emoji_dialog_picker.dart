@@ -1,6 +1,7 @@
-import 'emoji_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
+
+import 'emoji_button.dart';
 
 class EmojiDialogPicker extends StatelessWidget {
   const EmojiDialogPicker({super.key, required this.onEmojiSelected});

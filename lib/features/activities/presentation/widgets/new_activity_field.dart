@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/activities_bloc.dart';
 
@@ -53,7 +54,7 @@ class _NewActivityFieldState extends State<NewActivityField> {
         decoration: InputDecoration(
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(16.0))),
-          hintText: 'Enter a new activity',
+          hintText: AppLocalizations.of(context)!.newActivityPrompt,
           suffixIcon: IconButton(
             iconSize: 30,
             tooltip: 'Add activity',

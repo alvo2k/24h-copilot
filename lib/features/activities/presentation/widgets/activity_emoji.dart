@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../domain/entities/activity.dart';
 import '../bloc/activities_bloc.dart';
@@ -54,7 +55,7 @@ class _ActivityEmojiState extends State<ActivityEmoji> {
     final activityBloc = BlocProvider.of<ActivitiesBloc>(context);
     return emoji == null
         ? TextButton(
-            child: const Text('how was it?'),
+            child: Text(AppLocalizations.of(context)!.emojiSelectPrompt),
             onPressed: () => showDialogPicker(context, activityBloc))
         : Padding(
             padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),

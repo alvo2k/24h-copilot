@@ -1,0 +1,14 @@
+{
+    "activities": "Activities",
+    "loginRegistration": "Login / Registration",
+    "synchronization": "Synchronization",
+    "feedback": "Leave Feedback",
+    "rateTheApp": "Rate the App",
+    "darkTheme": "Dark Theme",
+    "hourLetter": "h",
+    "minuteLetter": "m",
+    "alreadyTime": "Already {hours}{hourLetter} {minutes}{minuteLetter}",
+    "alreadyTimeMinutes": "Already {minutes}{minuteLetter}",
+    "newActivityPrompt": "What you want to do next?",
+    "emojiSelectPrompt": "How did it go?"
+}

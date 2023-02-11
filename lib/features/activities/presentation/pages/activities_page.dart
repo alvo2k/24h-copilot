@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../core/common/widgets/common_drawer.dart';
 import '../../domain/entities/activity_day.dart';
@@ -48,7 +49,7 @@ class ActivitiesPage extends StatelessWidget {
         backgroundColor: Colors.white70,
         foregroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
-        title: const Text('Activities'),
+        title: Text(AppLocalizations.of(context)!.activities),
         // actions: [
         //   IconButton(
         //     icon: SvgPicture.asset('assets/icons/edit_mode.svg'),

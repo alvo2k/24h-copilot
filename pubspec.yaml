@@ -18,9 +18,12 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.1
   flutter_dialogs: ^3.0.0
+  flutter_localizations:
+    sdk: flutter
   flutter_svg: ^1.1.4
   get_it: ^7.2.0
   injectable: ^2.1.0
+  intl: any
   json_annotation: ^4.6.0
   path: ^1.8.2
   path_provider: ^2.0.12
@@ -39,6 +42,7 @@ dev_dependencies:
   mockito: ^5.3.0
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/

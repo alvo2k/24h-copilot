@@ -1,0 +1,72 @@
+{
+  "activities": "Активности",
+  "@activities": {
+    "description": "Название главной страницы"
+  },
+  "loginRegistration": "Вход / Регистрация",
+  "@loginRegistration": {
+    "description": "Кнопка для перехода на страницу входа"
+  },
+  "synchronization": "Синхронизация",
+  "@synchronization": {
+    "description": "Кнопка для выполнения синхронизации с удаленной БД"
+  },
+  "feedback": "Обратная связь",
+  "@feedback": {
+    "description": "Кнопка для написания писем"
+  },
+  "rateTheApp": "Оценить приложение",
+  "@rateTheApp": {
+    "description": "Кнопка для открытия страницы приложения в магазине приложений"
+  },
+  "darkTheme": "Темная тема",
+  "@darkTheme": {
+    "description": "Свитч смены темы на темную"
+  },
+  "hourLetter": "ч",
+  "@hourLetter": {
+    "description": "Час сокращенно, например: 8ч"
+  },
+  "minuteLetter": "м",
+  "@minuteLetter": {
+    "description": "Минута сокращенно, например: 32м"
+  },
+  "alreadyTime": "Уже {hours}{hourLetter} {minutes}{minuteLetter}",
+  "@alreadyTime": {
+    "description": "Используется для показа сколько времени идет текущая активность (часы и минуты)",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "hourLetter": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      },
+      "minuteLetter": {
+        "type": "String"
+      }
+    }
+  },
+  "alreadyTimeMinutes": "Уже {minutes}{minuteLetter}",
+  "@alreadyTimeMinutes": {
+    "description": "Используется для показа сколько времени идет текущая активность (только минуты)",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "minuteLetter": {
+        "type": "String"
+      }
+    }
+  },
+  "newActivityPrompt": "Чем хотите заняться?",
+  "@newActivityPrompt": {
+    "description": "Предложение ввода новой активности"
+  },
+  "emojiSelectPrompt": "Как всё прошло?",
+  "@emojiSelectPrompt": {
+    "description": "Предложение выбора эмоджи для прошедшей активности"
+  }
+}

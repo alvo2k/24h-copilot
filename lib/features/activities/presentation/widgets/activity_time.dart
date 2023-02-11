@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/minute_timer_cubit.dart';
 
@@ -39,10 +40,18 @@ class _ActivityTimeState extends State<ActivityTime> {
           final totalMinutes = now.difference(widget.startTime).inMinutes;
           final hours = now.difference(widget.startTime).inHours;
 
+          final hourLetter = AppLocalizations.of(context)!.hourLetter;
+          final minuteLetter = AppLocalizations.of(context)!.minuteLetter;
           if (hours > 0) {
-            return Text('Already: ${hours}h ${totalMinutes - hours * 60}m');
+            return Text(AppLocalizations.of(context)!.alreadyTime(
+              hours,
+              hourLetter,
+              totalMinutes - hours * 60,
+              minuteLetter,
+            ));
           } else {
-            return Text('Already: ${totalMinutes}m');
+            return Text(AppLocalizations.of(context)!
+                .alreadyTimeMinutes(totalMinutes, minuteLetter));
           }
         } else {
           final totalMinutes =

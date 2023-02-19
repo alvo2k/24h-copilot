@@ -7,9 +7,13 @@
     "darkTheme": "Dark Theme",
     "hourLetter": "h",
     "minuteLetter": "m",
-    "alreadyTime": "Already {hours}{hourLetter} {minutes}{minuteLetter}",
-    "alreadyTimeMinutes": "Already {minutes}{minuteLetter}",
+    "totalPrefix": "Total",
+    "alreadyPrefix": "Already",
+    "timeFormat": "{prefix} {hours}{hourLetter} {minutes}{minuteLetter}",
+    "timeFormatMinutes": "{prefix} {minutes}{minuteLetter}",
     "newActivityPrompt": "What you want to do next?",
     "emojiSelectPrompt": "How did it go?",
-    "newActivityPromptShort": "Next activity"
+    "newActivityPromptShort": "Next activity",
+    "today": "Today",
+    "yesterday": "Yesterday"
 }

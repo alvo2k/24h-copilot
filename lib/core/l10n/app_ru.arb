@@ -31,10 +31,21 @@
   "@minuteLetter": {
     "description": "Минута сокращенно, например: 32м"
   },
-  "alreadyTime": "Уже {hours}{hourLetter} {minutes}{minuteLetter}",
-  "@alreadyTime": {
+  "totalPrefix": "Всего",
+  "@total": {
+    "description": "Префикс перед форматированием времени: 'Всего 1ч 9м'"
+  },
+  "alreadyPrefix": "Уже",
+  "@already": {
+    "description": "Префикс перед форматированием времени: 'Уже 1ч 9м'"
+  },
+  "timeFormat": "{prefix} {hours}{hourLetter} {minutes}{minuteLetter}",
+  "@timeFormat": {
     "description": "Используется для показа сколько времени идет текущая активность (часы и минуты)",
     "placeholders": {
+      "prefix": {
+        "type": "String"
+      },
       "hours": {
         "type": "int"
       },
@@ -49,10 +60,13 @@
       }
     }
   },
-  "alreadyTimeMinutes": "Уже {minutes}{minuteLetter}",
-  "@alreadyTimeMinutes": {
+  "timeFormatMinutes": "{prefix} {minutes}{minuteLetter}",
+  "@timeFormatMinutes": {
     "description": "Используется для показа сколько времени идет текущая активность (только минуты)",
     "placeholders": {
+      "prefix": {
+        "type": "String"
+      },
       "minutes": {
         "type": "int"
       },
@@ -72,5 +86,13 @@
   "newActivityPromptShort": "Cледующая активность",
   "@newActivityPromptShort": {
     "description": "Предложение ввода новой активности (короткое)"
+  },
+  "today": "Сегодня",
+  "@today": {
+    "description": "Относительное время"
+  },
+  "yesterday": "Вчера",
+  "@yesterday": {
+    "description": "Относительное время"
   }
 }

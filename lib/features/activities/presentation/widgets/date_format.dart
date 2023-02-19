@@ -11,13 +11,13 @@ class DateFormat extends StatelessWidget {
     if (date.year == now.year &&
         date.month == now.month &&
         date.day == now.day) {
-      return 'Today';
+      return AppLocalizations.of(context)!.today;
     }
     final yesterday = now.subtract(const Duration(days: 1));
     if (date.year == yesterday.year &&
         date.month == yesterday.month &&
         date.day == yesterday.day) {
-      return 'Yesterday';
+      return AppLocalizations.of(context)!.yesterday;
     }
     return date.toString().substring(0, 10);
   }
@@ -29,7 +29,7 @@ class DateFormat extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Text(
-            defineText(date),
+            defineText(date, context),
             style: TextStyle(fontSize: 28, color: Colors.grey[800]),
           ),
         ),

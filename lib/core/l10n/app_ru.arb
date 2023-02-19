@@ -68,5 +68,9 @@
   "emojiSelectPrompt": "Как всё прошло?",
   "@emojiSelectPrompt": {
     "description": "Предложение выбора эмоджи для прошедшей активности"
+  },
+  "newActivityPromptShort": "Cледующая активность",
+  "@newActivityPromptShort": {
+    "description": "Предложение ввода новой активности (короткое)"
   }
 }

@@ -6,12 +6,21 @@ import '../features/activities/presentation/bloc/activities_bloc.dart';
 import '../features/activities/presentation/pages/activities_page.dart';
 import 'injectable.dart';
 
-class CopilotApp extends StatelessWidget {
+class CopilotApp extends StatefulWidget {
   const CopilotApp({Key? key}) : super(key: key);
 
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  @override
+  State<CopilotApp> createState() => _CopilotAppState();
+}
+
+class _CopilotAppState extends State<CopilotApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: CopilotApp.navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Copilot',
       localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,15 +8,60 @@ import '../../domain/entities/activity_day.dart';
 import '../bloc/activities_bloc.dart';
 import '../widgets/activity_list_view.dart';
 import '../widgets/new_activity_field.dart';
+import '../bloc/notification_controller.dart';
 
-class ActivitiesPage extends StatelessWidget {
+class ActivitiesPage extends StatefulWidget {
   const ActivitiesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = ScrollController();
+  State<ActivitiesPage> createState() => _ActivitiesPageState();
+}
 
-    void loadMoreDays() {
+class _ActivitiesPageState extends State<ActivitiesPage> {
+  final controller = ScrollController();
+
+  @override
+  void initState() {    
+    controller.addListener(loadMoreDays);
+
+    super.initState();
+  }
+
+  void createNotification() {
+    final newActivityPrompt = AppLocalizations.of(context)!.newActivityPrompt;
+    final newActivityPromptShort = AppLocalizations.of(context)!.newActivityPromptShort;
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: NotificationController.onActionReceivedMethod,
+    );
+
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) async {
+      if (!isAllowed) {
+        // TODO ask user to allow notifications and save the result
+        isAllowed =
+            await AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+      if (isAllowed) {
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 1,
+            channelKey: NotificationController.inputActivityChannelKey,
+            title: newActivityPrompt,
+            autoDismissible: false,
+            fullScreenIntent: true,
+          ),
+          actionButtons: [
+            NotificationActionButton(
+              key: 'INPUT_BUTTON',
+              label: newActivityPromptShort,
+              requireInputText: true,
+            ),
+          ],
+        );
+      }
+    });
+  }
+
+  void loadMoreDays() {
       // load next day
       if (controller.position.extentAfter < 20 &&
           controller.position.outOfRange == false) {
@@ -43,7 +89,18 @@ class ActivitiesPage extends StatelessWidget {
       }
     }
 
-    controller.addListener(loadMoreDays);
+  @override
+  Widget build(BuildContext context) {
+    createNotification();
+
+    final newActivityFromNotification =
+        ModalRoute.of(context)?.settings.arguments as String?;
+    if (newActivityFromNotification != null &&
+        newActivityFromNotification.isNotEmpty) {
+      BlocProvider.of<ActivitiesBloc>(context)
+          .add(ActivitiesEvent.switchActivity(newActivityFromNotification));
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white70,
@@ -66,5 +123,5 @@ class ActivitiesPage extends StatelessWidget {
         ],
       ),
     );
-  }
+  }  
 }

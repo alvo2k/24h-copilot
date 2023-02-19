@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  awesome_notifications
   sqlite3_flutter_libs
   url_launcher_linux
 )

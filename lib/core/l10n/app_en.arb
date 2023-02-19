@@ -10,5 +10,6 @@
     "alreadyTime": "Already {hours}{hourLetter} {minutes}{minuteLetter}",
     "alreadyTimeMinutes": "Already {minutes}{minuteLetter}",
     "newActivityPrompt": "What you want to do next?",
-    "emojiSelectPrompt": "How did it go?"
+    "emojiSelectPrompt": "How did it go?",
+    "newActivityPromptShort": "Next activity"
 }

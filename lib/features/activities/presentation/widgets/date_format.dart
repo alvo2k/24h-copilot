@@ -1,12 +1,12 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DateFormat extends StatelessWidget {
   const DateFormat(this.date, {super.key});
 
   final DateTime date;
 
-  String defineText(DateTime date) {
+  String defineText(DateTime date, BuildContext context) {
     final now = DateTime.now();
     if (date.year == now.year &&
         date.month == now.month &&
@@ -30,7 +30,7 @@ class DateFormat extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Text(
             defineText(date, context),
-            style: TextStyle(fontSize: 28, color: Colors.grey[800]),
+            style: const TextStyle(fontSize: 28),
           ),
         ),
       ],

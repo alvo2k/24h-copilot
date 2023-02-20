@@ -22,6 +22,7 @@ class _ActivityEmojiState extends State<ActivityEmoji> {
   Future<void> showDialogPicker(
       BuildContext context, ActivitiesBloc activityBloc) {
     return showPlatformDialog(
+      androidBarrierDismissible: true,
       context: context,
       builder: (context) {
         return EmojiDialogPicker(

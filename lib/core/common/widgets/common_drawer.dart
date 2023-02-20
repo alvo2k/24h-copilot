@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,7 +19,7 @@ class CommonDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theameCubit = ThemeCubit();
+    final themeCubit = BlocProvider.of<ThemeCubit>(context);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -54,15 +55,31 @@ class CommonDrawer extends StatelessWidget {
             },
           ),
           StreamBuilder(
-            stream: theameCubit.stream,
+            stream: themeCubit.stream,
             builder: (context, snapshot) {
               return ListTile(
                 leading: const Icon(Icons.brightness_6),
-                title: Text(AppLocalizations.of(context)!.darkTheme),
-                trailing: Switch(
-                  value: snapshot.data == ThemeState.dark,
-                  onChanged: (value) {
-                    theameCubit.toggleTheme();
+                title: Text(AppLocalizations.of(context)!.theme),
+                trailing: DropdownButton<ThemeMode>(
+                  value: themeCubit.state,
+                  items: [
+                    DropdownMenuItem(
+                      value: ThemeMode.light,
+                      child: Text(AppLocalizations.of(context)!.lightTheme),
+                    ),
+                    DropdownMenuItem(
+                      value: ThemeMode.dark,
+                      child: Text(AppLocalizations.of(context)!.darkTheme),
+                    ),
+                    DropdownMenuItem(
+                      value: ThemeMode.system,
+                      child: Text(AppLocalizations.of(context)!.systemTheme),
+                    ),
+                  ],
+                  onChanged: (ThemeMode? theme) {
+                    if (theme != null) {
+                      themeCubit.setTheme(theme);
+                    }
                   },
                 ),
               );

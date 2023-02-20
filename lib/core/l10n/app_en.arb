@@ -4,7 +4,6 @@
     "synchronization": "Synchronization",
     "feedback": "Leave Feedback",
     "rateTheApp": "Rate the App",
-    "darkTheme": "Dark Theme",
     "hourLetter": "h",
     "minuteLetter": "m",
     "totalPrefix": "Total",
@@ -15,5 +14,9 @@
     "emojiSelectPrompt": "How did it go?",
     "newActivityPromptShort": "Next activity",
     "today": "Today",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "theme": "Theme",
+    "darkTheme": "Dark",
+    "lightTheme": "Light",
+    "systemTheme": "System"
 }

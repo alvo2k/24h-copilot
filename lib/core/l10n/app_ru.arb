@@ -19,10 +19,6 @@
   "@rateTheApp": {
     "description": "Кнопка для открытия страницы приложения в магазине приложений"
   },
-  "darkTheme": "Темная тема",
-  "@darkTheme": {
-    "description": "Свитч смены темы на темную"
-  },
   "hourLetter": "ч",
   "@hourLetter": {
     "description": "Час сокращенно, например: 8ч"
@@ -94,5 +90,21 @@
   "yesterday": "Вчера",
   "@yesterday": {
     "description": "Относительное время"
+  },
+  "theme": "Тема",
+  "@theme": {
+    "description": "Тема приложения"
+  },
+  "darkTheme": "Темная",
+  "@theme": {
+    "description": "Тема приложения"
+  },
+  "lightTheme": "Светлая",
+  "@theme": {
+    "description": "Тема приложения"
+  },
+  "systemTheme": "Системная",
+  "@theme": {
+    "description": "Тема приложения"
   }
 }

@@ -57,13 +57,10 @@ class ActivityListView extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 29.0, vertical: 16),
-                            child: Icon(
-                              Icons.access_time,
-                              color: Colors.black38,
-                            ),
+                            child: Icon(Icons.access_time),
                           ),
                         ],
-                      ),                      
+                      ),
                     ],
                   );
                 }

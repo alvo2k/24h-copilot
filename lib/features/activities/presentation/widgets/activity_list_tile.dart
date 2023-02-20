@@ -60,6 +60,9 @@ class ActivityListTile extends StatelessWidget {
     const leftPadding = 40.0;
     const rightPadding = 8.0;
     const leftBarWidth = 4.0;
+    final cardColor = Theme.of(context).brightness == Brightness.light
+        ? const Color.fromRGBO(226, 226, 226, 1)
+        : const Color.fromARGB(255, 25, 25, 25);
     final cardWidth = MediaQuery.of(context).size.width > 500
         ? 500 - leftPadding - leftBarWidth - rightPadding
         : MediaQuery.of(context).size.width -
@@ -89,7 +92,7 @@ class ActivityListTile extends StatelessWidget {
           child: Card(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            color: const Color.fromRGBO(226, 226, 226, 1),
+            color: cardColor,
             child: Column(
               children: [
                 // color, name, tags

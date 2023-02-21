@@ -3,7 +3,7 @@ import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
 import '../bloc/activities_bloc.dart';
 import 'activity_day.dart';
-import 'date_format.dart';
+import 'activity_day_date.dart';
 
 class ActivityListView extends StatelessWidget {
   const ActivityListView(this.controller, {super.key});
@@ -50,7 +50,7 @@ class ActivityListView extends StatelessWidget {
                   // if this is today, print icon at the end
                   return Column(
                     children: [
-                      DateFormat(day.date),
+                      ActivityDayDate(day.date),
                       ActivityDayWidget(day),
                       Row(
                         children: const [
@@ -69,13 +69,13 @@ class ActivityListView extends StatelessWidget {
                   return Column(children: [
                     // adds loading indicator at top of the list. Empty ActivitiesDay means all data was loaded and no indicator needed
                     const CircularProgressIndicator(),
-                    DateFormat(day.date),
+                    ActivityDayDate(day.date),
                     ActivityDayWidget(day),
                   ]);
                 }
                 return Column(
                   children: [
-                    DateFormat(day.date),
+                    ActivityDayDate(day.date),
                     ActivityDayWidget(day),
                   ],
                 );

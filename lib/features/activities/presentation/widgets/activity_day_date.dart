@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
-class DateFormat extends StatelessWidget {
-  const DateFormat(this.date, {super.key});
+class ActivityDayDate extends StatelessWidget {
+  const ActivityDayDate(this.date, {super.key});
 
   final DateTime date;
 
@@ -19,7 +20,10 @@ class DateFormat extends StatelessWidget {
         date.day == yesterday.day) {
       return AppLocalizations.of(context)!.yesterday;
     }
-    return date.toString().substring(0, 10);
+    return DateFormat(DateFormat.MONTH_WEEKDAY_DAY,
+            Localizations.localeOf(context).languageCode)
+        .format(date);
+    // return date.toString().substring(0, 10);
   }
 
   @override

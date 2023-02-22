@@ -27,7 +27,7 @@ class _NewActivityFieldState extends State<NewActivityField> {
     if (name.isEmpty) return;
 
     BlocProvider.of<ActivitiesBloc>(context)
-        .add(ActivitiesEvent.switchActivity(name));
+        .add(ActivitiesEvent.switchActivity(name.trim()));
 
     _controller.clear();
     _focusNode.unfocus();

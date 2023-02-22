@@ -97,8 +97,8 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         ModalRoute.of(context)?.settings.arguments as String?;
     if (newActivityFromNotification != null &&
         newActivityFromNotification.isNotEmpty) {
-      BlocProvider.of<ActivitiesBloc>(context)
-          .add(ActivitiesEvent.switchActivity(newActivityFromNotification));
+      BlocProvider.of<ActivitiesBloc>(context).add(
+          ActivitiesEvent.switchActivity(newActivityFromNotification.trim()));
     }
 
     return Scaffold(

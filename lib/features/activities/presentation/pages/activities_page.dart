@@ -2,13 +2,15 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/common/widgets/common_drawer.dart';
 import '../../domain/entities/activity_day.dart';
 import '../bloc/activities_bloc.dart';
+import '../bloc/edit_mode_cubit.dart';
+import '../bloc/notification_controller.dart';
 import '../widgets/activity_list_view.dart';
 import '../widgets/new_activity_field.dart';
-import '../bloc/notification_controller.dart';
 
 class ActivitiesPage extends StatefulWidget {
   const ActivitiesPage({super.key});
@@ -21,7 +23,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   final controller = ScrollController();
 
   @override
-  void initState() {    
+  void initState() {
     controller.addListener(loadMoreDays);
 
     super.initState();
@@ -29,7 +31,8 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
 
   void createNotification() {
     final newActivityPrompt = AppLocalizations.of(context)!.newActivityPrompt;
-    final newActivityPromptShort = AppLocalizations.of(context)!.newActivityPromptShort;
+    final newActivityPromptShort =
+        AppLocalizations.of(context)!.newActivityPromptShort;
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: NotificationController.onActionReceivedMethod,
     );
@@ -62,32 +65,32 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   }
 
   void loadMoreDays() {
-      // load next day
-      if (controller.position.extentAfter < 20 &&
-          controller.position.outOfRange == false) {
-        var activitiesBlock = BlocProvider.of<ActivitiesBloc>(context);
+    // load next day
+    if (controller.position.extentAfter < 20 &&
+        controller.position.outOfRange == false) {
+      var activitiesBlock = BlocProvider.of<ActivitiesBloc>(context);
 
-        late DateTime dateToLoad;
-        late ActivityDay lastLoadedActivityDay;
-        activitiesBlock.state.join(
-          (_) => null,
-          (_) => null,
-          (loaded) {
-            lastLoadedActivityDay = loaded.days.last;
-            dateToLoad =
-                lastLoadedActivityDay.date.subtract(const Duration(days: 1));
-          },
-          (_) => null,
-        );
+      late DateTime dateToLoad;
+      late ActivityDay lastLoadedActivityDay;
+      activitiesBlock.state.join(
+        (_) => null,
+        (_) => null,
+        (loaded) {
+          lastLoadedActivityDay = loaded.days.last;
+          dateToLoad =
+              lastLoadedActivityDay.date.subtract(const Duration(days: 1));
+        },
+        (_) => null,
+      );
 
-        if (lastLoadedActivityDay.activitiesInThisDay.isEmpty) {
-          // all activities in DB allready loaded
-          controller.removeListener(loadMoreDays);
-          return;
-        }
-        activitiesBlock.add(ActivitiesEvent.loadActivities(dateToLoad));
+      if (lastLoadedActivityDay.activitiesInThisDay.isEmpty) {
+        // all activities in DB allready loaded
+        controller.removeListener(loadMoreDays);
+        return;
       }
+      activitiesBlock.add(ActivitiesEvent.loadActivities(dateToLoad));
     }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,13 +110,15 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         foregroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
         title: Text(AppLocalizations.of(context)!.activities),
-        // actions: [
-        //   IconButton(
-        //     icon: SvgPicture.asset('assets/icons/edit_mode.svg'),
-        //     tooltip: 'Edit mode',
-        //     onPressed: () {},
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: SvgPicture.asset('assets/icons/edit_mode.svg'),
+            tooltip: 'Edit mode',
+            onPressed: () {
+              BlocProvider.of<EditModeCubit>(context).toggle();
+            },
+          ),
+        ],
       ),
       drawer: const CommonDrawer(),
       body: Column(
@@ -123,5 +128,5 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         ],
       ),
     );
-  }  
+  }
 }

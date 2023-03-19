@@ -5,22 +5,42 @@ import 'activity_emoji.dart';
 import 'activity_time.dart';
 
 class ActivityListTile extends StatelessWidget {
-  const ActivityListTile(this.activity, {super.key});
+  const ActivityListTile(this.activity,
+      {super.key, this.minimalVersion = false});
 
   final Activity activity;
+  final bool minimalVersion;
 
-  static const _cardHeight = 122.0;
+  static const cardHeight = 122.0;
+  static const _leftPadding = 40.0;
+  static const _rightPadding = 8.0;
+  static const _leftBarWidth = 4.0;
 
-  Widget _buildCircle() {
+  static Widget buildCircle(Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16),
       child: Container(
         width: 18,
         height: 18,
         decoration: BoxDecoration(
-          color: activity.color, // border color
+          color: color, // border color
           shape: BoxShape.circle,
         ),
+      ),
+    );
+  }
+
+  Widget _buildLeftBar(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: _leftPadding, right: _rightPadding),
+      child: Container(
+        color: activity.color,
+        width: _leftBarWidth,
+        height: _determineLeftBarHeight(
+            activity.endTime == null
+                ? DateTime.now().difference(activity.startTime)
+                : activity.endTime!.difference(activity.startTime),
+            context),
       ),
     );
   }
@@ -46,53 +66,54 @@ class ActivityListTile extends StatelessWidget {
         .toList();
   }
 
-  double _determineHeight(Duration duration, BuildContext context) {
+  double _determineLeftBarHeight(Duration duration, BuildContext context) {
     const hourValue = 28.0;
     // todo: make this dynamic (maxHeight - appBarHeight - bottomBarHeight)
     final maxHeight = MediaQuery.of(context).size.height - 200;
-    final height = _cardHeight + (hourValue * duration.inHours);
+    final height = cardHeight + (hourValue * duration.inHours);
 
     return height > maxHeight ? maxHeight : height;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    const leftPadding = 40.0;
-    const rightPadding = 8.0;
-    const leftBarWidth = 4.0;
-    final cardColor = Theme.of(context).brightness == Brightness.light
+  static double determineWidth(BuildContext context, bool minimalVersion) {
+    var preferredWidth = 500.0;
+    if (minimalVersion) {
+      const dialogPadding = 76;
+      preferredWidth =
+          MediaQuery.of(context).size.width - dialogPadding > preferredWidth
+              ? preferredWidth
+              : MediaQuery.of(context).size.width - dialogPadding;
+    }
+    return MediaQuery.of(context).size.width > preferredWidth
+        ? preferredWidth - _leftPadding - _leftBarWidth - _rightPadding
+        : MediaQuery.of(context).size.width -
+            _leftPadding -
+            _leftBarWidth -
+            _rightPadding;
+  }
+
+  static cardColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.light
         ? const Color.fromRGBO(226, 226, 226, 1)
         : const Color.fromARGB(255, 25, 25, 25);
-    final cardWidth = MediaQuery.of(context).size.width > 500
-        ? 500 - leftPadding - leftBarWidth - rightPadding
-        : MediaQuery.of(context).size.width -
-            leftPadding -
-            leftBarWidth -
-            rightPadding;
+  }
+
+  static ShapeBorder get shape =>
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Padding(
-          padding:
-              const EdgeInsets.only(left: leftPadding, right: rightPadding),
-          child: Container(
-            color: activity.color,
-            width: leftBarWidth,
-            height: _determineHeight(
-                activity.endTime == null
-                    ? DateTime.now().difference(activity.startTime)
-                    : activity.endTime!.difference(activity.startTime),
-                context),
-          ),
-        ),
+        if (!minimalVersion) _buildLeftBar(context),
         // card
         SizedBox(
-          width: cardWidth,
-          height: _cardHeight,
+          width: determineWidth(context, minimalVersion),
+          height: cardHeight,
           child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            color: cardColor,
+            shape: shape,
+            color: cardColor(context),
             child: Column(
               children: [
                 // color, name, tags
@@ -102,7 +123,7 @@ class ActivityListTile extends StatelessWidget {
                     // color, name
                     Row(
                       children: [
-                        _buildCircle(),
+                        buildCircle(activity.color),
                         Text(
                           activity.name,
                           style: const TextStyle(fontSize: 24),

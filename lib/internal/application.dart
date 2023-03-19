@@ -1,3 +1,4 @@
+import 'package:copilot/features/activities/presentation/bloc/edit_mode_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,6 +26,7 @@ class _CopilotAppState extends State<CopilotApp> {
         BlocProvider<ThemeCubit>(
           create: (_) => ThemeCubit()..loadSavedTheme(),
         ),
+        BlocProvider(create: (_) => EditModeCubit()),
         BlocProvider(
             create: (context) => ActivitiesBloc(
                   loadActivitiesUsecase: sl(),
@@ -32,7 +34,8 @@ class _CopilotAppState extends State<CopilotApp> {
                   addEmojiUsecase: sl(),
                   editNameUsecase: sl(),
                   insertActivityUsecase: sl(),
-                )..add(ActivitiesEvent.loadActivities(DateTime.now()))),
+                )..add(ActivitiesEvent.loadActivities(
+                    DateUtils.dateOnly(DateTime.now())))),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, state) {

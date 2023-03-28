@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'emoji_button.dart';
 
@@ -11,7 +12,7 @@ class EmojiDialogPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BasicDialogAlert(
-      title: const Text('Pick an emoji'),
+      title: Text(AppLocalizations.of(context)!.pickEmoji),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -64,7 +65,7 @@ class EmojiDialogPicker extends StatelessWidget {
       ),
       actions: <Widget>[
         BasicDialogAction(
-          title: const Text('Cancel'),
+          title: Text(AppLocalizations.of(context)!.cancel),
           onPressed: () => Navigator.pop(context),
         ),
       ],

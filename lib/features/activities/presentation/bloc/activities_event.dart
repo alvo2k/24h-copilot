@@ -38,25 +38,27 @@ class EditName extends Equatable {
   List<Object> get props => [name, recordId];
 }
 
-class InsertActivity extends Equatable {
-  const InsertActivity({
+class EditRecords extends Equatable {
+  const EditRecords({
     required this.name,
-    required this.startTime,
-    this.endTime,
+    this.fixedTime,
+    this.selectedTime,
+    this.toChange,
   });
 
-  final DateTime? endTime;
+  final DateTime? fixedTime;
   final String name;
-  final DateTime startTime;
+  final DateTime? selectedTime;
+  final Activity? toChange;
 
   @override
-  List<Object?> get props => [endTime, name, startTime];
+  List<Object?> get props => [fixedTime, name, selectedTime, toChange];
 }
 
 class ActivitiesEvent extends Union5Impl<LoadActivities, SwitchActivity,
-    AddEmoji, EditName, InsertActivity> {
+    AddEmoji, EditName, EditRecords> {
   ActivitiesEvent._(
-      Union5<LoadActivities, SwitchActivity, AddEmoji, EditName, InsertActivity>
+      Union5<LoadActivities, SwitchActivity, AddEmoji, EditName, EditRecords>
           union)
       : super(union);
 
@@ -70,13 +72,18 @@ class ActivitiesEvent extends Union5Impl<LoadActivities, SwitchActivity,
         unions.fourth(EditName(name, recordId)),
       );
 
-  factory ActivitiesEvent.insertActivity({
+  factory ActivitiesEvent.editRecords({
+    DateTime? fixedTime,
     required String name,
-    required DateTime startTime,
-    DateTime? endTime,
+    DateTime? selectedTime,
+    Activity? toChange,
   }) =>
-      ActivitiesEvent._(unions.fifth(
-          InsertActivity(endTime: endTime, name: name, startTime: startTime)));
+      ActivitiesEvent._(unions.fifth(EditRecords(
+        fixedTime: fixedTime,
+        name: name,
+        selectedTime: selectedTime,
+        toChange: toChange,
+      )));
 
   factory ActivitiesEvent.loadActivities(DateTime forTheDay) =>
       ActivitiesEvent._(
@@ -89,5 +96,5 @@ class ActivitiesEvent extends Union5Impl<LoadActivities, SwitchActivity,
       );
 
   static const unions = Quintet<LoadActivities, SwitchActivity, AddEmoji,
-      EditName, InsertActivity>();
+      EditName, EditRecords>();
 }

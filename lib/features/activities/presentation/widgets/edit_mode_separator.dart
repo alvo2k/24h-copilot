@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 
 import '../../domain/entities/activity.dart';
-import 'insert_activity_dialog.dart';
+import 'edit_records_dialog.dart';
 
 class EditModeSeparator extends StatelessWidget {
   const EditModeSeparator(this.toChange, this.activityDayDate,
       {super.key, required this.addBefore});
 
-  final Activity toChange;
+  /// The date on which the [toChange] activity card is in
+  final DateTime activityDayDate;
 
   /// Should the new activity be inserted before the existing one or after it
   final bool addBefore;
 
-  /// The date on which the [toChange] activity card is in
-  final DateTime activityDayDate;
+  final Activity toChange;
 
-  showInsertActivityDialog(BuildContext context) => showPlatformDialog(
+  showEditRecordsDialog(BuildContext context) => showPlatformDialog(
         context: context,
         androidBarrierDismissible: true,
-        builder: (context) => InsertActivityDialog(
+        builder: (context) => EditRecordsDialog(
           toChange,
           activityDayDate,
           addBefore: addBefore,
@@ -48,7 +48,7 @@ class EditModeSeparator extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).iconTheme.color ?? Colors.black87;
     return TextButton(
-      onPressed: () => showInsertActivityDialog(context),
+      onPressed: () => showEditRecordsDialog(context),
       child: Row(
         children: [
           buildIcon(color),

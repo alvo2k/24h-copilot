@@ -18,7 +18,7 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
     required SwitchActivitiesUsecase switchActivityUsecase,
     required AddEmojiUsecase addEmojiUsecase,
     required EditNameUsecase editNameUsecase,
-    required InsertActivityUsecase insertActivityUsecase,
+    required EditRecordsUsecase editRecordsUsecase,
   }) : super(ActivitiesState.initial()) {
     List<ActivityDay> loadedActivities = [];
 
@@ -98,24 +98,42 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
             },
           );
         },
-        (insertActivity) async {
+        (editRecords) async {
           emit(ActivitiesState.loading());
-          final result = await insertActivityUsecase(InsertActivityParams(
-            name: insertActivity.name,
-            startTime: insertActivity.startTime,
-            endTime: insertActivity.endTime,
+          final edit = await editRecordsUsecase(EditRecordsParams(
+            name: editRecords.name,
+            fixedTime: editRecords.fixedTime,
+            selectedTime: editRecords.selectedTime,
+            toChange: editRecords.toChange,
           ));
-          result.fold(
-            (l) => emit(ActivitiesState.failure(l.prop['message'])),
-            (r) {
-              if (insertActivity.endTime == null) {
-                // then new activity is in the end so [switchActivity] logic applies
-                changeActivity(r);
+          await edit.fold<Future>(
+            (l) =>
+                Future(() => emit(ActivitiesState.failure(l.prop['message']))),
+            (r) async {
+              late DateTime editedDate;
+              if (editRecords.fixedTime != null) {
+                editedDate = editRecords.fixedTime!;
+              } else if (editRecords.selectedTime != null) {
+                editedDate = editRecords.selectedTime!;
               } else {
-                // TODO
+                editedDate = editRecords.toChange!.startTime;
               }
+              editedDate =
+                  DateTime(editedDate.year, editedDate.month, editedDate.day);
+              final load =
+                  await loadActivitiesUsecase(LoadActivitiesParams(editedDate));
+              load.fold(
+                (l) => ActivitiesState.failure(l.prop['message']),
+                (r) {
+                  var activitiesInThisDay = ActivityDay(r, editedDate);
 
-              emit(ActivitiesState.loaded(loadedActivities));
+                  final index = loadedActivities
+                      .indexWhere((day) => day.date == editedDate);
+                  loadedActivities.insert(index, activitiesInThisDay);
+                  loadedActivities.removeAt(index + 1);
+                  emit(ActivitiesState.loaded(loadedActivities));
+                },
+              );
             },
           );
         },

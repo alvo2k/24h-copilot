@@ -111,12 +111,15 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         centerTitle: true,
         title: Text(AppLocalizations.of(context)!.activities),
         actions: [
-          IconButton(
-            icon: SvgPicture.asset('assets/icons/edit_mode.svg'),
-            tooltip: 'Edit mode',
-            onPressed: () {
-              BlocProvider.of<EditModeCubit>(context).toggle();
-            },
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: IconButton(
+              icon: SvgPicture.asset('assets/icons/edit_mode.svg'),
+              tooltip: 'Edit mode',
+              onPressed: () {
+                BlocProvider.of<EditModeCubit>(context).toggle();
+              },
+            ),
           ),
         ],
       ),

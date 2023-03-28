@@ -12,7 +12,7 @@ abstract class ActivityLocalDataSource {
   Future<RecordWithActivitySettings> createRecord({
     required String activityName,
     required int startTime,
-    int endTime,
+    int? endTime,
   });
 
   /// Inserts into records and returns class with all model fields
@@ -27,6 +27,8 @@ abstract class ActivityLocalDataSource {
     required int idRecord,
     required String activityName,
   });
+
+  Future<int> getLastRecordId();
 
   /// Trys to find [Activity] fields (color, tags, goal...)
   Future<DriftActivityModel?> findActivitySettings(String name);

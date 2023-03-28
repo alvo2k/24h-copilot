@@ -5,36 +5,70 @@ part of 'drift_db.dart';
 // ignore_for_file: type=lint
 class $ActivitiesTable extends Activities
     with TableInfo<$ActivitiesTable, DriftActivityModel> {
+  $ActivitiesTable(this.attachedDatabase, [this._alias]);
+
   @override
   final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $ActivitiesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+
   @override
   late final GeneratedColumn<int> color = GeneratedColumn<int>(
       'color', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
-  @override
-  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
-      'tags', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _goalMeta = const VerificationMeta('goal');
+
   @override
   late final GeneratedColumn<int> goal = GeneratedColumn<int>(
       'goal', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+
+  @override
+  late final GeneratedColumn<String> tags = GeneratedColumn<String>(
+      'tags', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  static const VerificationMeta _goalMeta = const VerificationMeta('goal');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
+
+  final String? _alias;
+
   @override
   List<GeneratedColumn> get $columns => [name, color, tags, goal];
+
   @override
-  String get aliasedName => _alias ?? 'activities';
+  Set<GeneratedColumn> get $primaryKey => {name};
+
   @override
   String get actualTableName => 'activities';
+
+  @override
+  String get aliasedName => _alias ?? 'activities';
+
+  @override
+  $ActivitiesTable createAlias(String alias) {
+    return $ActivitiesTable(attachedDatabase, alias);
+  }
+
+  @override
+  DriftActivityModel map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftActivityModel(
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      color: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
+      tags: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tags']),
+      goal: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}goal']),
+    );
+  }
+
   @override
   VerificationContext validateIntegrity(Insertable<DriftActivityModel> instance,
       {bool isInserting = false}) {
@@ -62,38 +96,41 @@ class $ActivitiesTable extends Activities
     }
     return context;
   }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {name};
-  @override
-  DriftActivityModel map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DriftActivityModel(
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      color: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
-      tags: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}tags']),
-      goal: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}goal']),
-    );
-  }
-
-  @override
-  $ActivitiesTable createAlias(String alias) {
-    return $ActivitiesTable(attachedDatabase, alias);
-  }
 }
 
 class DriftActivityModel extends DataClass
     implements Insertable<DriftActivityModel> {
-  final String name;
-  final int color;
-  final String? tags;
-  final int? goal;
   const DriftActivityModel(
       {required this.name, required this.color, this.tags, this.goal});
+
+  factory DriftActivityModel.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftActivityModel(
+      name: serializer.fromJson<String>(json['name']),
+      color: serializer.fromJson<int>(json['color']),
+      tags: serializer.fromJson<String?>(json['tags']),
+      goal: serializer.fromJson<int?>(json['goal']),
+    );
+  }
+
+  final int color;
+  final int? goal;
+  final String name;
+  final String? tags;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftActivityModel &&
+          other.name == this.name &&
+          other.color == this.color &&
+          other.tags == this.tags &&
+          other.goal == this.goal);
+
+  @override
+  int get hashCode => Object.hash(name, color, tags, goal);
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -108,25 +145,6 @@ class DriftActivityModel extends DataClass
     return map;
   }
 
-  ActivitiesCompanion toCompanion(bool nullToAbsent) {
-    return ActivitiesCompanion(
-      name: Value(name),
-      color: Value(color),
-      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
-      goal: goal == null && nullToAbsent ? const Value.absent() : Value(goal),
-    );
-  }
-
-  factory DriftActivityModel.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DriftActivityModel(
-      name: serializer.fromJson<String>(json['name']),
-      color: serializer.fromJson<int>(json['color']),
-      tags: serializer.fromJson<String?>(json['tags']),
-      goal: serializer.fromJson<int?>(json['goal']),
-    );
-  }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -136,6 +154,26 @@ class DriftActivityModel extends DataClass
       'tags': serializer.toJson<String?>(tags),
       'goal': serializer.toJson<int?>(goal),
     };
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftActivityModel(')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('tags: $tags, ')
+          ..write('goal: $goal')
+          ..write(')'))
+        .toString();
+  }
+
+  ActivitiesCompanion toCompanion(bool nullToAbsent) {
+    return ActivitiesCompanion(
+      name: Value(name),
+      color: Value(color),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      goal: goal == null && nullToAbsent ? const Value.absent() : Value(goal),
+    );
   }
 
   DriftActivityModel copyWith(
@@ -149,73 +187,31 @@ class DriftActivityModel extends DataClass
         tags: tags.present ? tags.value : this.tags,
         goal: goal.present ? goal.value : this.goal,
       );
-  @override
-  String toString() {
-    return (StringBuffer('DriftActivityModel(')
-          ..write('name: $name, ')
-          ..write('color: $color, ')
-          ..write('tags: $tags, ')
-          ..write('goal: $goal')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(name, color, tags, goal);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is DriftActivityModel &&
-          other.name == this.name &&
-          other.color == this.color &&
-          other.tags == this.tags &&
-          other.goal == this.goal);
 }
 
 class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
-  final Value<String> name;
-  final Value<int> color;
-  final Value<String?> tags;
-  final Value<int?> goal;
   const ActivitiesCompanion({
     this.name = const Value.absent(),
     this.color = const Value.absent(),
     this.tags = const Value.absent(),
     this.goal = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
+
   ActivitiesCompanion.insert({
     required String name,
     required int color,
     this.tags = const Value.absent(),
     this.goal = const Value.absent(),
+    this.rowid = const Value.absent(),
   })  : name = Value(name),
         color = Value(color);
-  static Insertable<DriftActivityModel> custom({
-    Expression<String>? name,
-    Expression<int>? color,
-    Expression<String>? tags,
-    Expression<int>? goal,
-  }) {
-    return RawValuesInsertable({
-      if (name != null) 'name': name,
-      if (color != null) 'color': color,
-      if (tags != null) 'tags': tags,
-      if (goal != null) 'goal': goal,
-    });
-  }
 
-  ActivitiesCompanion copyWith(
-      {Value<String>? name,
-      Value<int>? color,
-      Value<String?>? tags,
-      Value<int?>? goal}) {
-    return ActivitiesCompanion(
-      name: name ?? this.name,
-      color: color ?? this.color,
-      tags: tags ?? this.tags,
-      goal: goal ?? this.goal,
-    );
-  }
+  final Value<int> color;
+  final Value<int?> goal;
+  final Value<String> name;
+  final Value<int> rowid;
+  final Value<String?> tags;
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -232,6 +228,9 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
     if (goal.present) {
       map['goal'] = Variable<int>(goal.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
@@ -241,20 +240,69 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
           ..write('name: $name, ')
           ..write('color: $color, ')
           ..write('tags: $tags, ')
-          ..write('goal: $goal')
+          ..write('goal: $goal, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
+  }
+
+  static Insertable<DriftActivityModel> custom({
+    Expression<String>? name,
+    Expression<int>? color,
+    Expression<String>? tags,
+    Expression<int>? goal,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (name != null) 'name': name,
+      if (color != null) 'color': color,
+      if (tags != null) 'tags': tags,
+      if (goal != null) 'goal': goal,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ActivitiesCompanion copyWith(
+      {Value<String>? name,
+      Value<int>? color,
+      Value<String?>? tags,
+      Value<int?>? goal,
+      Value<int>? rowid}) {
+    return ActivitiesCompanion(
+      name: name ?? this.name,
+      color: color ?? this.color,
+      tags: tags ?? this.tags,
+      goal: goal ?? this.goal,
+      rowid: rowid ?? this.rowid,
+    );
   }
 }
 
 class $RecordsTable extends Records
     with TableInfo<$RecordsTable, DriftRecordModel> {
+  $RecordsTable(this.attachedDatabase, [this._alias]);
+
+  @override
+  late final GeneratedColumn<String> activityName = GeneratedColumn<String>(
+      'activity_name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES activities (name)'));
+
   @override
   final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $RecordsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idRecordMeta =
-      const VerificationMeta('idRecord');
+
+  @override
+  late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
+      'emoji', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+
+  @override
+  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
+      'end_time', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+
   @override
   late final GeneratedColumn<int> idRecord = GeneratedColumn<int>(
       'id_record', aliasedName, false,
@@ -263,39 +311,62 @@ class $RecordsTable extends Records
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _activityNameMeta =
-      const VerificationMeta('activityName');
-  @override
-  late final GeneratedColumn<String> activityName = GeneratedColumn<String>(
-      'activity_name', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES activities (name)'));
-  static const VerificationMeta _startTimeMeta =
-      const VerificationMeta('startTime');
+
   @override
   late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
       'start_time', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+
+  static const VerificationMeta _activityNameMeta =
+      const VerificationMeta('activityName');
+
+  static const VerificationMeta _emojiMeta = const VerificationMeta('emoji');
   static const VerificationMeta _endTimeMeta =
       const VerificationMeta('endTime');
-  @override
-  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
-      'end_time', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _emojiMeta = const VerificationMeta('emoji');
-  @override
-  late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
-      'emoji', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+
+  static const VerificationMeta _idRecordMeta =
+      const VerificationMeta('idRecord');
+
+  static const VerificationMeta _startTimeMeta =
+      const VerificationMeta('startTime');
+
+  final String? _alias;
+
   @override
   List<GeneratedColumn> get $columns =>
       [idRecord, activityName, startTime, endTime, emoji];
+
   @override
-  String get aliasedName => _alias ?? 'records';
+  Set<GeneratedColumn> get $primaryKey => {idRecord};
+
   @override
   String get actualTableName => 'records';
+
+  @override
+  String get aliasedName => _alias ?? 'records';
+
+  @override
+  $RecordsTable createAlias(String alias) {
+    return $RecordsTable(attachedDatabase, alias);
+  }
+
+  @override
+  DriftRecordModel map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftRecordModel(
+      idRecord: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id_record'])!,
+      activityName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}activity_name'])!,
+      startTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}start_time'])!,
+      endTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}end_time']),
+      emoji: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}emoji']),
+    );
+  }
+
   @override
   VerificationContext validateIntegrity(Insertable<DriftRecordModel> instance,
       {bool isInserting = false}) {
@@ -329,45 +400,49 @@ class $RecordsTable extends Records
     }
     return context;
   }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {idRecord};
-  @override
-  DriftRecordModel map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return DriftRecordModel(
-      idRecord: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id_record'])!,
-      activityName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}activity_name'])!,
-      startTime: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}start_time'])!,
-      endTime: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}end_time']),
-      emoji: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}emoji']),
-    );
-  }
-
-  @override
-  $RecordsTable createAlias(String alias) {
-    return $RecordsTable(attachedDatabase, alias);
-  }
 }
 
 class DriftRecordModel extends DataClass
     implements Insertable<DriftRecordModel> {
-  final int idRecord;
-  final String activityName;
-  final int startTime;
-  final int? endTime;
-  final String? emoji;
   const DriftRecordModel(
       {required this.idRecord,
       required this.activityName,
       required this.startTime,
       this.endTime,
       this.emoji});
+
+  factory DriftRecordModel.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftRecordModel(
+      idRecord: serializer.fromJson<int>(json['idRecord']),
+      activityName: serializer.fromJson<String>(json['activityName']),
+      startTime: serializer.fromJson<int>(json['startTime']),
+      endTime: serializer.fromJson<int?>(json['endTime']),
+      emoji: serializer.fromJson<String?>(json['emoji']),
+    );
+  }
+
+  final String activityName;
+  final String? emoji;
+  final int? endTime;
+  final int idRecord;
+  final int startTime;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftRecordModel &&
+          other.idRecord == this.idRecord &&
+          other.activityName == this.activityName &&
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime &&
+          other.emoji == this.emoji);
+
+  @override
+  int get hashCode =>
+      Object.hash(idRecord, activityName, startTime, endTime, emoji);
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -383,6 +458,30 @@ class DriftRecordModel extends DataClass
     return map;
   }
 
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'idRecord': serializer.toJson<int>(idRecord),
+      'activityName': serializer.toJson<String>(activityName),
+      'startTime': serializer.toJson<int>(startTime),
+      'endTime': serializer.toJson<int?>(endTime),
+      'emoji': serializer.toJson<String?>(emoji),
+    };
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftRecordModel(')
+          ..write('idRecord: $idRecord, ')
+          ..write('activityName: $activityName, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('emoji: $emoji')
+          ..write(')'))
+        .toString();
+  }
+
   RecordsCompanion toCompanion(bool nullToAbsent) {
     return RecordsCompanion(
       idRecord: Value(idRecord),
@@ -394,29 +493,6 @@ class DriftRecordModel extends DataClass
       emoji:
           emoji == null && nullToAbsent ? const Value.absent() : Value(emoji),
     );
-  }
-
-  factory DriftRecordModel.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return DriftRecordModel(
-      idRecord: serializer.fromJson<int>(json['idRecord']),
-      activityName: serializer.fromJson<String>(json['activityName']),
-      startTime: serializer.fromJson<int>(json['startTime']),
-      endTime: serializer.fromJson<int?>(json['endTime']),
-      emoji: serializer.fromJson<String?>(json['emoji']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'idRecord': serializer.toJson<int>(idRecord),
-      'activityName': serializer.toJson<String>(activityName),
-      'startTime': serializer.toJson<int>(startTime),
-      'endTime': serializer.toJson<int?>(endTime),
-      'emoji': serializer.toJson<String?>(emoji),
-    };
   }
 
   DriftRecordModel copyWith(
@@ -432,38 +508,9 @@ class DriftRecordModel extends DataClass
         endTime: endTime.present ? endTime.value : this.endTime,
         emoji: emoji.present ? emoji.value : this.emoji,
       );
-  @override
-  String toString() {
-    return (StringBuffer('DriftRecordModel(')
-          ..write('idRecord: $idRecord, ')
-          ..write('activityName: $activityName, ')
-          ..write('startTime: $startTime, ')
-          ..write('endTime: $endTime, ')
-          ..write('emoji: $emoji')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(idRecord, activityName, startTime, endTime, emoji);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is DriftRecordModel &&
-          other.idRecord == this.idRecord &&
-          other.activityName == this.activityName &&
-          other.startTime == this.startTime &&
-          other.endTime == this.endTime &&
-          other.emoji == this.emoji);
 }
 
 class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
-  final Value<int> idRecord;
-  final Value<String> activityName;
-  final Value<int> startTime;
-  final Value<int?> endTime;
-  final Value<String?> emoji;
   const RecordsCompanion({
     this.idRecord = const Value.absent(),
     this.activityName = const Value.absent(),
@@ -471,6 +518,7 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
     this.endTime = const Value.absent(),
     this.emoji = const Value.absent(),
   });
+
   RecordsCompanion.insert({
     this.idRecord = const Value.absent(),
     required String activityName,
@@ -479,36 +527,12 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
     this.emoji = const Value.absent(),
   })  : activityName = Value(activityName),
         startTime = Value(startTime);
-  static Insertable<DriftRecordModel> custom({
-    Expression<int>? idRecord,
-    Expression<String>? activityName,
-    Expression<int>? startTime,
-    Expression<int>? endTime,
-    Expression<String>? emoji,
-  }) {
-    return RawValuesInsertable({
-      if (idRecord != null) 'id_record': idRecord,
-      if (activityName != null) 'activity_name': activityName,
-      if (startTime != null) 'start_time': startTime,
-      if (endTime != null) 'end_time': endTime,
-      if (emoji != null) 'emoji': emoji,
-    });
-  }
 
-  RecordsCompanion copyWith(
-      {Value<int>? idRecord,
-      Value<String>? activityName,
-      Value<int>? startTime,
-      Value<int?>? endTime,
-      Value<String?>? emoji}) {
-    return RecordsCompanion(
-      idRecord: idRecord ?? this.idRecord,
-      activityName: activityName ?? this.activityName,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
-      emoji: emoji ?? this.emoji,
-    );
-  }
+  final Value<String> activityName;
+  final Value<String?> emoji;
+  final Value<int?> endTime;
+  final Value<int> idRecord;
+  final Value<int> startTime;
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -542,15 +566,49 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
           ..write(')'))
         .toString();
   }
+
+  static Insertable<DriftRecordModel> custom({
+    Expression<int>? idRecord,
+    Expression<String>? activityName,
+    Expression<int>? startTime,
+    Expression<int>? endTime,
+    Expression<String>? emoji,
+  }) {
+    return RawValuesInsertable({
+      if (idRecord != null) 'id_record': idRecord,
+      if (activityName != null) 'activity_name': activityName,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
+      if (emoji != null) 'emoji': emoji,
+    });
+  }
+
+  RecordsCompanion copyWith(
+      {Value<int>? idRecord,
+      Value<String>? activityName,
+      Value<int>? startTime,
+      Value<int?>? endTime,
+      Value<String?>? emoji}) {
+    return RecordsCompanion(
+      idRecord: idRecord ?? this.idRecord,
+      activityName: activityName ?? this.activityName,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      emoji: emoji ?? this.emoji,
+    );
+  }
 }
 
 abstract class _$ActivityDatabase extends GeneratedDatabase {
   _$ActivityDatabase(QueryExecutor e) : super(e);
+
   late final $ActivitiesTable activities = $ActivitiesTable(this);
   late final $RecordsTable records = $RecordsTable(this);
+
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [activities, records];
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
-  @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [activities, records];
 }

@@ -8,7 +8,6 @@ import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/repositories/activity_repository.dart';
 import '../datasources/data_sources_contracts.dart';
-import '../datasources/drift/drift_db.dart';
 import '../models/activity_model.dart';
 
 @LazySingleton(as: ActivityRepository)
@@ -52,6 +51,94 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
+  Future<Either<Failure, Activity>> editRecords(
+      {required String name,
+      DateTime? startTime,
+      required Color color,
+      DateTime? endTime,
+      Activity? toChange}) async {
+    try {
+      final activitySettings =
+          await localDataSource.findActivitySettings(name) ??
+              await localDataSource.createActivity(name, color.value);
+
+      if (toChange == null) {
+        // switch activity with start time change
+        assert(startTime != null);
+        await localDataSource.updateRecordTime(
+          idRecord: await localDataSource.getLastRecordId(),
+          endTime: startTime!.millisecondsSinceEpoch,
+        );
+        final row = await localDataSource.createRecord(
+            activityName: name, startTime: startTime.millisecondsSinceEpoch);
+        return Right(ActivityModel.fromDriftRow(row));
+      }
+
+      if (startTime == null && endTime == null) {
+        // overwrite record
+        final row = await localDataSource.updateRecordSettings(
+            idRecord: toChange.recordId, activityName: name);
+        return Right(ActivityModel.fromDriftRow(row));
+      }
+
+      if (startTime != null && endTime == null) {
+        if (toChange.endTime == null) {
+          // overwrite record
+          final row = await localDataSource.updateRecordSettings(
+              idRecord: toChange.recordId, activityName: name);
+          return Right(ActivityModel.fromDriftRow(row));
+        }
+        // toChange.endTime == startTime; startTime -- endTime
+        await localDataSource.updateRecordTime(
+          idRecord: toChange.recordId,
+          endTime: startTime.millisecondsSinceEpoch,
+        );
+        final row = await localDataSource.createRecord(
+          activityName: name,
+          startTime: startTime.millisecondsSinceEpoch,
+          endTime: toChange.endTime!.millisecondsSinceEpoch,
+        );
+        return Right(ActivityModel.fromDriftRow(row));
+      }
+      if (startTime == null && endTime != null) {
+        // assert(toChange.endTime != null);
+        // toChange.startTime == endTime; startTime -- endTime
+        await localDataSource.updateRecordTime(
+          idRecord: toChange.recordId,
+          startTime: endTime.millisecondsSinceEpoch,
+        );
+        final row = await localDataSource.createRecord(
+          activityName: name,
+          startTime: toChange.startTime.millisecondsSinceEpoch,
+          endTime: endTime.millisecondsSinceEpoch,
+        );
+        return Right(ActivityModel.fromDriftRow(row));
+      }
+
+      // insert in between
+      await localDataSource.updateRecordTime(
+        idRecord: toChange.recordId,
+        endTime: startTime!.millisecondsSinceEpoch,
+      );
+      final row = await localDataSource.createRecord(
+        activityName: name,
+        startTime: startTime.millisecondsSinceEpoch,
+        endTime: endTime!.millisecondsSinceEpoch,
+      );
+      await localDataSource.createRecord(
+        activityName: toChange.name,
+        startTime: endTime.millisecondsSinceEpoch,
+        endTime: toChange.endTime != null
+            ? toChange.endTime!.millisecondsSinceEpoch
+            : null,
+      );
+      return Right(ActivityModel.fromDriftRow(row));
+    } on CacheException {
+      return const Left(CacheFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, List<ActivityModel>>> getActivities(
       DateTime forTheDay) async {
     assert(forTheDay.isUtc, true);
@@ -76,38 +163,6 @@ class ActivityRepositoryImpl implements ActivityRepository {
       } else {
         return const Right(true);
       }
-    } on CacheException {
-      return const Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, Activity>> insertActivity({
-    required String name,
-    required DateTime startTime,
-    required Color color,
-    DateTime? endTime,
-  }) async {
-    try {
-      final activitySettings =
-          await localDataSource.findActivitySettings(name) ??
-              await localDataSource.createActivity(name, color.value);
-
-      RecordWithActivitySettings row;
-      if (endTime != null) {
-        row = await localDataSource.createRecord(
-          activityName: activitySettings.name,
-          startTime: startTime.millisecondsSinceEpoch,
-          endTime: endTime.millisecondsSinceEpoch,
-        );
-      } else {
-        row = await localDataSource.createRecord(
-          activityName: activitySettings.name,
-          startTime: startTime.millisecondsSinceEpoch,
-        );
-      }
-
-      return Right(ActivityModel.fromDriftRow(row));
     } on CacheException {
       return const Left(CacheFailure());
     }

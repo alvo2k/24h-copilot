@@ -100,6 +100,16 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     return query;
   }
 
+  @override
+  Future<int> getLastRecordId() {
+    final query = select(records)
+      ..orderBy([
+        (r) => OrderingTerm(expression: r.idRecord, mode: OrderingMode.desc)
+      ])
+      ..limit(1);
+    return query.map((r) => r.idRecord).getSingle();
+  }
+
   /// Includes [from], excluding [to]
   @override
   Future<List<RecordWithActivitySettings>> getRecords({
@@ -111,7 +121,8 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     ])
       ..where(
           records.endTime.isBiggerOrEqualValue(from) | records.endTime.isNull())
-      ..where(records.startTime.isSmallerThanValue(to));
+      ..where(records.startTime.isSmallerThanValue(to))
+      ..orderBy([OrderingTerm(expression: records.startTime)]);
 
     final result = query.get().then((rows) => rows
         .map((row) => RecordWithActivitySettings(

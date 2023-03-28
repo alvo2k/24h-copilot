@@ -96,15 +96,63 @@
     "description": "Тема приложения"
   },
   "darkTheme": "Темная",
-  "@theme": {
+  "@darkTheme": {
     "description": "Тема приложения"
   },
   "lightTheme": "Светлая",
-  "@theme": {
+  "@lightTheme": {
     "description": "Тема приложения"
   },
   "systemTheme": "Системная",
-  "@theme": {
+  "@systemTheme": {
     "description": "Тема приложения"
+  },
+  "editDay": "Редактирование дня",
+  "@editDay": {
+    "description": "Заголовок режима редактирования"
+  },
+  "startDay": "Начало дня",
+  "@startDay": {
+    "description": "Время начала дня (00:00)"
+  },
+  "endDay": "До конца дня",
+  "@endDay": {
+    "description": "Время окончания дня (00:00)"
+  },
+  "goesOn": "Продолжается...",
+  "@goesOn": {
+    "description": "Время окончания дня (00:00)"
+  },
+  "startTime": "Начальное время",
+  "@startTime": {
+    "description": "От и до"
+  },
+  "endTime": "Конечное время",
+  "@endTime": {
+    "description": "От и до"
+  },
+  "cancel": "Отмена",
+  "@cancel": {
+    "description": "Кнопка отмены"
+  },
+  "save": "Сохранить",
+  "@save": {
+    "description": "Кнопка сохранения"
+  },
+  "pickTime": "Выберите время для активности",
+  "@pickTime": {
+    "description": "Предложение выбора времени"
+  },
+  "chooseActivity": "Выберите название для активности",
+  "@chooseActivity": {
+    "description": "Предложение выбора названия"
+  },
+  "invalidTime": "Недопустимое время",
+  "@invalidTime": {
+    "description": "Выберите другое время"
+  },
+  "pickEmoji": "Выберите эмодзи",
+  "@pickEmoji": {
+    "description": "Предложение выбора эмодзи"
   }
 }

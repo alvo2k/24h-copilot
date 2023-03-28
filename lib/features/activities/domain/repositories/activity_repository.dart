@@ -27,12 +27,13 @@ abstract class ActivityRepository {
     required Color color,
   });
 
-  /// Inserts new activity and returns it entity
-  Future<Either<Failure, Activity>> insertActivity({
+  /// Edits records table and returns it entity
+  Future<Either<Failure, Activity>> editRecords({
     required String name,
-    required DateTime startTime,
+    DateTime startTime,
     required Color color,
     DateTime endTime,
+    Activity toChange,
   });
 
   Future<Either<Failure, bool>> hasActivitySettings(String activityName);

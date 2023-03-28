@@ -1,10 +1,10 @@
-import 'package:copilot/features/activities/presentation/bloc/edit_mode_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../core/common/bloc/theame_cubit.dart';
 import '../features/activities/presentation/bloc/activities_bloc.dart';
+import '../features/activities/presentation/bloc/edit_mode_cubit.dart';
 import '../features/activities/presentation/pages/activities_page.dart';
 import 'injectable.dart';
 
@@ -33,7 +33,7 @@ class _CopilotAppState extends State<CopilotApp> {
                   switchActivityUsecase: sl(),
                   addEmojiUsecase: sl(),
                   editNameUsecase: sl(),
-                  insertActivityUsecase: sl(),
+                  editRecordsUsecase: sl(),
                 )..add(ActivitiesEvent.loadActivities(
                     DateUtils.dateOnly(DateTime.now())))),
       ],

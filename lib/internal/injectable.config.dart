@@ -4,6 +4,10 @@
 // InjectableConfigGenerator
 // **************************************************************************
 
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: lines_longer_than_80_chars
+// coverage:ignore-file
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart'
     as _i3;
@@ -19,7 +23,7 @@ import 'package:copilot/features/activities/domain/usecases/add_emoji_usecase.da
     as _i7;
 import 'package:copilot/features/activities/domain/usecases/edit_name_usecase.dart'
     as _i8;
-import 'package:copilot/features/activities/domain/usecases/insert_activity_usecase.dart'
+import 'package:copilot/features/activities/domain/usecases/edit_records_usecase.dart'
     as _i9;
 import 'package:copilot/features/activities/domain/usecases/load_activities_usecase.dart'
     as _i10;
@@ -30,10 +34,8 @@ import 'package:copilot/features/activities/presentation/bloc/activities_bloc.da
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
-/// ignore_for_file: unnecessary_lambdas
-/// ignore_for_file: lines_longer_than_80_chars
 extension GetItInjectableX on _i1.GetIt {
-  /// initializes the registration of main-scope dependencies inside of [GetIt]
+  // initializes the registration of main-scope dependencies inside of GetIt
   _i1.GetIt init({
     String? environment,
     _i2.EnvironmentFilter? environmentFilter,
@@ -50,8 +52,8 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i7.AddEmojiUsecase(gh<_i5.ActivityRepository>()));
     gh.lazySingleton<_i8.EditNameUsecase>(
         () => _i8.EditNameUsecase(gh<_i5.ActivityRepository>()));
-    gh.lazySingleton<_i9.InsertActivityUsecase>(
-        () => _i9.InsertActivityUsecase(gh<_i5.ActivityRepository>()));
+    gh.lazySingleton<_i9.EditRecordsUsecase>(
+        () => _i9.EditRecordsUsecase(gh<_i5.ActivityRepository>()));
     gh.lazySingleton<_i10.LoadActivitiesUsecase>(
         () => _i10.LoadActivitiesUsecase(gh<_i5.ActivityRepository>()));
     gh.lazySingleton<_i11.SwitchActivitiesUsecase>(
@@ -61,7 +63,7 @@ extension GetItInjectableX on _i1.GetIt {
           switchActivityUsecase: gh<_i13.SwitchActivitiesUsecase>(),
           addEmojiUsecase: gh<_i13.AddEmojiUsecase>(),
           editNameUsecase: gh<_i13.EditNameUsecase>(),
-          insertActivityUsecase: gh<_i13.InsertActivityUsecase>(),
+          editRecordsUsecase: gh<_i13.EditRecordsUsecase>(),
         ));
     return this;
   }

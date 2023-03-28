@@ -1,4 +1,4 @@
-import 'package:copilot/features/activities/presentation/bloc/edit_mode_cubit.dart';
+import '../bloc/edit_mode_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

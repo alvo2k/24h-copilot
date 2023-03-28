@@ -8,13 +8,14 @@ class ActivityListTile extends StatelessWidget {
   const ActivityListTile(this.activity,
       {super.key, this.minimalVersion = false});
 
+  static const cardHeight = 122.0;
+
   final Activity activity;
   final bool minimalVersion;
 
-  static const cardHeight = 122.0;
+  static const _leftBarWidth = 4.0;
   static const _leftPadding = 40.0;
   static const _rightPadding = 8.0;
-  static const _leftBarWidth = 4.0;
 
   static Widget buildCircle(Color color) {
     return Padding(
@@ -29,6 +30,32 @@ class ActivityListTile extends StatelessWidget {
       ),
     );
   }
+
+  static double determineWidth(BuildContext context, bool minimalVersion) {
+    var preferredWidth = 500.0;
+    if (minimalVersion) {
+      const dialogPadding = 76;
+      preferredWidth =
+          MediaQuery.of(context).size.width - dialogPadding > preferredWidth
+              ? preferredWidth
+              : MediaQuery.of(context).size.width - dialogPadding;
+    }
+    return MediaQuery.of(context).size.width > preferredWidth
+        ? preferredWidth - _leftPadding - _leftBarWidth - _rightPadding
+        : MediaQuery.of(context).size.width -
+            _leftPadding -
+            _leftBarWidth -
+            _rightPadding;
+  }
+
+  static cardColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.light
+        ? const Color.fromRGBO(226, 226, 226, 1)
+        : const Color.fromARGB(255, 25, 25, 25);
+  }
+
+  static ShapeBorder get shape =>
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
 
   Widget _buildLeftBar(BuildContext context) {
     return Padding(
@@ -74,32 +101,6 @@ class ActivityListTile extends StatelessWidget {
 
     return height > maxHeight ? maxHeight : height;
   }
-
-  static double determineWidth(BuildContext context, bool minimalVersion) {
-    var preferredWidth = 500.0;
-    if (minimalVersion) {
-      const dialogPadding = 76;
-      preferredWidth =
-          MediaQuery.of(context).size.width - dialogPadding > preferredWidth
-              ? preferredWidth
-              : MediaQuery.of(context).size.width - dialogPadding;
-    }
-    return MediaQuery.of(context).size.width > preferredWidth
-        ? preferredWidth - _leftPadding - _leftBarWidth - _rightPadding
-        : MediaQuery.of(context).size.width -
-            _leftPadding -
-            _leftBarWidth -
-            _rightPadding;
-  }
-
-  static cardColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.light
-        ? const Color.fromRGBO(226, 226, 226, 1)
-        : const Color.fromARGB(255, 25, 25, 25);
-  }
-
-  static ShapeBorder get shape =>
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
 
   @override
   Widget build(BuildContext context) {

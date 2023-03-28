@@ -1,0 +1,21 @@
+import 'package:flutter/material.dart';
+
+import '../../../features/activities/presentation/widgets/activity_list_tile.dart';
+
+class MyToast extends StatelessWidget {
+  const MyToast(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      color: ActivityListTile.cardColor(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+        child: Text(text),
+      ),
+    );
+  }
+}

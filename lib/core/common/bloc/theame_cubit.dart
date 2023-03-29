@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../utils/constants.dart';
+
 class ThemeCubit extends Cubit<ThemeMode> {
   ThemeCubit() : super(ThemeMode.system);
-
-  static const _settingsBoxName = 'settings';
-  static const _settingsThemeName = 'theme';
 
   setTheme(ThemeMode theme) {
     _changeThemeSetting(theme);
@@ -14,9 +13,9 @@ class ThemeCubit extends Cubit<ThemeMode> {
   }
 
   loadSavedTheme() async {
-    final box = await Hive.openBox(_settingsBoxName);
+    final box = await Hive.openBox(Constants.settingsBoxName);
 
-    String? theme = box.get(_settingsThemeName);
+    String? theme = box.get(Constants.settingsThemeName);
     if (theme == null) return; // default state (ThemeMode.system)
     if (theme == 'system') emit(ThemeMode.system);
     if (theme == 'light') emit(ThemeMode.light);
@@ -24,8 +23,8 @@ class ThemeCubit extends Cubit<ThemeMode> {
   }
 
   _changeThemeSetting(ThemeMode theme) async {
-    final box = await Hive.openBox(_settingsBoxName);
+    final box = await Hive.openBox(Constants.settingsBoxName);
 
-    box.put(_settingsThemeName, theme.name);
+    box.put(Constants.settingsThemeName, theme.name);
   }
 }

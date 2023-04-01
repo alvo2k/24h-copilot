@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 abstract class Failure extends Equatable {
-  const Failure([this.prop = const {'id' : 1, 'message' : 'Something went wrong 😬'}]);
+  const Failure(
+      [this.prop = const {'id': 1, 'message': 'Something went wrong 😬'}]);
 
   final Map<String, dynamic> prop;
 
@@ -11,6 +12,26 @@ abstract class Failure extends Equatable {
 
 class CacheFailure extends Failure {
   const CacheFailure([super.properties]);
+}
+
+class UnsupportedPlatformFailure extends Failure {
+  const UnsupportedPlatformFailure();
+}
+
+class FirebaseAuthFailure extends Failure {
+  const FirebaseAuthFailure(this.error);
+
+  final FirebaseAuthError error;
+}
+
+enum FirebaseAuthError {
+  weakPassword,
+  emailInUse,
+  invalidEmail,
+  userNotFound,
+  wrongPassword,
+  userDisabled,
+  unknown,
 }
 
 class Success extends Equatable {

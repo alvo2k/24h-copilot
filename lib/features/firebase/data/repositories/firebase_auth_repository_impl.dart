@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/return_types.dart';
-import '../../../../internal/firebase_options.dart';
+import '../../../../firebase_options.dart';
 import '../../domain/repositories/firebase_auth_repository.dart';
 
 @LazySingleton(as: FirebaseAuthRepository)

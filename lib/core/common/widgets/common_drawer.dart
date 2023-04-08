@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../features/firebase/presentation/widgets/login_logout_list_tile.dart';
+import '../../../features/firebase/presentation/widgets/user_drawer_header.dart';
 import '../bloc/theame_cubit.dart';
 
 class CommonDrawer extends StatelessWidget {
@@ -21,71 +23,64 @@ class CommonDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeCubit = BlocProvider.of<ThemeCubit>(context);
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          const UserAccountsDrawerHeader(
-            accountName: Text('Your name'),
-            accountEmail: Text('email@example.com'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: Text(AppLocalizations.of(context)!.loginRegistration),
-            onTap: () {
-              // navigate to the login/registration page
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.sync),
-            title: Text(AppLocalizations.of(context)!.synchronization),
-            onTap: () {
-              // handle synchronization logic
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.feedback),
-            title: Text(AppLocalizations.of(context)!.feedback),
-            onTap: _leaveFeedback,
-          ),
-          ListTile(
-            leading: const Icon(Icons.star),
-            title: Text(AppLocalizations.of(context)!.rateTheApp),
-            onTap: () {
-              // handle the rate the app logic
-            },
-          ),
-          StreamBuilder(
-            stream: themeCubit.stream,
-            builder: (context, snapshot) {
-              return ListTile(
-                leading: const Icon(Icons.brightness_6),
-                title: Text(AppLocalizations.of(context)!.theme),
-                trailing: DropdownButton<ThemeMode>(
-                  value: themeCubit.state,
-                  items: [
-                    DropdownMenuItem(
-                      value: ThemeMode.light,
-                      child: Text(AppLocalizations.of(context)!.lightTheme),
-                    ),
-                    DropdownMenuItem(
-                      value: ThemeMode.dark,
-                      child: Text(AppLocalizations.of(context)!.darkTheme),
-                    ),
-                    DropdownMenuItem(
-                      value: ThemeMode.system,
-                      child: Text(AppLocalizations.of(context)!.systemTheme),
-                    ),
-                  ],
-                  onChanged: (ThemeMode? theme) {
-                    if (theme != null) {
-                      themeCubit.setTheme(theme);
-                    }
-                  },
-                ),
-              );
-            },
-          ),
-        ],
+      child: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const UserDrawerHeader(),
+            const LoginLogOutListTile(),
+            ListTile(
+              leading: const Icon(Icons.sync),
+              title: Text(AppLocalizations.of(context)!.synchronization),
+              onTap: () {
+                // handle synchronization logic
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.feedback),
+              title: Text(AppLocalizations.of(context)!.feedback),
+              onTap: _leaveFeedback,
+            ),
+            ListTile(
+              leading: const Icon(Icons.star),
+              title: Text(AppLocalizations.of(context)!.rateTheApp),
+              onTap: () {
+                // handle the rate the app logic
+              },
+            ),
+            StreamBuilder(
+              stream: themeCubit.stream,
+              builder: (context, snapshot) {
+                return ListTile(
+                  leading: const Icon(Icons.brightness_6),
+                  title: Text(AppLocalizations.of(context)!.theme),
+                  trailing: DropdownButton<ThemeMode>(
+                    value: themeCubit.state,
+                    items: [
+                      DropdownMenuItem(
+                        value: ThemeMode.light,
+                        child: Text(AppLocalizations.of(context)!.lightTheme),
+                      ),
+                      DropdownMenuItem(
+                        value: ThemeMode.dark,
+                        child: Text(AppLocalizations.of(context)!.darkTheme),
+                      ),
+                      DropdownMenuItem(
+                        value: ThemeMode.system,
+                        child: Text(AppLocalizations.of(context)!.systemTheme),
+                      ),
+                    ],
+                    onChanged: (ThemeMode? theme) {
+                      if (theme != null) {
+                        themeCubit.setTheme(theme);
+                      }
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

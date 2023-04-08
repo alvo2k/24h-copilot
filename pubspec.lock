@@ -145,6 +145,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.4.4"
+  category_navigator:
+    dependency: "direct main"
+    description:
+      name: category_navigator
+      sha256: "07c723989209a9b8037716291bc72ec3a575bec9b0335ef419d4095f752e809f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.6"
   characters:
     dependency: transitive
     description:
@@ -305,6 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.0"
+  email_validator:
+    dependency: "direct main"
+    description:
+      name: email_validator
+      sha256: e9a90f27ab2b915a27d7f9c2a7ddda5dd752d6942616ee83529b686fc086221b
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.17"
   equatable:
     dependency: "direct main"
     description:
@@ -1002,6 +1018,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  top_snackbar_flutter:
+    dependency: "direct main"
+    description:
+      name: top_snackbar_flutter
+      sha256: "7d4aa8f0031ad4a597c02487b4bb9b0dbb6a8d76ce1ab6e13e9565f865c1b70c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0+1"
   typed_data:
     dependency: transitive
     description:
@@ -1147,5 +1171,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.19.0 <3.0.0"
+  dart: ">=2.19.0 <4.0.0"
   flutter: ">=3.3.0"

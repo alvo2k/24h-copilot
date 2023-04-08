@@ -8,22 +8,29 @@ import '../repositories/firebase_auth_repository.dart';
 
 @LazySingleton()
 class AuthUsecase extends UseCase<Stream<User?>, AuthParams> {
-  AuthUsecase(this.repository);
+  AuthUsecase(this._repository) {
+    _repository.initialize();
+  }
 
-  final FirebaseAuthRepository repository;
+  final FirebaseAuthRepository _repository;
 
   @override
-  Future<Either<Failure, Stream<User?>>> call(AuthParams params) =>
-      repository.initialize();
+  Future<Either<Failure, Stream<User?>>> call(AuthParams params) async {
+    return await _repository.initialize();
+  }
 
   Future<Either<Failure, UserCredential>> createUser(
           String email, String pass) =>
-      repository.createUser(email, pass);
+      _repository.createUser(email, pass);
 
   Future<Either<Failure, UserCredential>> signIn(String email, String pass) =>
-      repository.signIn(email, pass);
+      _repository.signIn(email, pass);
 
-  Future signOut() => repository.signOut();
+  Future signOut() => _repository.signOut();
+
+  User? getUser() {
+    return FirebaseAuth.instance.currentUser;
+  }
 }
 
 class AuthParams {

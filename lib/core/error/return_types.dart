@@ -19,7 +19,7 @@ class UnsupportedPlatformFailure extends Failure {
 }
 
 class FirebaseAuthFailure extends Failure {
-  const FirebaseAuthFailure(this.error);
+  FirebaseAuthFailure(this.error) : super({'id': 2, 'message': error.name});
 
   final FirebaseAuthError error;
 }
@@ -31,6 +31,7 @@ enum FirebaseAuthError {
   userNotFound,
   wrongPassword,
   userDisabled,
+  tooManyRequests,
   unknown,
 }
 

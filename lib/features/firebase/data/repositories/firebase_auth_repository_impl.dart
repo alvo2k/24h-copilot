@@ -27,12 +27,12 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
       return Right(credential);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return const Left(FirebaseAuthFailure(FirebaseAuthError.weakPassword));
+        return Left(FirebaseAuthFailure(FirebaseAuthError.weakPassword));
       } else if (e.code == 'email-already-in-use') {
-        return const Left(FirebaseAuthFailure(FirebaseAuthError.emailInUse));
+        return Left(FirebaseAuthFailure(FirebaseAuthError.emailInUse));
       }
     }
-    return const Left(FirebaseAuthFailure(FirebaseAuthError.unknown));
+    return Left(FirebaseAuthFailure(FirebaseAuthError.unknown));
   }
 
   @override
@@ -68,14 +68,16 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
       return Right(credential);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        return const Left(FirebaseAuthFailure(FirebaseAuthError.userNotFound));
+        return Left(FirebaseAuthFailure(FirebaseAuthError.userNotFound));
       } else if (e.code == 'wrong-password') {
-        return const Left(FirebaseAuthFailure(FirebaseAuthError.wrongPassword));
+        return Left(FirebaseAuthFailure(FirebaseAuthError.wrongPassword));
       } else if (e.code == 'user-disabled') {
-        return const Left(FirebaseAuthFailure(FirebaseAuthError.userDisabled));
+        return Left(FirebaseAuthFailure(FirebaseAuthError.userDisabled));
+      } else if (e.code == 'too-many-requests') {
+        return Left(FirebaseAuthFailure(FirebaseAuthError.tooManyRequests));
       }
     }
-    return const Left(FirebaseAuthFailure(FirebaseAuthError.unknown));
+    return Left(FirebaseAuthFailure(FirebaseAuthError.unknown));
   }
 
   @override

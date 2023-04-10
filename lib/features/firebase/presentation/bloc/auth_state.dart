@@ -22,8 +22,8 @@ class Loading extends Equatable {
 class LoggedIn extends Equatable {
   const LoggedIn({required this.email, this.displayName});
 
-  final String email;
   final String? displayName;
+  final String email;
 
   @override
   List<Object?> get props => [email, displayName];
@@ -50,10 +50,10 @@ class AuthState extends Union6Impl<Initial, Failure, Loading, LoggedIn,
 
   factory AuthState.initial() => AuthState._(unions.first(Initial()));
 
+  factory AuthState.loading() => AuthState._(unions.third(Loading()));
+
   factory AuthState.loggedIn(String email, String? displayName) => AuthState._(
       unions.fourth(LoggedIn(email: email, displayName: displayName)));
-
-  factory AuthState.loading() => AuthState._(unions.third(Loading()));
 
   factory AuthState.loggedOut() => AuthState._(unions.fifth(LoggedOut()));
 

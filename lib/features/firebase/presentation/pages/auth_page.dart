@@ -15,8 +15,8 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  bool register = false;
   bool loading = false;
+  bool register = false;
 
   @override
   Widget build(BuildContext context) {

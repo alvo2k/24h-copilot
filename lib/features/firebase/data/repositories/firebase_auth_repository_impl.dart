@@ -42,6 +42,9 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
   }
 
   @override
+  User? getUser() => FirebaseAuth.instance.currentUser;
+
+  @override
   Future<Either<Failure, Stream<User?>>> initialize() async {
     try {
       await Firebase.initializeApp(
@@ -96,7 +99,4 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
     // TODO: implement updateEmail
     throw UnimplementedError();
   }
-
-  @override
-  User? getUser() => FirebaseAuth.instance.currentUser;
 }

@@ -90,7 +90,9 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
           return (time.hour < fixedTime!.hour ||
                   (time.hour <= fixedTime!.hour &&
                       time.minute < fixedTime!.minute)) &&
-              (time.hour >= startTime.hour && time.minute >= startTime.minute);
+              (time.hour > startTime.hour ||
+                  (time.hour >= startTime.hour &&
+                      time.minute >= startTime.minute));
         } else {
           return time.hour < fixedTime!.hour ||
               time.hour <= fixedTime!.hour && time.minute <= fixedTime!.minute;

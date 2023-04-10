@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../core/common/bloc/theame_cubit.dart';
+import '../core/common/widgets/main_scaffold.dart';
 import '../features/activities/presentation/bloc/activities_bloc.dart';
 import '../features/activities/presentation/bloc/edit_mode_cubit.dart';
-import '../features/activities/presentation/pages/activities_page.dart';
 import '../features/firebase/presentation/bloc/auth_bloc.dart';
 import 'injectable.dart';
 
@@ -51,7 +51,7 @@ class _CopilotAppState extends State<CopilotApp> {
             themeMode: state,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const ActivitiesPage(),
+            home: const MainScaffold(),
           );
         },
       ),

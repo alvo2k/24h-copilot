@@ -2,12 +2,9 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../core/common/widgets/common_drawer.dart';
 import '../../domain/entities/activity_day.dart';
 import '../bloc/activities_bloc.dart';
-import '../bloc/edit_mode_cubit.dart';
 import '../bloc/notification_controller.dart';
 import '../widgets/activity_list_view.dart';
 import '../widgets/new_activity_field.dart';
@@ -104,32 +101,11 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
           ActivitiesEvent.switchActivity(newActivityFromNotification.trim()));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white70,
-        foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-        centerTitle: true,
-        title: Text(AppLocalizations.of(context)!.activities),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: IconButton(
-              icon: SvgPicture.asset('assets/icons/edit_mode.svg'),
-              tooltip: 'Edit mode',
-              onPressed: () {
-                BlocProvider.of<EditModeCubit>(context).toggle();
-              },
-            ),
-          ),
-        ],
-      ),
-      drawer: const CommonDrawer(),
-      body: Column(
-        children: [
-          Expanded(child: ActivityListView(controller)),
-          NewActivityField(controller),
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(child: ActivityListView(controller)),
+        NewActivityField(controller),
+      ],
     );
   }
 }

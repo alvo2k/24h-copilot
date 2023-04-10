@@ -1,4 +1,4 @@
-import 'drift/drift_db.dart';
+import '../../../../core/common/data/datasources/drift_db.dart';
 
 abstract class ActivityLocalDataSource {
   /// Gets list with all model fields.

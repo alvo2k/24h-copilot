@@ -8,7 +8,7 @@ import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/repositories/activity_repository.dart';
 import '../datasources/data_sources_contracts.dart';
-import '../models/activity_model.dart';
+import '../../../../core/common/data/models/activity_model.dart';
 
 @LazySingleton(as: ActivityRepository)
 class ActivityRepositoryImpl implements ActivityRepository {

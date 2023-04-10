@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
-import '../../data/models/activity_model.dart';
+import '../../../../core/common/data/models/activity_model.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/entities/activity_day.dart';
 import '../../domain/usecases/activities_usecases.dart';

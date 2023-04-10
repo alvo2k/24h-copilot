@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../core/error/exceptions.dart';
-import '../data_sources_contracts.dart';
+import '../../../../features/activities/data/datasources/data_sources_contracts.dart';
 
 part 'drift_db.g.dart';
 

@@ -7,6 +7,7 @@ import '../features/activities/presentation/bloc/activities_bloc.dart';
 import '../features/activities/presentation/bloc/edit_mode_cubit.dart';
 import '../features/activities/presentation/pages/activities_page.dart';
 import '../features/firebase/presentation/bloc/auth_bloc.dart';
+import '../features/firebase/presentation/bloc/sync_cubit.dart';
 import 'injectable.dart';
 
 class CopilotApp extends StatefulWidget {
@@ -39,6 +40,7 @@ class _CopilotAppState extends State<CopilotApp> {
               DateUtils.dateOnly(DateTime.now()))),
         ),
         BlocProvider(create: (context) => AuthBloc(sl())),
+        BlocProvider(create: (context) => SyncCubit(sl())),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, state) {

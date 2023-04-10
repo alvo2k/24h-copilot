@@ -18,6 +18,12 @@ class UnsupportedPlatformFailure extends Failure {
   const UnsupportedPlatformFailure();
 }
 
+class FirestoreFailure extends Failure {
+  const FirestoreFailure(this.message);
+
+  final String message;
+}
+
 class FirebaseAuthFailure extends Failure {
   FirebaseAuthFailure(this.error) : super({'id': 2, 'message': error.name});
 

@@ -17,7 +17,7 @@ import 'package:copilot/features/activities/data/repositories/activity_repositor
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart'
     as _i5;
 import 'package:copilot/features/activities/domain/usecases/activities_usecases.dart'
-    as _i15;
+    as _i19;
 import 'package:copilot/features/activities/domain/usecases/add_emoji_usecase.dart'
     as _i7;
 import 'package:copilot/features/activities/domain/usecases/edit_name_usecase.dart'
@@ -27,15 +27,23 @@ import 'package:copilot/features/activities/domain/usecases/edit_records_usecase
 import 'package:copilot/features/activities/domain/usecases/load_activities_usecase.dart'
     as _i12;
 import 'package:copilot/features/activities/domain/usecases/switch_activities_usecase.dart'
-    as _i13;
+    as _i16;
 import 'package:copilot/features/activities/presentation/bloc/activities_bloc.dart'
-    as _i14;
+    as _i18;
+import 'package:copilot/features/firebase/data/datasources/sync_local_datasource.dart'
+    as _i15;
 import 'package:copilot/features/firebase/data/repositories/firebase_auth_repository_impl.dart'
     as _i11;
+import 'package:copilot/features/firebase/data/repositories/local_sync_repository_impl.dart'
+    as _i14;
 import 'package:copilot/features/firebase/domain/repositories/firebase_auth_repository.dart'
     as _i10;
+import 'package:copilot/features/firebase/domain/repositories/local_sync_repository.dart'
+    as _i13;
 import 'package:copilot/features/firebase/domain/usecases/auth_usecase.dart'
-    as _i16;
+    as _i20;
+import 'package:copilot/features/firebase/domain/usecases/sync_usecase.dart'
+    as _i17;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
@@ -63,17 +71,23 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i11.FirebaseAuthRepositoryImpl());
     gh.lazySingleton<_i12.LoadActivitiesUsecase>(
         () => _i12.LoadActivitiesUsecase(gh<_i5.ActivityRepository>()));
-    gh.lazySingleton<_i13.SwitchActivitiesUsecase>(
-        () => _i13.SwitchActivitiesUsecase(gh<_i5.ActivityRepository>()));
-    gh.factory<_i14.ActivitiesBloc>(() => _i14.ActivitiesBloc(
-          loadActivitiesUsecase: gh<_i15.LoadActivitiesUsecase>(),
-          switchActivityUsecase: gh<_i15.SwitchActivitiesUsecase>(),
-          addEmojiUsecase: gh<_i15.AddEmojiUsecase>(),
-          editNameUsecase: gh<_i15.EditNameUsecase>(),
-          editRecordsUsecase: gh<_i15.EditRecordsUsecase>(),
+    gh.lazySingleton<_i13.LocalSyncRepository>(
+        () => _i14.LocalSyncRepositoryImpl(gh<_i15.SyncLocalDataSource>()));
+    gh.lazySingleton<_i16.SwitchActivitiesUsecase>(
+        () => _i16.SwitchActivitiesUsecase(gh<_i5.ActivityRepository>()));
+    gh.lazySingleton<_i17.SyncUsecase>(() => _i17.SyncUsecase(
+          gh<_i13.LocalSyncRepository>(),
+          gh<_i10.FirebaseAuthRepository>(),
         ));
-    gh.lazySingleton<_i16.AuthUsecase>(
-        () => _i16.AuthUsecase(gh<_i10.FirebaseAuthRepository>()));
+    gh.factory<_i18.ActivitiesBloc>(() => _i18.ActivitiesBloc(
+          loadActivitiesUsecase: gh<_i19.LoadActivitiesUsecase>(),
+          switchActivityUsecase: gh<_i19.SwitchActivitiesUsecase>(),
+          addEmojiUsecase: gh<_i19.AddEmojiUsecase>(),
+          editNameUsecase: gh<_i19.EditNameUsecase>(),
+          editRecordsUsecase: gh<_i19.EditRecordsUsecase>(),
+        ));
+    gh.lazySingleton<_i20.AuthUsecase>(
+        () => _i20.AuthUsecase(gh<_i10.FirebaseAuthRepository>()));
     return this;
   }
 }

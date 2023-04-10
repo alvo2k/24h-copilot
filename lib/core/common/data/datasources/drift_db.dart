@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../../core/error/exceptions.dart';
 import '../../../../features/activities/data/datasources/data_sources_contracts.dart';
+import '../../../../features/firebase/data/datasources/sync_local_datasource.dart';
 
 part 'drift_db.g.dart';
 
@@ -38,9 +39,12 @@ class Activities extends Table {
   IntColumn get goal => integer().nullable()();
 }
 
+// [SyncLocalDataSource] has been manually injected into the injectable.dart file as a singleton,
+// resulting in two instances of the ActivityDatabase.
 @LazySingleton(as: ActivityLocalDataSource)
 @DriftDatabase(tables: [Records, Activities])
-class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
+class ActivityDatabase extends _$ActivityDatabase
+    with ActivityLocalDataSource, SyncLocalDataSource {
   ActivityDatabase() : super(_openConnection());
 
   ActivityDatabase._(QueryExecutor e) : super(e);
@@ -181,6 +185,21 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   Future<DriftActivityModel> _getActivityModel(String name) {
     return (select(activities)..where((a) => a.name.equals(name))).getSingle();
   }
+
+  @override
+  Stream<List<DriftActivityModel>> watchAllActivities() =>
+      select(activities).watch();
+
+  @override
+  Stream<List<DriftRecordModel>> watchAllRecords({int? from}) {
+    if (from != null) {
+      return (select(records)
+            ..where((tbl) => tbl.startTime.isBiggerOrEqualValue(from)))
+          .watch();
+    } else {
+      return select(records).watch();
+    }
+  }
 }
 
 class RecordWithActivitySettings {
@@ -195,6 +214,7 @@ LazyDatabase _openConnection() {
     try {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(path.join(dbFolder.path, 'activities.sqlite'));
+      driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
       return NativeDatabase(file);
     } on MissingPlatformDirectoryException {
       return NativeDatabase(

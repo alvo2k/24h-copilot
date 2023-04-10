@@ -30,13 +30,7 @@ class CommonDrawer extends StatelessWidget {
           children: <Widget>[
             const UserDrawerHeader(),
             const LoginLogOutListTile(),
-            ListTile(
-              leading: const Icon(Icons.sync),
-              title: Text(AppLocalizations.of(context)!.synchronization),
-              onTap: () {
-                // handle synchronization logic
-              },
-            ),
+            const SyncListTile(),
             ListTile(
               leading: const Icon(Icons.feedback),
               title: Text(AppLocalizations.of(context)!.feedback),

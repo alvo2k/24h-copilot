@@ -307,6 +307,7 @@ class _NewActivityCardState extends State<NewActivityCard> {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: TextField(
+                      textCapitalization: TextCapitalization.sentences,
                       focusNode: focusNode,
                       onEditingComplete: () => focusNode.unfocus(),
                       onSubmitted: (_) => focusNode.unfocus(),

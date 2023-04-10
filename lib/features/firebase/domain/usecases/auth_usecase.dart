@@ -28,9 +28,7 @@ class AuthUsecase extends UseCase<Stream<User?>, AuthParams> {
 
   Future signOut() => _repository.signOut();
 
-  User? getUser() {
-    return FirebaseAuth.instance.currentUser;
-  }
+  User? getUser() => _repository.getUser();
 }
 
 class AuthParams {

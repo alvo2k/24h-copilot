@@ -6,6 +6,8 @@ import '../../../../core/error/return_types.dart';
 abstract class FirebaseAuthRepository {
   Future<Either<Failure, Stream<User?>>> initialize();
 
+  User? getUser();
+
   Future<Either<Failure, UserCredential>> createUser(String email, String pass);
 
   Future<Either<Failure, UserCredential>> signIn(String email, String pass);

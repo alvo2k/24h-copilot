@@ -96,4 +96,7 @@ class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
     // TODO: implement updateEmail
     throw UnimplementedError();
   }
+
+  @override
+  User? getUser() => FirebaseAuth.instance.currentUser;
 }

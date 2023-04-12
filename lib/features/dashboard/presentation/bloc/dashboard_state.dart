@@ -13,13 +13,13 @@ class DashboardInitial extends DashboardState {}
 class DashboardLoading extends DashboardState {}
 
 class DashboardLoaded extends DashboardState {
-  final PieChartData data;
-
   const DashboardLoaded(this.data);
+
+  final PieChartData data;
 }
 
 class DashboardFailure extends DashboardState {
-  final String message;
-
   const DashboardFailure(this.message);
+
+  final String message;
 }

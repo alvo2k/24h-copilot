@@ -43,6 +43,7 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
         ActivityListTile(
           widget.toChange,
           minimalVersion: true,
+          hideEmojiPicker: true,
         ),
       ];
     }
@@ -50,6 +51,7 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
       ActivityListTile(
         widget.toChange,
         minimalVersion: true,
+        hideEmojiPicker: true,
       ),
       NewActivityCard(_controller),
     ];

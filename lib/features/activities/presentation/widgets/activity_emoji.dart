@@ -8,9 +8,14 @@ import '../bloc/activities_bloc.dart';
 import 'emoji_dialog_picker.dart';
 
 class ActivityEmoji extends StatefulWidget {
-  const ActivityEmoji(this.activity, {super.key});
+  const ActivityEmoji(
+    this.activity, {
+    required this.hideEmojiPicker,
+    super.key,
+  });
 
   final Activity activity;
+  final bool hideEmojiPicker;
 
   @override
   State<ActivityEmoji> createState() => _ActivityEmojiState();
@@ -55,9 +60,11 @@ class _ActivityEmojiState extends State<ActivityEmoji> {
     }
     final activityBloc = BlocProvider.of<ActivitiesBloc>(context);
     return emoji == null
-        ? TextButton(
-            child: Text(AppLocalizations.of(context)!.emojiSelectPrompt),
-            onPressed: () => showDialogPicker(context, activityBloc))
+        ? widget.hideEmojiPicker
+            ? const SizedBox.shrink()
+            : TextButton(
+                child: Text(AppLocalizations.of(context)!.emojiSelectPrompt),
+                onPressed: () => showDialogPicker(context, activityBloc))
         : Padding(
             padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
             child: GestureDetector(

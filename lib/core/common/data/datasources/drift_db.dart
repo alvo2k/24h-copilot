@@ -38,7 +38,7 @@ class Activities extends Table {
   IntColumn get goal => integer().nullable()();
 }
 
-@LazySingleton(as: ActivityLocalDataSource)
+@LazySingleton()
 @DriftDatabase(tables: [Records, Activities])
 class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   ActivityDatabase() : super(_openConnection());

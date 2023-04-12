@@ -1,8 +1,8 @@
-import '../bloc/edit_mode_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/activity_day.dart';
+import '../bloc/edit_mode_cubit.dart';
 import 'activity_list_tile.dart';
 import 'edit_mode_separator.dart';
 

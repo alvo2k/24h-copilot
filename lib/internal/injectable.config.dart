@@ -17,7 +17,7 @@ import 'package:copilot/features/activities/data/repositories/activity_repositor
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart'
     as _i5;
 import 'package:copilot/features/activities/domain/usecases/activities_usecases.dart'
-    as _i15;
+    as _i18;
 import 'package:copilot/features/activities/domain/usecases/add_emoji_usecase.dart'
     as _i7;
 import 'package:copilot/features/activities/domain/usecases/edit_name_usecase.dart'
@@ -27,15 +27,21 @@ import 'package:copilot/features/activities/domain/usecases/edit_records_usecase
 import 'package:copilot/features/activities/domain/usecases/load_activities_usecase.dart'
     as _i12;
 import 'package:copilot/features/activities/domain/usecases/switch_activities_usecase.dart'
-    as _i13;
+    as _i16;
 import 'package:copilot/features/activities/presentation/bloc/activities_bloc.dart'
+    as _i17;
+import 'package:copilot/features/dashboard/data/repositories/pie_chart_data_repository_impl.dart'
     as _i14;
+import 'package:copilot/features/dashboard/domain/repositories/pie_chart_data_repositoty.dart'
+    as _i13;
+import 'package:copilot/features/dashboard/domain/usecases/pie_chart_data_usecase.dart'
+    as _i15;
 import 'package:copilot/features/firebase/data/repositories/firebase_auth_repository_impl.dart'
     as _i11;
 import 'package:copilot/features/firebase/domain/repositories/firebase_auth_repository.dart'
     as _i10;
 import 'package:copilot/features/firebase/domain/usecases/auth_usecase.dart'
-    as _i16;
+    as _i19;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
@@ -63,17 +69,21 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i11.FirebaseAuthRepositoryImpl());
     gh.lazySingleton<_i12.LoadActivitiesUsecase>(
         () => _i12.LoadActivitiesUsecase(gh<_i5.ActivityRepository>()));
-    gh.lazySingleton<_i13.SwitchActivitiesUsecase>(
-        () => _i13.SwitchActivitiesUsecase(gh<_i5.ActivityRepository>()));
-    gh.factory<_i14.ActivitiesBloc>(() => _i14.ActivitiesBloc(
-          loadActivitiesUsecase: gh<_i15.LoadActivitiesUsecase>(),
-          switchActivityUsecase: gh<_i15.SwitchActivitiesUsecase>(),
-          addEmojiUsecase: gh<_i15.AddEmojiUsecase>(),
-          editNameUsecase: gh<_i15.EditNameUsecase>(),
-          editRecordsUsecase: gh<_i15.EditRecordsUsecase>(),
+    gh.lazySingleton<_i13.PieChartDataRepository>(
+        () => _i14.PieChartDataRepositoryImpl(gh<_i4.ActivityDatabase>()));
+    gh.lazySingleton<_i15.PieChartDataUsecase>(
+        () => _i15.PieChartDataUsecase(gh<_i13.PieChartDataRepository>()));
+    gh.lazySingleton<_i16.SwitchActivitiesUsecase>(
+        () => _i16.SwitchActivitiesUsecase(gh<_i5.ActivityRepository>()));
+    gh.factory<_i17.ActivitiesBloc>(() => _i17.ActivitiesBloc(
+          loadActivitiesUsecase: gh<_i18.LoadActivitiesUsecase>(),
+          switchActivityUsecase: gh<_i18.SwitchActivitiesUsecase>(),
+          addEmojiUsecase: gh<_i18.AddEmojiUsecase>(),
+          editNameUsecase: gh<_i18.EditNameUsecase>(),
+          editRecordsUsecase: gh<_i18.EditRecordsUsecase>(),
         ));
-    gh.lazySingleton<_i16.AuthUsecase>(
-        () => _i16.AuthUsecase(gh<_i10.FirebaseAuthRepository>()));
+    gh.lazySingleton<_i19.AuthUsecase>(
+        () => _i19.AuthUsecase(gh<_i10.FirebaseAuthRepository>()));
     return this;
   }
 }

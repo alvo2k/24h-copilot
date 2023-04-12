@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../features/activities/presentation/bloc/edit_mode_cubit.dart';
 import '../../../features/activities/presentation/pages/activities_page.dart';
+import '../../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../../../features/dashboard/presentation/pages/dashboard_page.dart';
 import 'common_drawer.dart';
 
 class MainScaffold extends StatefulWidget {
@@ -19,7 +21,7 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   final List<Widget> _pages = [
     const ActivitiesPage(),
-    const Center(child: Icon(Icons.dashboard)),
+    const DashboardPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -28,25 +30,55 @@ class _MainScaffoldState extends State<MainScaffold> {
     });
   }
 
+  void _rangePicker() {
+    showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now().subtract(const Duration(days: 90)),
+      lastDate: DateTime.now(),
+    ).then((range) {
+      if (range != null) {
+        BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(
+          range.start,
+          range.end,
+        ));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white70,
-        foregroundColor: const Color.fromARGB(255, 0, 0, 0),
+        // backgroundColor: Colors.white70,
+        // foregroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
         title: Text(AppLocalizations.of(context)!.activities),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: IconButton(
-              icon: SvgPicture.asset('assets/icons/edit_mode.svg'),
-              tooltip: 'Edit mode',
-              onPressed: () {
-                BlocProvider.of<EditModeCubit>(context).toggle();
-              },
-            ),
-          ),
+          currentIndex == 0
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/edit_mode.svg',
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                    tooltip: 'Edit mode',
+                    onPressed: () {
+                      BlocProvider.of<EditModeCubit>(context).toggle();
+                    },
+                  ),
+                )
+              : const SizedBox.shrink(),
+          currentIndex == 1
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: IconButton(
+                    icon: const Icon(Icons.date_range_outlined),
+                    tooltip: 'Choose date range',
+                    onPressed: _rangePicker,
+                  ),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
       drawer: const CommonDrawer(),

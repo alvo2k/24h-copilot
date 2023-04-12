@@ -5,13 +5,20 @@ import 'activity_emoji.dart';
 import 'activity_time.dart';
 
 class ActivityListTile extends StatelessWidget {
-  const ActivityListTile(this.activity,
-      {super.key, this.minimalVersion = false});
+  const ActivityListTile(
+    this.activity, {
+    super.key,
+    this.minimalVersion = false,
+    this.padding = 76,
+    this.hideEmojiPicker = false,
+  });
 
   static const cardHeight = 122.0;
 
   final Activity activity;
+  final bool hideEmojiPicker;
   final bool minimalVersion;
+  final double padding;
 
   static const _leftBarWidth = 4.0;
   static const _leftPadding = 40.0;
@@ -31,14 +38,14 @@ class ActivityListTile extends StatelessWidget {
     );
   }
 
-  static double determineWidth(BuildContext context, bool minimalVersion) {
+  static double determineWidth(BuildContext context, bool minimalVersion,
+      [double padding = 76]) {
     var preferredWidth = 500.0;
     if (minimalVersion) {
-      const dialogPadding = 76;
       preferredWidth =
-          MediaQuery.of(context).size.width - dialogPadding > preferredWidth
+          MediaQuery.of(context).size.width - padding > preferredWidth
               ? preferredWidth
-              : MediaQuery.of(context).size.width - dialogPadding;
+              : MediaQuery.of(context).size.width - padding;
     }
     return MediaQuery.of(context).size.width > preferredWidth
         ? preferredWidth - _leftPadding - _leftBarWidth - _rightPadding
@@ -106,11 +113,13 @@ class ActivityListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment:
+          minimalVersion ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
         if (!minimalVersion) _buildLeftBar(context),
         // card
         SizedBox(
-          width: determineWidth(context, minimalVersion),
+          width: determineWidth(context, minimalVersion, padding),
           height: cardHeight,
           child: Card(
             shape: shape,
@@ -147,7 +156,10 @@ class ActivityListTile extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ActivityEmoji(activity),
+                    ActivityEmoji(
+                      activity,
+                      hideEmojiPicker: hideEmojiPicker,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [

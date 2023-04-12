@@ -8,8 +8,8 @@ abstract class DashboardEvent extends Equatable {
 }
 
 class DashboardLoad extends DashboardEvent {
-  final DateTime from;
-  final DateTime? to;
+  const DashboardLoad(this.from, this.to);
 
-  const DashboardLoad(this.from, [this.to]);
+  final DateTime from;
+  final DateTime to;
 }

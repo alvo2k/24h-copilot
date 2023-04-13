@@ -86,6 +86,17 @@ class ActivityModel extends Activity {
         inLineTags: inLineTags,
       );
 
+  ActivityModel changeStartTime(DateTime startTime) => ActivityModel(
+        idRecord: idRecord,
+        name: name,
+        colorHex: colorHex,
+        startTimeUnix: startTime.toUtc().millisecondsSinceEpoch,
+        emoji: emoji,
+        endTimeUnix: endTimeUnix,
+        goal: goal,
+        inLineTags: inLineTags,
+      );
+
   DriftRecordModel toDriftRecord() => DriftRecordModel(
         idRecord: idRecord,
         activityName: name,

@@ -7,7 +7,8 @@ class ActivityDayDate extends StatelessWidget {
 
   final DateTime date;
 
-  String defineText(DateTime date, BuildContext context) {
+  static String formatDate(DateTime date, BuildContext context,
+      [String format = DateFormat.MONTH_WEEKDAY_DAY]) {
     final now = DateTime.now();
     if (date.year == now.year &&
         date.month == now.month &&
@@ -20,8 +21,7 @@ class ActivityDayDate extends StatelessWidget {
         date.day == yesterday.day) {
       return AppLocalizations.of(context)!.yesterday;
     }
-    return DateFormat(DateFormat.MONTH_WEEKDAY_DAY,
-            Localizations.localeOf(context).languageCode)
+    return DateFormat(format, Localizations.localeOf(context).languageCode)
         .format(date);
     // return date.toString().substring(0, 10);
   }
@@ -33,7 +33,7 @@ class ActivityDayDate extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Text(
-            defineText(date, context),
+            formatDate(date, context),
             style: const TextStyle(fontSize: 28),
           ),
         ),

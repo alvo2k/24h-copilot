@@ -1,8 +1,9 @@
-import '../../../../core/error/return_types.dart';
-import '../../domain/usecases/auth_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
+
+import '../../../../core/error/return_types.dart';
+import '../../domain/usecases/auth_usecase.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

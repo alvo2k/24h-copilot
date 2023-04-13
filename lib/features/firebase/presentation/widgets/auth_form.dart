@@ -7,16 +7,16 @@ import '../bloc/auth_bloc.dart';
 class AuthForm extends StatefulWidget {
   const AuthForm({required this.register, required this.loading, super.key});
 
-  final bool register;
   final bool loading;
+  final bool register;
 
   @override
   State<AuthForm> createState() => _AuthFormState();
 }
 
 class _AuthFormState extends State<AuthForm> {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController email = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController password = TextEditingController();
   final TextEditingController password2 = TextEditingController();
 

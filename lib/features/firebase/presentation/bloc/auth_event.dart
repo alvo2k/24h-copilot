@@ -37,6 +37,8 @@ class GetUserData extends Equatable {
 class AuthEvent extends Union4Impl<Register, SignIn, SignOut, GetUserData> {
   AuthEvent._(Union4<Register, SignIn, SignOut, GetUserData> union) : super(union);
 
+  factory AuthEvent.getUserData() => AuthEvent._(unions.fourth(const GetUserData()));
+
   factory AuthEvent.register(String email, String pass) =>
       AuthEvent._(unions.first(Register(email: email, pass: pass)));
 
@@ -44,8 +46,6 @@ class AuthEvent extends Union4Impl<Register, SignIn, SignOut, GetUserData> {
       AuthEvent._(unions.second(SignIn(email: email, pass: pass)));
 
   factory AuthEvent.signOut() => AuthEvent._(unions.third(const SignOut()));
-
-  factory AuthEvent.getUserData() => AuthEvent._(unions.fourth(const GetUserData()));
 
   static const unions = Quartet<Register, SignIn, SignOut, GetUserData>();
 }

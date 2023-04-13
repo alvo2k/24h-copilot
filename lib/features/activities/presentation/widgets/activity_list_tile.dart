@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../domain/entities/activity.dart';
 import 'activity_emoji.dart';
@@ -165,7 +166,8 @@ class ActivityListTile extends StatelessWidget {
                       children: [
                         activity.goal == null
                             ? const SizedBox.shrink()
-                            : Text('Goal: ${activity.goal}'),
+                            : Text(
+                                '${AppLocalizations.of(context)!.goal}: ${activity.goal}'),
                         ActivityTime(
                           startTime: activity.startTime,
                           endTime: activity.endTime,

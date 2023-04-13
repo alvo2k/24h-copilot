@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/auth_bloc.dart';
 
@@ -21,8 +22,8 @@ class UserDrawerHeader extends StatelessWidget {
           accountEmail: Text(loggedIn.email),
         ),
         (loggedOut) => const SizedBox.shrink(),
-        (noInternet) => const DrawerHeader(
-          child: Text('No internet'),
+        (noInternet) => DrawerHeader(
+          child: Text(AppLocalizations.of(context)!.noInternet),
         ),
       ),
     );

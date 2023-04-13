@@ -30,5 +30,14 @@
     "pickTime": "Pick a time for activity",
     "chooseActivity": "Choose a name for the activity",
     "invalidTime": "Invalid time",
-    "pickEmoji": "Choose an emoji"
+    "pickEmoji": "Choose an emoji",
+    "activities": "Activities",
+    "dashboard": "Dashboard",
+    "editMode": "Edit mode",
+    "dateRange": "Choose date range",
+    "loading": "Loading...",
+    "logout": "Log out",
+    "noInternet": "No Internet Connection",
+    "checkConnection": "Please check your internet connection and try again.",
+    "goal": "Goal"
 }

@@ -62,7 +62,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                       'assets/icons/edit_mode.svg',
                       color: Theme.of(context).iconTheme.color,
                     ),
-                    tooltip: 'Edit mode',
+                    tooltip: AppLocalizations.of(context)!.editMode,
                     onPressed: () {
                       BlocProvider.of<EditModeCubit>(context).toggle();
                     },
@@ -74,7 +74,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: IconButton(
                     icon: const Icon(Icons.date_range_outlined),
-                    tooltip: 'Choose date range',
+                    tooltip: AppLocalizations.of(context)!.dateRange,
                     onPressed: _rangePicker,
                   ),
                 )
@@ -83,14 +83,14 @@ class _MainScaffoldState extends State<MainScaffold> {
       ),
       drawer: const CommonDrawer(),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Activities',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.activities,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+            icon: const Icon(Icons.dashboard),
+            label: AppLocalizations.of(context)!.dashboard,
           ),
         ],
         currentIndex: currentIndex,

@@ -14,13 +14,13 @@ class LoginLogOutListTile extends StatelessWidget {
       builder: (context, state) => state.join(
         (initial) => const SizedBox.shrink(),
         (failure) => const SizedBox.shrink(),
-        (loading) => const ListTile(
-          leading: CircularProgressIndicator.adaptive(),
-          title: Text('Loading...'),
+        (loading) => ListTile(
+          leading: const CircularProgressIndicator.adaptive(),
+          title: Text(AppLocalizations.of(context)!.loading),
         ),
         (loggedIn) => ListTile(
           leading: const Icon(Icons.exit_to_app),
-          title: const Text('Log Out'),
+          title: Text(AppLocalizations.of(context)!.logout),
           onTap: () {
             BlocProvider.of<AuthBloc>(context).add(AuthEvent.signOut());
           },
@@ -37,11 +37,10 @@ class LoginLogOutListTile extends StatelessWidget {
             );
           },
         ),
-        (noInternet) => const ListTile(
-          leading: Icon(Icons.error),
-          title: Text('No Internet Connection'),
-          subtitle:
-              Text('Please check your internet connection and try again.'),
+        (noInternet) => ListTile(
+          leading: const Icon(Icons.error),
+          title: Text(AppLocalizations.of(context)!.noInternet),
+          subtitle: Text(AppLocalizations.of(context)!.checkConnection),
         ),
       ),
     );

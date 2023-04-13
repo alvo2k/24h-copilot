@@ -154,5 +154,41 @@
   "pickEmoji": "Выберите эмодзи",
   "@pickEmoji": {
     "description": "Предложение выбора эмодзи"
+  },
+  "activities": "Активности",
+  "@activities": {
+    "description": "Название экрана с активностями"
+  },
+  "dashboard": "Аналитика",
+  "@dashboard": {
+    "description": "Название экрана с аналитикой"
+  },
+  "editMode": "Режим редактирования",
+  "@dashboard": {
+    "description": "Подсказка к кнопке"
+  },
+  "dateRange": "Выбор даты",
+  "@dateRange": {
+    "description": "Подсказка к кнопке"
+  },
+  "loading": "Загрузка...",
+  "@dateRange": {
+    "description": "Индикация процесса загрузки"
+  },
+  "logout": "Выйти",
+  "@dateRange": {
+    "description": "Кнопка выхода из аккаунта"
+  },
+  "noInternet": "Нет соединения",
+  "@dateRange": {
+    "description": "Индикация отсутствия интернет соединения"
+  },
+  "checkConnection": "Проверьте подключение к интернету и попробуйте вновь",
+  "@dateRange": {
+    "description": "Индикация отсутствия интернет соединения"
+  },
+  "goal": "Цель",
+  "@goal": {
+    "description": "Цель установленная на активность"
   }
 }

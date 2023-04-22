@@ -8,6 +8,7 @@ import '../../../../core/common/data/models/activity_model.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
+import '../../domain/entities/edit_record.dart';
 import '../../domain/repositories/activity_repository.dart';
 
 @LazySingleton(as: ActivityRepository)
@@ -51,90 +52,70 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<Either<Failure, Activity>> editRecords({
-    required String name,
-    DateTime? startTime,
-    required Color color,
-    DateTime? endTime,
-    Activity? toChange,
-  }) async {
+  Future<Either<Failure, Activity>> editRecords(EditRecord editData) async {
     try {
-      await localDataSource.findActivitySettings(name) ??
-          await localDataSource.createActivity(name, color.value);
+      await localDataSource.findActivitySettings(editData.activityName) ??
+          await localDataSource.createActivity(
+              editData.activityName, editData.color.value);
 
-      return const Left(CacheFailure({'message': 'edit records unavalable'}));
-
-      //   if (toChange == null) {
-      //     // switch activity with start time change
-      //     assert(startTime != null);
-      //     await localDataSource.updateRecordTime(
-      //       idRecord: await localDataSource.getLastRecordId(),
-      //       endTime: startTime!.millisecondsSinceEpoch,
-      //     );
-      //     final row = await localDataSource.createRecord(
-      //         activityName: name, startTime: startTime.millisecondsSinceEpoch);
-      //     return Right(ActivityModel.fromDriftRow(row));
-      //   }
-
-      //   if (startTime == null && endTime == null) {
-      //     // overwrite record
-      //     final row = await localDataSource.updateRecordSettings(
-      //         idRecord: toChange.recordId, activityName: name);
-      //     return Right(ActivityModel.fromDriftRow(row));
-      //   }
-
-      //   if (startTime != null && endTime == null) {
-      //     if (toChange.endTime == null) {
-      //       // overwrite record
-      //       final row = await localDataSource.updateRecordSettings(
-      //           idRecord: toChange.recordId, activityName: name);
-      //       return Right(ActivityModel.fromDriftRow(row));
-      //     }
-      //     // toChange.endTime == startTime; startTime -- endTime
-      //     await localDataSource.updateRecordTime(
-      //       idRecord: toChange.recordId,
-      //       endTime: startTime.millisecondsSinceEpoch,
-      //     );
-      //     final row = await localDataSource.createRecord(
-      //       activityName: name,
-      //       startTime: startTime.millisecondsSinceEpoch,
-      //       endTime: toChange.endTime!.millisecondsSinceEpoch,
-      //     );
-      //     return Right(ActivityModel.fromDriftRow(row));
-      //   }
-      //   if (startTime == null && endTime != null) {
-      //     // assert(toChange.endTime != null);
-      //     // toChange.startTime == endTime; startTime -- endTime
-      //     await localDataSource.updateRecordTime(
-      //       idRecord: toChange.recordId,
-      //       startTime: endTime.millisecondsSinceEpoch,
-      //     );
-      //     final row = await localDataSource.createRecord(
-      //       activityName: name,
-      //       startTime: toChange.startTime.millisecondsSinceEpoch,
-      //       endTime: endTime.millisecondsSinceEpoch,
-      //     );
-      //     return Right(ActivityModel.fromDriftRow(row));
-      //   }
-
-      //   // insert in between
-      //   await localDataSource.updateRecordTime(
-      //     idRecord: toChange.recordId,
-      //     endTime: startTime!.millisecondsSinceEpoch,
-      //   );
-      //   final row = await localDataSource.createRecord(
-      //     activityName: name,
-      //     startTime: startTime.millisecondsSinceEpoch,
-      //     endTime: endTime!.millisecondsSinceEpoch,
-      //   );
-      //   await localDataSource.createRecord(
-      //     activityName: toChange.name,
-      //     startTime: endTime.millisecondsSinceEpoch,
-      //     endTime: toChange.endTime != null
-      //         ? toChange.endTime!.millisecondsSinceEpoch
-      //         : null,
-      //   );
-      //   return Right(ActivityModel.fromDriftRow(row));
+      switch (editData.mode) {
+        case EditMode.switchWithStartTime:
+          {
+            final row = await localDataSource.createRecord(
+                activityName: editData.activityName,
+                startTime: editData.startTime!.millisecondsSinceEpoch);
+            return Right(ActivityModel.fromDriftRow(row));
+          }
+        case EditMode.override:
+          {
+            final row = await localDataSource.updateRecordSettings(
+                idRecord: editData.toChange!.recordId,
+                activityName: editData.activityName);
+            if (editData.toChange!.endTime != null) {
+              return Right(ActivityModel.fromDriftRow(row)
+                  .changeEndTime(editData.toChange!.endTime!));
+            } else {
+              return Right(ActivityModel.fromDriftRow(row));
+            }
+          }
+        case EditMode.placeInside:
+          {
+            final row = await localDataSource.createRecord(
+              activityName: editData.activityName,
+              startTime: editData.startTime!.millisecondsSinceEpoch,
+            );
+            await localDataSource.createRecord(
+              activityName: editData.toChange!.name,
+              startTime: editData.endTime!.millisecondsSinceEpoch,
+            );
+            return Right(ActivityModel.fromDriftRow(row)
+                .changeEndTime(editData.endTime!));
+          }
+        case EditMode.placeAbove:
+          {
+            final row = await localDataSource.createRecord(
+              activityName: editData.activityName,
+              startTime: editData.toChange!.startTime.millisecondsSinceEpoch,
+            );
+            await localDataSource.updateRecordTime(
+              idRecord: editData.toChange!.recordId,
+              startTime: editData.endTime!.millisecondsSinceEpoch,
+            );
+            return Right(ActivityModel.fromDriftRow(row)
+                .changeEndTime(editData.endTime!));
+          }
+        case EditMode.placeBellow:
+          {
+            final row = await localDataSource.createRecord(
+              activityName: editData.activityName,
+              startTime: editData.startTime!.millisecondsSinceEpoch,
+            );
+            return Right(ActivityModel.fromDriftRow(row)
+                .changeEndTime(editData.toChange!.endTime!));
+          }
+        default:
+          return const Left(CacheFailure({'message': 'unknown edit mode'}));
+      }
     } on CacheException {
       return const Left(CacheFailure());
     }

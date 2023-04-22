@@ -73,7 +73,8 @@ class LoadActivitiesParams {
 
 extension TakesPlacesDates on Activity {
   List<DateTime> takesPlacesDates() {
-    if (DateUtils.dateOnly(endTime ?? DateTime.now()) ==
+    if (DateUtils.dateOnly((endTime ?? DateTime.now())
+            .subtract(const Duration(milliseconds: 1))) ==
         DateUtils.dateOnly(startTime)) {
       return [DateUtils.dateOnly(startTime)];
     } else {

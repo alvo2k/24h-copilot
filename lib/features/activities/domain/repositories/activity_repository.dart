@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/return_types.dart';
 import '../entities/activity.dart';
+import '../entities/edit_record.dart';
 
 abstract class ActivityRepository {
   /// Loads [Activities] for the selected day
@@ -31,13 +32,7 @@ abstract class ActivityRepository {
   });
 
   /// Edits records table and returns it entity
-  Future<Either<Failure, Activity>> editRecords({
-    required String name,
-    DateTime startTime,
-    required Color color,
-    DateTime endTime,
-    Activity toChange,
-  });
+  Future<Either<Failure, Activity>> editRecords(EditRecord record);
 
   Future<Either<Failure, bool>> hasActivitySettings(String activityName);
 }

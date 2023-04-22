@@ -31,7 +31,8 @@ class ActivityModel extends Activity {
               : null,
         );
 
-  factory ActivityModel.fromDriftRow(RecordWithActivitySettings row, [int? endTime]) =>
+  factory ActivityModel.fromDriftRow(RecordWithActivitySettings row,
+          [int? endTime]) =>
       ActivityModel(
         idRecord: row.record.idRecord,
         name: row.activity.name,

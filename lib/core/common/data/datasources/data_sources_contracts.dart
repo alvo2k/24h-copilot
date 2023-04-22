@@ -1,25 +1,23 @@
-import '../../../../core/common/data/datasources/drift_db.dart';
+import 'drift_db.dart';
 
 abstract class ActivityLocalDataSource {
   /// Gets list with all model fields.
-  /// where [from] & [to] - DateTime().millisecondsSinceEpoch in UTC
+  /// amount - ammount of records; skip - ammount of skiped records 
   Future<List<RecordWithActivitySettings>> getRecords({
-    required int from,
-    required int to,
+    required int ammount,
+    int? skip,
   });
 
   /// Inserts into records and returns class with all model fields
   Future<RecordWithActivitySettings> createRecord({
     required String activityName,
     required int startTime,
-    int? endTime,
   });
 
   /// Inserts into records and returns class with all model fields
   Future<void> updateRecordTime({
     required int idRecord,
-    int startTime,
-    int endTime,
+    required int startTime,
   });
 
   /// Changes [acitivityName] field in record and returns map with all model fields

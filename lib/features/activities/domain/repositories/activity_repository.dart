@@ -7,7 +7,10 @@ import '../entities/activity.dart';
 
 abstract class ActivityRepository {
   /// Loads [Activities] for the selected day
-  Future<Either<Failure, List<Activity>>> getActivities(DateTime forTheDay);
+  Future<Either<Failure, List<Activity>>> getActivities({
+    required int ammount,
+    int? skip,
+  });
 
   /// Saves the current [Activity] and returns a new one
   Future<Either<Failure, Activity>> switchActivities({

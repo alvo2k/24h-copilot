@@ -19,8 +19,6 @@ class Records extends Table {
 
   IntColumn get startTime => integer()();
 
-  IntColumn get endTime => integer().nullable()();
-
   TextColumn get emoji => text().nullable()();
 }
 
@@ -66,7 +64,6 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   Future<RecordWithActivitySettings> createRecord({
     required String activityName,
     required int startTime,
-    int? endTime,
   }) async {
     final nameExist = await (select(activities)
                   ..where((a) => a.name.equals(activityName)))
@@ -81,7 +78,6 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     final record = RecordsCompanion(
       activityName: Value(activityName),
       startTime: Value(startTime),
-      endTime: endTime == null ? const Value.absent() : Value(endTime),
     );
 
     final recordId = await into(records).insert(record);
@@ -113,16 +109,19 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   /// Includes [from], excluding [to]
   @override
   Future<List<RecordWithActivitySettings>> getRecords({
-    required int from,
-    required int to,
+    required int ammount,
+    int? skip,
   }) {
     final query = select(records).join([
       innerJoin(activities, activities.name.equalsExp(records.activityName))
     ])
-      ..where(
-          records.endTime.isBiggerOrEqualValue(from) | records.endTime.isNull())
-      ..where(records.startTime.isSmallerThanValue(to))
-      ..orderBy([OrderingTerm(expression: records.startTime)]);
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+          mode: OrderingMode.desc,
+        )
+      ])
+      ..limit(ammount, offset: skip);
 
     final result = query.get().then((rows) => rows
         .map((row) => RecordWithActivitySettings(
@@ -133,7 +132,35 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          await customStatement('ALTER TABLE records RENAME TO _records_old');
+          await customStatement('''
+            CREATE TABLE records (
+              id_record INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+              activity_name TEXT NOT NULL REFERENCES activities (name),
+              start_time INTEGER NOT NULL,
+              emoji TEXT NULL
+            )
+          ''');
+          await customStatement(
+              '''INSERT INTO records (activity_name, start_time, emoji)
+          SELECT activity_name, start_time, emoji
+          FROM _records_old
+          ''');
+          // await customStatement('DROP TABLE _records_old');
+        }
+      },
+    );
+  }
 
   @override
   Future<void> updateRecordEmoji(int idRecord, String emoji) async {
@@ -160,16 +187,10 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   @override
   Future<void> updateRecordTime({
     required int idRecord,
-    int? startTime,
-    int? endTime,
+    required int startTime,
   }) async {
-    final Value<int> valueStartTime =
-        startTime == null ? const Value.absent() : Value(startTime);
-    final Value<int> valueEndTime =
-        endTime == null ? const Value.absent() : Value(endTime);
-
-    await (update(records)..where((r) => r.idRecord.equals(idRecord))).write(
-        RecordsCompanion(startTime: valueStartTime, endTime: valueEndTime));
+    await (update(records)..where((r) => r.idRecord.equals(idRecord)))
+        .write(RecordsCompanion(startTime: Value(startTime)));
 
     return;
   }

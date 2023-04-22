@@ -31,13 +31,13 @@ class ActivityModel extends Activity {
               : null,
         );
 
-  factory ActivityModel.fromDriftRow(RecordWithActivitySettings row) =>
+  factory ActivityModel.fromDriftRow(RecordWithActivitySettings row, [int? endTime]) =>
       ActivityModel(
         idRecord: row.record.idRecord,
         name: row.activity.name,
         colorHex: row.activity.color,
         startTimeUnix: row.record.startTime,
-        endTimeUnix: row.record.endTime,
+        endTimeUnix: endTime,
         inLineTags: row.activity.tags,
         goal: row.activity.goal,
         emoji: row.record.emoji,
@@ -101,7 +101,6 @@ class ActivityModel extends Activity {
         idRecord: idRecord,
         activityName: name,
         startTime: startTimeUnix,
-        endTime: endTimeUnix,
         emoji: emoji,
       );
 

@@ -14,14 +14,26 @@ class ActivityDayWidget extends StatelessWidget {
   List<Widget> activityTiles(bool editMode) {
     List<Widget> activityList = [];
 
-    for (int i = 0; i < activities.activitiesInThisDay.length; i++) {
+    for (int i = activities.activitiesInThisDay.length - 1; i != -1; i--) {
       var activity = activities.activitiesInThisDay[i];
-      if (editMode) activityList.add(EditModeSeparator(activity, activities.date, addBefore: true,));
+      if (editMode) {
+        activityList.add(EditModeSeparator(
+          activity,
+          activities.date,
+          addBefore: true,
+        ));
+      }
       activityList.add(ActivityListTile(activity));
-      if (editMode) activityList.add(EditModeSeparator(activity, activities.date, addBefore: false,));
+      if (editMode) {
+        activityList.add(EditModeSeparator(
+          activity,
+          activities.date,
+          addBefore: false,
+        ));
+      }
       try {
         final endTimeText = activity.endTime.toString().substring(11, 16);
-        if (i != activities.activitiesInThisDay.length - 1) {
+        if (i != 0) {
           // if activity isnt last in the day
           // dont print endTime for the last activity
           activityList.add(

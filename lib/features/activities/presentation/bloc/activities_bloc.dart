@@ -22,6 +22,9 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
   }) : super(ActivitiesState.initial()) {
     List<ActivityDay> loadedActivities = [];
 
+    int loadedAmmount = 0;
+    const loadAmmount = 30;
+
     void changeActivity(Activity newActivity) {
       try {
         // add endTime to prev activity
@@ -50,19 +53,25 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         (loadActivities) async {
           emit(ActivitiesState.loading());
           final result = await loadActivitiesUsecase(
-            LoadActivitiesParams(DateTime(
-              loadActivities.forTheDay.year,
-              loadActivities.forTheDay.month,
-              loadActivities.forTheDay.day,
-            )),
+            LoadActivitiesParams(
+              ammount: loadAmmount,
+              skip: loadedAmmount,
+            ),
           );
           result.fold(
             (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (r) {
-              var activitiesInThisDay =
-                  ActivityDay(r, loadActivities.forTheDay);
-
-              loadedActivities.add(activitiesInThisDay);
+              if (r.isEmpty) {
+                loadedActivities
+                    .add(ActivityDay(const [], loadedActivities.last.date));
+              } else {
+                int ammountLoaded = 0;
+                for (final day in r) {
+                  ammountLoaded += day.activitiesInThisDay.length;
+                }
+                loadedAmmount += ammountLoaded;
+                loadedActivities.addAll(r);
+              }
               emit(ActivitiesState.loaded(loadedActivities));
             },
           );
@@ -120,20 +129,20 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
               }
               editedDate =
                   DateTime(editedDate.year, editedDate.month, editedDate.day);
-              final load =
-                  await loadActivitiesUsecase(LoadActivitiesParams(editedDate));
-              load.fold(
-                (l) => ActivitiesState.failure(l.prop['message']),
-                (r) {
-                  var activitiesInThisDay = ActivityDay(r, editedDate);
+              // final load =
+              //     await loadActivitiesUsecase(LoadActivitiesParams(editedDate));
+              // load.fold(
+              //   (l) => ActivitiesState.failure(l.prop['message']),
+              //   (r) {
+              //     var activitiesInThisDay = ActivityDay(r, editedDate);
 
-                  final index = loadedActivities
-                      .indexWhere((day) => day.date == editedDate);
-                  loadedActivities.insert(index, activitiesInThisDay);
-                  loadedActivities.removeAt(index + 1);
-                  emit(ActivitiesState.loaded(loadedActivities));
-                },
-              );
+              //     final index = loadedActivities
+              //         .indexWhere((day) => day.date == editedDate);
+              //     loadedActivities.insert(index, activitiesInThisDay);
+              //     loadedActivities.removeAt(index + 1);
+              //     emit(ActivitiesState.loaded(loadedActivities));
+              //   },
+              // );
             },
           );
         },

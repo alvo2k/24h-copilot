@@ -289,12 +289,6 @@ class $RecordsTable extends Records
   late final GeneratedColumn<int> startTime = GeneratedColumn<int>(
       'start_time', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _endTimeMeta =
-      const VerificationMeta('endTime');
-  @override
-  late final GeneratedColumn<int> endTime = GeneratedColumn<int>(
-      'end_time', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _emojiMeta = const VerificationMeta('emoji');
   @override
   late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
@@ -302,7 +296,7 @@ class $RecordsTable extends Records
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [idRecord, activityName, startTime, endTime, emoji];
+      [idRecord, activityName, startTime, emoji];
   @override
   String get aliasedName => _alias ?? 'records';
   @override
@@ -330,10 +324,6 @@ class $RecordsTable extends Records
     } else if (isInserting) {
       context.missing(_startTimeMeta);
     }
-    if (data.containsKey('end_time')) {
-      context.handle(_endTimeMeta,
-          endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta));
-    }
     if (data.containsKey('emoji')) {
       context.handle(
           _emojiMeta, emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta));
@@ -353,8 +343,6 @@ class $RecordsTable extends Records
           .read(DriftSqlType.string, data['${effectivePrefix}activity_name'])!,
       startTime: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}start_time'])!,
-      endTime: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}end_time']),
       emoji: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}emoji']),
     );
@@ -371,13 +359,11 @@ class DriftRecordModel extends DataClass
   final int idRecord;
   final String activityName;
   final int startTime;
-  final int? endTime;
   final String? emoji;
   const DriftRecordModel(
       {required this.idRecord,
       required this.activityName,
       required this.startTime,
-      this.endTime,
       this.emoji});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -385,9 +371,6 @@ class DriftRecordModel extends DataClass
     map['id_record'] = Variable<int>(idRecord);
     map['activity_name'] = Variable<String>(activityName);
     map['start_time'] = Variable<int>(startTime);
-    if (!nullToAbsent || endTime != null) {
-      map['end_time'] = Variable<int>(endTime);
-    }
     if (!nullToAbsent || emoji != null) {
       map['emoji'] = Variable<String>(emoji);
     }
@@ -399,9 +382,6 @@ class DriftRecordModel extends DataClass
       idRecord: Value(idRecord),
       activityName: Value(activityName),
       startTime: Value(startTime),
-      endTime: endTime == null && nullToAbsent
-          ? const Value.absent()
-          : Value(endTime),
       emoji:
           emoji == null && nullToAbsent ? const Value.absent() : Value(emoji),
     );
@@ -414,7 +394,6 @@ class DriftRecordModel extends DataClass
       idRecord: serializer.fromJson<int>(json['idRecord']),
       activityName: serializer.fromJson<String>(json['activityName']),
       startTime: serializer.fromJson<int>(json['startTime']),
-      endTime: serializer.fromJson<int?>(json['endTime']),
       emoji: serializer.fromJson<String?>(json['emoji']),
     );
   }
@@ -425,7 +404,6 @@ class DriftRecordModel extends DataClass
       'idRecord': serializer.toJson<int>(idRecord),
       'activityName': serializer.toJson<String>(activityName),
       'startTime': serializer.toJson<int>(startTime),
-      'endTime': serializer.toJson<int?>(endTime),
       'emoji': serializer.toJson<String?>(emoji),
     };
   }
@@ -434,13 +412,11 @@ class DriftRecordModel extends DataClass
           {int? idRecord,
           String? activityName,
           int? startTime,
-          Value<int?> endTime = const Value.absent(),
           Value<String?> emoji = const Value.absent()}) =>
       DriftRecordModel(
         idRecord: idRecord ?? this.idRecord,
         activityName: activityName ?? this.activityName,
         startTime: startTime ?? this.startTime,
-        endTime: endTime.present ? endTime.value : this.endTime,
         emoji: emoji.present ? emoji.value : this.emoji,
       );
   @override
@@ -449,15 +425,13 @@ class DriftRecordModel extends DataClass
           ..write('idRecord: $idRecord, ')
           ..write('activityName: $activityName, ')
           ..write('startTime: $startTime, ')
-          ..write('endTime: $endTime, ')
           ..write('emoji: $emoji')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(idRecord, activityName, startTime, endTime, emoji);
+  int get hashCode => Object.hash(idRecord, activityName, startTime, emoji);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -465,7 +439,6 @@ class DriftRecordModel extends DataClass
           other.idRecord == this.idRecord &&
           other.activityName == this.activityName &&
           other.startTime == this.startTime &&
-          other.endTime == this.endTime &&
           other.emoji == this.emoji);
 }
 
@@ -473,20 +446,17 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
   final Value<int> idRecord;
   final Value<String> activityName;
   final Value<int> startTime;
-  final Value<int?> endTime;
   final Value<String?> emoji;
   const RecordsCompanion({
     this.idRecord = const Value.absent(),
     this.activityName = const Value.absent(),
     this.startTime = const Value.absent(),
-    this.endTime = const Value.absent(),
     this.emoji = const Value.absent(),
   });
   RecordsCompanion.insert({
     this.idRecord = const Value.absent(),
     required String activityName,
     required int startTime,
-    this.endTime = const Value.absent(),
     this.emoji = const Value.absent(),
   })  : activityName = Value(activityName),
         startTime = Value(startTime);
@@ -494,14 +464,12 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
     Expression<int>? idRecord,
     Expression<String>? activityName,
     Expression<int>? startTime,
-    Expression<int>? endTime,
     Expression<String>? emoji,
   }) {
     return RawValuesInsertable({
       if (idRecord != null) 'id_record': idRecord,
       if (activityName != null) 'activity_name': activityName,
       if (startTime != null) 'start_time': startTime,
-      if (endTime != null) 'end_time': endTime,
       if (emoji != null) 'emoji': emoji,
     });
   }
@@ -510,13 +478,11 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
       {Value<int>? idRecord,
       Value<String>? activityName,
       Value<int>? startTime,
-      Value<int?>? endTime,
       Value<String?>? emoji}) {
     return RecordsCompanion(
       idRecord: idRecord ?? this.idRecord,
       activityName: activityName ?? this.activityName,
       startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
       emoji: emoji ?? this.emoji,
     );
   }
@@ -533,9 +499,6 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
     if (startTime.present) {
       map['start_time'] = Variable<int>(startTime.value);
     }
-    if (endTime.present) {
-      map['end_time'] = Variable<int>(endTime.value);
-    }
     if (emoji.present) {
       map['emoji'] = Variable<String>(emoji.value);
     }
@@ -548,7 +511,6 @@ class RecordsCompanion extends UpdateCompanion<DriftRecordModel> {
           ..write('idRecord: $idRecord, ')
           ..write('activityName: $activityName, ')
           ..write('startTime: $startTime, ')
-          ..write('endTime: $endTime, ')
           ..write('emoji: $emoji')
           ..write(')'))
         .toString();

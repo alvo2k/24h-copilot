@@ -67,37 +67,27 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
       if (onSameDate()) {
         final startTime = TimeOfDay.fromDateTime(widget.toChange.startTime);
         final now = TimeOfDay.now();
-        return (time.hour > startTime.hour ||
-                (time.hour >= startTime.hour &&
-                    time.minute >= startTime.minute)) &&
-            (time.hour < now.hour ||
-                (time.hour <= now.hour && time.minute <= now.minute));
+        return time.isBetween(startTime, now, true);
       } else {
         final now = TimeOfDay.now();
         return time.hour < now.hour ||
-            time.hour <= now.hour && time.minute < now.minute;
+            time.hour == now.hour && time.minute < now.minute;
       }
     } else {
       if (widget.addBefore) {
         final endTime =
             TimeOfDay.fromDateTime(widget.toChange.endTime ?? DateTime.now());
-        return (time.hour > fixedTime!.hour ||
-                (time.hour >= fixedTime!.hour &&
-                    time.minute > fixedTime!.minute)) &&
-            (time.hour < endTime.hour ||
-                (time.hour <= endTime.hour && time.minute <= endTime.minute));
+        return time.isBetween(fixedTime!, endTime, true);
       } else {
         if (onSameDate()) {
           final startTime = TimeOfDay.fromDateTime(widget.toChange.startTime);
-          return (time.hour < fixedTime!.hour ||
-                  (time.hour <= fixedTime!.hour &&
-                      time.minute < fixedTime!.minute)) &&
-              (time.hour > startTime.hour ||
-                  (time.hour >= startTime.hour &&
-                      time.minute >= startTime.minute));
+          if (fixedTime!.hour == 0 && fixedTime!.minute == 0) {
+            fixedTime = const TimeOfDay(hour: 23, minute: 59);
+          }
+          return time.isBetween(startTime, fixedTime!);
         } else {
           return time.hour < fixedTime!.hour ||
-              time.hour <= fixedTime!.hour && time.minute <= fixedTime!.minute;
+              time.hour == fixedTime!.hour && time.minute < fixedTime!.minute;
         }
       }
     }
@@ -246,15 +236,28 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
               BlocProvider.of<ActivitiesBloc>(context).add(
                 ActivitiesEvent.editRecords(
                   name: _controller.text.trim(),
-                  fixedTime: fixedTime == null
-                      ? null
-                      : DateTime(
-                          widget.activityDayDate.year,
-                          widget.activityDayDate.month,
-                          widget.activityDayDate.day,
-                          fixedTime!.hour,
-                          fixedTime!.minute,
-                        ),
+                  fixedTime: () {
+                    if (fixedTime != null) {
+                      if (fixedTime!.hour == 0 && fixedTime!.minute == 0) {
+                        if (!widget.addBefore) {
+                          return DateTime(
+                            widget.activityDayDate.year,
+                            widget.activityDayDate.month,
+                            widget.activityDayDate.day,
+                            fixedTime!.hour,
+                            fixedTime!.minute,
+                          ).add(const Duration(days: 1));
+                        }
+                      }
+                      return DateTime(
+                        widget.activityDayDate.year,
+                        widget.activityDayDate.month,
+                        widget.activityDayDate.day,
+                        fixedTime!.hour,
+                        fixedTime!.minute,
+                      );
+                    }
+                  }(),
                   selectedTime: selectedTime == null
                       ? null
                       : DateTime(
@@ -347,5 +350,23 @@ class _NewActivityCardState extends State<NewActivityCard> {
         ),
       ),
     );
+  }
+}
+
+extension on TimeOfDay {
+  bool isBetween(TimeOfDay startTime, TimeOfDay endTime,
+      [bool encludeEndTime = false]) {
+    final isBiggerStartTime = (hour > startTime.hour) ||
+        (hour == startTime.hour && minute >= startTime.minute);
+    final isSmallerEndTime = () {
+      if (encludeEndTime) {
+        return (hour < endTime.hour) ||
+            (hour == endTime.hour && minute <= endTime.minute);
+      } else {
+        return (hour < endTime.hour) ||
+            (hour == endTime.hour && minute < endTime.minute);
+      }
+    }();
+    return isBiggerStartTime && isSmallerEndTime;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
@@ -119,30 +120,20 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
             (l) =>
                 Future(() => emit(ActivitiesState.failure(l.prop['message']))),
             (r) async {
-              late DateTime editedDate;
-              if (editRecords.fixedTime != null) {
-                editedDate = editRecords.fixedTime!;
-              } else if (editRecords.selectedTime != null) {
-                editedDate = editRecords.selectedTime!;
-              } else {
-                editedDate = editRecords.toChange!.startTime;
-              }
-              editedDate =
-                  DateTime(editedDate.year, editedDate.month, editedDate.day);
-              // final load =
-              //     await loadActivitiesUsecase(LoadActivitiesParams(editedDate));
-              // load.fold(
-              //   (l) => ActivitiesState.failure(l.prop['message']),
-              //   (r) {
-              //     var activitiesInThisDay = ActivityDay(r, editedDate);
+              final DateTime editedDate = DateUtils.dateOnly(r.startTime);
 
-              //     final index = loadedActivities
-              //         .indexWhere((day) => day.date == editedDate);
-              //     loadedActivities.insert(index, activitiesInThisDay);
-              //     loadedActivities.removeAt(index + 1);
-              //     emit(ActivitiesState.loaded(loadedActivities));
-              //   },
-              // );
+              final result = await loadActivitiesUsecase.getActivitiesFromDate(
+                  editedDate, loadAmmount);
+              result.fold(
+                  (l) => emit(ActivitiesState.failure(l.prop['message'])), (r) {
+                for (int i = 0; i < loadedActivities.length; i++) {
+                  if (loadedActivities[i].date == editedDate) {
+                    loadedActivities[i] = r;
+                    emit(ActivitiesState.loaded(loadedActivities));
+                    return;
+                  }
+                }
+              });
             },
           );
         },

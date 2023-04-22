@@ -43,13 +43,13 @@ class EditRecords extends Equatable {
     required this.name,
     this.fixedTime,
     this.selectedTime,
-    this.toChange,
+    required this.toChange,
   });
 
   final DateTime? fixedTime;
   final String name;
   final DateTime? selectedTime;
-  final Activity? toChange;
+  final Activity toChange;
 
   @override
   List<Object?> get props => [fixedTime, name, selectedTime, toChange];
@@ -76,7 +76,7 @@ class ActivitiesEvent extends Union5Impl<LoadActivities, SwitchActivity,
     DateTime? fixedTime,
     required String name,
     DateTime? selectedTime,
-    Activity? toChange,
+    required Activity toChange,
   }) =>
       ActivitiesEvent._(unions.fifth(EditRecords(
         fixedTime: fixedTime,

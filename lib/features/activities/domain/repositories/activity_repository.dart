@@ -7,7 +7,7 @@ import '../entities/activity.dart';
 import '../entities/edit_record.dart';
 
 abstract class ActivityRepository {
-  /// Loads [Activities] for the selected day
+  /// Loads [Activities] order by startTime with limit(ammount, offset: skip)
   Future<Either<Failure, List<Activity>>> getActivities({
     required int ammount,
     int? skip,

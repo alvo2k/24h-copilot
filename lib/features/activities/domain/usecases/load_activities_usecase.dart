@@ -62,6 +62,30 @@ class LoadActivitiesUsecase
 
     return outList;
   }
+
+  ActivityDay _formDay(List<Activity> activities, DateTime date) {
+    date = DateUtils.dateOnly(date);
+    // ignore: prefer_const_literals_to_create_immutables
+    final activityDay = ActivityDay([], date);
+    for (final activity in activities) {
+      final activityDates = activity.takesPlacesDates();
+      for (final activityDate in activityDates) {
+        if (activityDate == date) {
+          activityDay.activitiesInThisDay.add(activity);
+        }
+      }
+    }
+    return activityDay;
+  }
+
+  Future<Either<Failure, ActivityDay>> getActivitiesFromDate(
+      DateTime date, int searchInTop) async {
+    final result = await repository.getActivities(ammount: searchInTop);
+
+    return result.fold((l) => Left(l), (r) {
+      return Right(_formDay(r, date));
+    });
+  }
 }
 
 class LoadActivitiesParams {

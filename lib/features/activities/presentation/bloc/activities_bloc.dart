@@ -30,11 +30,11 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
       try {
         // add endTime to prev activity
         final prevActivity =
-            loadedActivities.first.activitiesInThisDay.last as ActivityModel;
+            loadedActivities.first.activitiesInThisDay.first as ActivityModel;
         final prevActivityWithEndTime =
             prevActivity.changeEndTime(newActivity.startTime);
 
-        loadedActivities.first.activitiesInThisDay.last =
+        loadedActivities.first.activitiesInThisDay.first =
             prevActivityWithEndTime;
       } on StateError {
         // first activity ever
@@ -43,10 +43,14 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         final now = DateTime.now();
         loadedActivities
             // ignore: prefer_const_literals_to_create_immutables
-            .add(ActivityDay([], DateTime(now.year, now.month, now.day)));
+            .add(ActivityDay([], DateUtils.dateOnly(now)));
       }
-      // add activity at the end of the day
-      loadedActivities.first.activitiesInThisDay.add(newActivity);
+      // add activity at the start (end) of the day
+      final newDay = [
+        newActivity,
+        ...loadedActivities.first.activitiesInThisDay
+      ];
+      loadedActivities.first.activitiesInThisDay = newDay;
     }
 
     on<ActivitiesEvent>((event, emit) async {

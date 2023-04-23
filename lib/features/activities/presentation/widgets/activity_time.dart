@@ -4,11 +4,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../bloc/minute_timer_cubit.dart';
 
 class ActivityTime extends StatefulWidget {
-  const ActivityTime(
-      {required this.startTime, required this.endTime, super.key});
+  const ActivityTime({
+    required this.startTime,
+    required this.endTime,
+    this.duration,
+    super.key,
+  });
 
   final DateTime? endTime;
   final DateTime startTime;
+  final Duration? duration;
 
   @override
   State<ActivityTime> createState() => _ActivityTimeState();
@@ -39,6 +44,18 @@ class _ActivityTimeState extends State<ActivityTime> {
         final alreadyPrefix = AppLocalizations.of(context)!.alreadyPrefix;
         final hourLetter = AppLocalizations.of(context)!.hourLetter;
         final minuteLetter = AppLocalizations.of(context)!.minuteLetter;
+
+        if (widget.duration != null) {
+          final totalMinutes = widget.duration!.inMinutes;
+          final hours = widget.duration!.inHours;
+          return Text(AppLocalizations.of(context)!.timeFormat(
+            'В этом промежутке: ',
+            hours,
+            hourLetter,
+            totalMinutes - hours * 60,
+            minuteLetter,
+          ));
+        }
 
         if (widget.endTime == null) {
           final now = DateTime.now();

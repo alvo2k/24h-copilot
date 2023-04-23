@@ -8,6 +8,8 @@ abstract class ActivityLocalDataSource {
     int? skip,
   });
 
+  Future<List<RecordWithActivitySettings>> getRecordsRange({required int from, required int to});
+
   /// Inserts into records and returns class with all model fields
   Future<RecordWithActivitySettings> createRecord({
     required String activityName,

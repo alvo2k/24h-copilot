@@ -38,6 +38,7 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
       (failure) => Left(failure),
       (activities) {
         List<Color> colorList = [];
+        Map<String, Duration> activitiesDuration = {};
         for (int i = 0; i < activities.length; i++) {
           if (!colorList.contains(activities[i].color)) {
             colorList.add(activities[i].color);
@@ -59,31 +60,28 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
               activities[i] = activities[i].changeEndTime(to);
             }
           }
+          if (activitiesDuration.containsKey(activities[i].name)) {
+            activitiesDuration[activities[i].name] =
+                activitiesDuration[activities[i].name]! +
+                    activities[i].durationSince(params.from);
+            activities.removeAt(i);
+            i--;
+          } else {
+            activitiesDuration[activities[i].name] =
+                activities[i].durationSince(params.from);
+          }
         }
         final data = PieChartData(
           activities: activities,
           colorList: colorList,
-          dataMap: _dataMap(activities, params.from),
+          dataMap: activitiesDuration
+              .map((key, value) => MapEntry(key, value.inMinutes.toDouble())),
           from: params.from,
           to: params.to,
         );
         return Right(data);
       },
     );
-  }
-
-  Map<String, double> _dataMap(List<ActivityModel> activities, DateTime from) {
-    Map<String, double> dataMap = {};
-    for (final activity in activities) {      
-      if (dataMap.containsKey(activity.name)) {
-        dataMap[activity.name] = dataMap[activity.name]! +
-            activity.durationSince(from).inMinutes.toDouble();
-      } else {
-        dataMap[activity.name] =
-            activity.durationSince(from).inMinutes.toDouble();
-      }
-    }
-    return dataMap;
   }
 }
 

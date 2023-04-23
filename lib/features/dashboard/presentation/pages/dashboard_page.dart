@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-import '../../../activities/domain/entities/activity.dart';
 import '../../../activities/presentation/widgets/activity_day_date.dart';
+import '../../domain/entities/pie_chart_data.dart';
 import '../bloc/dashboard_bloc.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -47,15 +47,16 @@ class DashboardPage extends StatelessWidget {
         ),
       );
 
-  Widget _buildActivities(List<Activity> activities) {
+  Widget _buildActivities(PieChartData data) {
     return Column(
       children: [
-        for (final activity in activities)
+        for (final activity in data.activities)
           ActivityListTile(
             activity,
             minimalVersion: true,
             padding: 0,
             hideEmojiPicker: true,
+            duration: Duration(minutes: data.dataMap[activity.name]!.toInt()),
           ),
       ],
     );
@@ -78,7 +79,7 @@ class DashboardPage extends StatelessWidget {
                 child: _buildDate(state.data.from, state.data.to, context),
               ),
               _buildPie(state.data.dataMap, state.data.colorList, context),
-              _buildActivities(state.data.activities),
+              _buildActivities(state.data),
             ],
           ),
         );

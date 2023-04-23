@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../core/error/exceptions.dart';
-import '../../../../features/activities/data/datasources/data_sources_contracts.dart';
+import 'data_sources_contracts.dart';
 
 part 'drift_db.g.dart';
 
@@ -36,7 +36,7 @@ class Activities extends Table {
   IntColumn get goal => integer().nullable()();
 }
 
-@LazySingleton()
+@LazySingleton(as: ActivityLocalDataSource)
 @DriftDatabase(tables: [Records, Activities])
 class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   ActivityDatabase() : super(_openConnection());
@@ -107,6 +107,46 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }
 
   /// Includes [from], excluding [to]
+  @override
+  Future<List<RecordWithActivitySettings>> getRecordsRange({
+    required int from,
+    required int to,
+  }) async {
+    // find record with startTime closest to [from],
+    // this would be the first record because endTime of it would be in range
+    var query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..where(records.startTime.isSmallerOrEqualValue(from))
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+          mode: OrderingMode.desc,
+        )
+      ])
+      ..limit(1);
+    final firstRecord =
+        await query.map((r) => r.readTable(records)).getSingle();
+
+    // get all records between firstRecord.startTime and [to]
+    query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..where(records.startTime.isBiggerOrEqualValue(firstRecord.startTime))
+      ..where(records.startTime.isSmallerThanValue(to))
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+        )
+      ]);
+
+    final result = query.get().then((rows) => rows
+        .map((row) => RecordWithActivitySettings(
+            row.readTable(records), row.readTable(activities)))
+        .toList());
+    return result;
+  }
+
   @override
   Future<List<RecordWithActivitySettings>> getRecords({
     required int ammount,

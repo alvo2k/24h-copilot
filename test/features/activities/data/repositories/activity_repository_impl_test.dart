@@ -8,10 +8,9 @@ import 'package:copilot/features/activities/data/models/activity_model.dart';
 import 'package:copilot/features/activities/data/repositories/activity_repository_impl.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-@GenerateMocks([ActivityLocalDataSource])
+// @GenerateMocks([ActivityLocalDataSource])
 import 'activity_repository_impl_test.mocks.dart';
 
 // Broken Mockito methods in .mocks.dart

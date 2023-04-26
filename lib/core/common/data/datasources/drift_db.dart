@@ -243,6 +243,35 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   Future<DriftActivityModel> _getActivityModel(String name) {
     return (select(activities)..where((a) => a.name.equals(name))).getSingle();
   }
+
+  @override
+  Future<List<DriftActivityModel>> getActivitiesSettings() =>
+      select(activities).get();
+
+  @override
+  Future<DriftActivityModel> updateActivitySettings({
+    required String activityName,
+    String? newActivityName,
+    int? newColorHex,
+    String? tags,
+    int? newGoal,
+  }) async {
+    final result = await (update(activities)
+          ..where((a) => a.name.equals(activityName)))
+        .writeReturning(
+      ActivitiesCompanion(
+        name: newActivityName != null
+            ? Value(newActivityName)
+            : const Value.absent(),
+        color: newColorHex != null ? Value(newColorHex) : const Value.absent(),
+        tags: tags != null ? Value(tags) : const Value.absent(),
+        goal: newGoal != null ? Value(newGoal) : const Value.absent(),
+      ),
+    );
+
+    if (result.length != 1) throw CacheException();
+    return result[0];
+  }
 }
 
 class RecordWithActivitySettings {

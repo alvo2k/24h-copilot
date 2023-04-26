@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:equatable/equatable.dart';
 
-part 'activity_settings.dart';
+import '../../../../core/common/activity_settings.dart';
 
 class Activity extends ActivitySettings with EquatableMixin {
   Activity({

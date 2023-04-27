@@ -33,6 +33,10 @@ void main() {
     runApp(const CopilotApp());
   }, (Object error, StackTrace stack) {
     // TODO: error tracking service
+    if (kDebugMode) {
+      print(stack);
+      print(error);
+    }
     exit(1);
   });
 }

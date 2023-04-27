@@ -18,7 +18,7 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
     on<CardEditorEvent>((event, emit) async {
       if (event is LoadActivitiesSettings) {
         emit(CardEditorStateLoading());
-        loadUsecase(LoadActivitiesSettingsParams()).then(
+        await loadUsecase(LoadActivitiesSettingsParams()).then(
           (result) => result.fold(
             (l) => emit(CardEditorStateFailure(l.prop['message'])),
             (r) => emit(CardEditorStateLoaded(r)),
@@ -26,7 +26,7 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
         );
       } else if (event is UpdateActivitiesSettings) {
         emit(CardEditorStateLoading());
-        updateUsecase(UpdateActivitySettingsParams(
+        await updateUsecase(UpdateActivitySettingsParams(
           activityName: event.activityName,
           newActivityName: event.newActivityName,
           newColor: event.newColor,

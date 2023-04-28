@@ -271,7 +271,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         name: Value(newActivityName),
         color: Value(newColorHex),
         tags: Value(tags),
-        goal: Value(newGoal),
+        goal: newGoal == 0 ? const Value(null) : Value(newGoal),
       ),
     );
     if (result.length != 1) throw CacheException();

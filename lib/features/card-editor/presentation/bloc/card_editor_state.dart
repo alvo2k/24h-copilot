@@ -25,9 +25,3 @@ class CardEditorStateFailure extends CardEditorState {
 
   const CardEditorStateFailure(this.message);
 }
-
-class CardEditorStateUpdated extends CardEditorState {
-  final ActivitySettings settings;
-
-  const CardEditorStateUpdated(this.settings);
-}

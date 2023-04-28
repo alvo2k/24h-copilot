@@ -16,27 +16,41 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
   CardEditorBloc(this.loadUsecase, this.updateUsecase)
       : super(CardEditorStateInitial()) {
     on<CardEditorEvent>((event, emit) async {
+      List<ActivitySettings> currentActivities = [];
       if (event is LoadActivitiesSettings) {
         emit(CardEditorStateLoading());
         await loadUsecase(LoadActivitiesSettingsParams()).then(
           (result) => result.fold(
             (l) => emit(CardEditorStateFailure(l.prop['message'])),
-            (r) => emit(CardEditorStateLoaded(r)),
+            (r) {
+              currentActivities = r;
+              emit(CardEditorStateLoaded(currentActivities));
+            },
           ),
         );
       } else if (event is UpdateActivitiesSettings) {
         emit(CardEditorStateLoading());
-        await updateUsecase(UpdateActivitySettingsParams(
+        final updateResult = await updateUsecase(UpdateActivitySettingsParams(
           activityName: event.activityName,
           newActivityName: event.newActivityName,
           newColor: event.newColor,
           newGoal: event.newGoal,
           tags: event.tags,
-        )).then(
-          (result) => result.fold(
-            (l) => emit(CardEditorStateFailure(l.prop['message'])),
-            (r) => emit(CardEditorStateUpdated(r)),
-          ),
+        ));
+
+        await updateResult.fold(
+          (l) {
+            emit(CardEditorStateFailure(l.prop['message']));
+            emit(CardEditorStateLoaded(currentActivities));
+          },
+          (r) async {
+            await loadUsecase(LoadActivitiesSettingsParams()).then(
+              (result) => result.fold(
+                (l) => emit(CardEditorStateFailure(l.prop['message'])),
+                (r) => emit(CardEditorStateLoaded(r)),
+              ),
+            );
+          },
         );
       }
     });

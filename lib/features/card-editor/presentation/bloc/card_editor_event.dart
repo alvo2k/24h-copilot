@@ -11,15 +11,15 @@ class LoadActivitiesSettings extends CardEditorEvent {}
 
 class UpdateActivitiesSettings extends CardEditorEvent {
   final String activityName;
-  final String? newActivityName;
-  final Color? newColor;
+  final String newActivityName;
+  final Color newColor;
   final List<String>? tags;
   final int? newGoal;
 
   const UpdateActivitiesSettings({
     required this.activityName,
-    this.newActivityName,
-    this.newColor,
+    required this.newActivityName,
+    required this.newColor,
     this.tags,
     this.newGoal,
   });
@@ -27,8 +27,8 @@ class UpdateActivitiesSettings extends CardEditorEvent {
   @override
   List<Object> get props => [
         activityName,
-        newActivityName ?? '',
-        newColor ?? 0,
+        newActivityName,
+        newColor,
         tags ?? '',
         newGoal ?? 0,
       ];

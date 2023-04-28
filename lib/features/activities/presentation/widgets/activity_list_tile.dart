@@ -58,7 +58,7 @@ class ActivityListTile extends StatelessWidget {
             _rightPadding;
   }
 
-  static cardColor(BuildContext context) {
+  static Color cardColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.light
         ? const Color.fromRGBO(226, 226, 226, 1)
         : const Color.fromARGB(255, 25, 25, 25);
@@ -82,21 +82,24 @@ class ActivityListTile extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildTags(List<String> tags) {
+  static List<Widget> buildTags(List<String> tags) {
     if (tags.isEmpty) {
       return [];
     }
     return tags
-        .map((tag) => Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100)),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
-                child: Text(
-                  '#$tag',
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(fontSize: 12, color: Colors.green),
+        .map((tag) => SizedBox(
+              height: 35,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100)),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
+                  child: Text(
+                    '#$tag',
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(fontSize: 12, color: Colors.green),
+                  ),
                 ),
               ),
             ))
@@ -150,7 +153,9 @@ class ActivityListTile extends StatelessWidget {
                       width: 120,
                       height: 35,
                       child: ListView(
-                        children: _buildTags(activity.tags ?? []),
+                        reverse: true,
+                        scrollDirection: Axis.horizontal,
+                        children: buildTags(activity.tags ?? []),
                       ),
                     ),
                   ],

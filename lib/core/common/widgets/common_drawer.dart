@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../features/card-editor/presentation/pages/activities_settings_page.dart';
 import '../../../features/firebase/presentation/widgets/login_logout_list_tile.dart';
 import '../../../features/firebase/presentation/widgets/user_drawer_header.dart';
 import '../bloc/theame_cubit.dart';
@@ -34,6 +35,16 @@ class CommonDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context)!.synchronization),
               onTap: () {
                 // handle synchronization logic
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.edit_note),
+              title: const Text('Edit activities'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ActivitiesSettingsPage()));
               },
             ),
             ListTile(

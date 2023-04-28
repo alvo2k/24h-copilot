@@ -24,10 +24,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1
+  flutter_colorpicker: ^1.0.3
   flutter_dialogs: ^3.0.0
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^1.1.4
+  flutter_time_picker_spinner: ^2.0.0
   fluttertoast: ^8.2.1
   get_it: ^7.2.0
   hive_flutter: ^1.1.0

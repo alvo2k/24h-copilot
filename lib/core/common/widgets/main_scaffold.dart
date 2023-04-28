@@ -60,7 +60,9 @@ class _MainScaffoldState extends State<MainScaffold> {
                   child: IconButton(
                     icon: SvgPicture.asset(
                       'assets/icons/edit_mode.svg',
-                      color: Theme.of(context).iconTheme.color,
+                      color: Theme.of(context).primaryIconTheme.color,
+                      width: 22,
+                      height: 22,
                     ),
                     tooltip: AppLocalizations.of(context)!.editMode,
                     onPressed: () {

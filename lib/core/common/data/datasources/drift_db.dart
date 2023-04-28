@@ -127,7 +127,13 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
       ..limit(1);
     final firstRecord =
         await query.map((r) => r.readTable(records)).getSingleOrNull();
-    if (firstRecord == null) throw CacheException();
+    if (firstRecord == null) {
+      // either there are no records or all records are after [from]
+      if (await (select(records)..limit(1)).getSingleOrNull() == null) {
+        return [];
+      }
+      throw CacheException();
+    }
 
     // get all records between firstRecord.startTime and [to]
     query = select(records).join([

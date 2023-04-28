@@ -69,7 +69,12 @@ class DashboardPage extends StatelessWidget {
       if (state is DashboardLoading) {
         return const Center(child: CircularProgressIndicator.adaptive());
       }
-      if (state is DashboardFailure) return Center(child: Text(state.message));
+      if (state is DashboardFailure) {
+        if (state.message == 'No records found') {
+          // first launch
+        }
+        return Center(child: Text(state.message));
+      }
       if (state is DashboardLoaded) {
         return SingleChildScrollView(
           child: Column(

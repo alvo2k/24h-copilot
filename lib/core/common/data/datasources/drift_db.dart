@@ -256,6 +256,14 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     String? tags,
     int? newGoal,
   }) async {
+    final bool nameChanged = newActivityName != activityName;
+    if (nameChanged) {
+      // new name shouldn't be already taken
+      final exists = await (select(activities)
+            ..where((a) => a.name.equals(newActivityName)))
+          .getSingleOrNull();
+      if (exists != null) throw CacheException();
+    }
     final result = await (update(activities)
           ..where((a) => a.name.equals(activityName)))
         .writeReturning(
@@ -268,8 +276,13 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         goal: newGoal != null ? Value(newGoal) : const Value.absent(),
       ),
     );
-
     if (result.length != 1) throw CacheException();
+
+    if (nameChanged) {
+      // change activityName in records
+      await (update(records)..where((r) => r.activityName.equals(activityName)))
+          .write(RecordsCompanion(activityName: Value(newActivityName)));
+    }
     return result[0];
   }
 }

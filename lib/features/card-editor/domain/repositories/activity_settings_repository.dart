@@ -11,8 +11,8 @@ abstract class ActivitySettingsRepository {
 
   Future<Either<Failure, ActivitySettings>> updateActivitySettings({
     required String activityName,
-    String? newActivityName,
-    Color? newColor,
+    required String newActivityName,
+    required Color newColor,
     List<String>? tags,
     int? newGoal,
   });

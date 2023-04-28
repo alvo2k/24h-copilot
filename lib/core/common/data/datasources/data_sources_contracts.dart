@@ -17,10 +17,10 @@ abstract class ActivityLocalDataSource {
 
   Future<DriftActivityModel> updateActivitySettings({
     required String activityName,
-    String? newActivityName,
-    int? newColorHex,
-    String? tags,
-    int? newGoal,
+    required String newActivityName,
+    required int newColorHex,
+    required String? tags,
+    required int? newGoal,
   });
 
   /// Inserts into records and returns class with all model fields

@@ -33,17 +33,24 @@ class ActivitySettingsRepositoryImpl extends ActivitySettingsRepository {
   @override
   Future<Either<Failure, ActivitySettings>> updateActivitySettings({
     required String activityName,
-    String? newActivityName,
-    Color? newColor,
+    required String newActivityName,
+    required Color newColor,
     List<String>? tags,
     int? newGoal,
   }) async {
     try {
+      final inLineTags = () {
+        if (tags == null || tags.isEmpty) {
+          return null;
+        } else {
+          return tags.join(';');
+        }
+      }();
       final row = await localDataSource.updateActivitySettings(
         activityName: activityName,
         newActivityName: newActivityName,
-        newColorHex: newColor?.value,
-        tags: tags.toString(),
+        newColorHex: newColor.value,
+        tags: inLineTags,
         newGoal: newGoal,
       );
 

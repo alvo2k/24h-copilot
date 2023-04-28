@@ -251,10 +251,10 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   @override
   Future<DriftActivityModel> updateActivitySettings({
     required String activityName,
-    String? newActivityName,
-    int? newColorHex,
-    String? tags,
-    int? newGoal,
+    required String newActivityName,
+    required int newColorHex,
+    required String? tags,
+    required int? newGoal,
   }) async {
     final bool nameChanged = newActivityName != activityName;
     if (nameChanged) {
@@ -268,12 +268,10 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
           ..where((a) => a.name.equals(activityName)))
         .writeReturning(
       ActivitiesCompanion(
-        name: newActivityName != null
-            ? Value(newActivityName)
-            : const Value.absent(),
-        color: newColorHex != null ? Value(newColorHex) : const Value.absent(),
-        tags: tags != null ? Value(tags) : const Value.absent(),
-        goal: newGoal != null ? Value(newGoal) : const Value.absent(),
+        name: Value(newActivityName),
+        color: Value(newColorHex),
+        tags: Value(tags),
+        goal: Value(newGoal),
       ),
     );
     if (result.length != 1) throw CacheException();

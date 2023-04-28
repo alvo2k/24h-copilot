@@ -1,4 +1,6 @@
-part of 'activity.dart';
+import 'dart:ui';
+
+import 'package:equatable/equatable.dart';
 
 class ActivitySettings extends Equatable {
   const ActivitySettings({required this.name, this.tags, this.goal, required this.color});

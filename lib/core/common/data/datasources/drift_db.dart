@@ -243,6 +243,46 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   Future<DriftActivityModel> _getActivityModel(String name) {
     return (select(activities)..where((a) => a.name.equals(name))).getSingle();
   }
+
+  @override
+  Future<List<DriftActivityModel>> getActivitiesSettings() =>
+      select(activities).get();
+
+  @override
+  Future<DriftActivityModel> updateActivitySettings({
+    required String activityName,
+    required String newActivityName,
+    required int newColorHex,
+    required String? tags,
+    required int? newGoal,
+  }) async {
+    final bool nameChanged = newActivityName != activityName;
+    if (nameChanged) {
+      // new name shouldn't be already taken
+      final exists = await (select(activities)
+            ..where((a) => a.name.equals(newActivityName)))
+          .getSingleOrNull();
+      if (exists != null) throw CacheException();
+    }
+    final result = await (update(activities)
+          ..where((a) => a.name.equals(activityName)))
+        .writeReturning(
+      ActivitiesCompanion(
+        name: Value(newActivityName),
+        color: Value(newColorHex),
+        tags: Value(tags),
+        goal: newGoal == 0 ? const Value(null) : Value(newGoal),
+      ),
+    );
+    if (result.length != 1) throw CacheException();
+
+    if (nameChanged) {
+      // change activityName in records
+      await (update(records)..where((r) => r.activityName.equals(activityName)))
+          .write(RecordsCompanion(activityName: Value(newActivityName)));
+    }
+    return result[0];
+  }
 }
 
 class RecordWithActivitySettings {

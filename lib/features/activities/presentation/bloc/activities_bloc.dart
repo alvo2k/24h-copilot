@@ -67,8 +67,13 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
             (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (r) {
               if (r.isEmpty) {
-                loadedActivities
-                    .add(ActivityDay(const [], loadedActivities.last.date));
+                if (loadedActivities.isNotEmpty) {
+                  // empty day at the end indicates that there are no more activities to load
+                  loadedActivities.add(ActivityDay(
+                    const [],
+                    loadedActivities.last.date,
+                  ));
+                } // else first load ever
               } else {
                 int ammountLoaded = 0;
                 for (final day in r) {

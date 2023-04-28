@@ -2,13 +2,26 @@ import 'drift_db.dart';
 
 abstract class ActivityLocalDataSource {
   /// Gets list with all model fields.
-  /// amount - ammount of records; skip - ammount of skiped records 
+  /// amount - ammount of records; skip - ammount of skiped records
   Future<List<RecordWithActivitySettings>> getRecords({
     required int ammount,
     int? skip,
   });
 
-  Future<List<RecordWithActivitySettings>> getRecordsRange({required int from, required int to});
+  Future<List<RecordWithActivitySettings>> getRecordsRange({
+    required int from,
+    required int to,
+  });
+
+  Future<List<DriftActivityModel>> getActivitiesSettings();
+
+  Future<DriftActivityModel> updateActivitySettings({
+    required String activityName,
+    required String newActivityName,
+    required int newColorHex,
+    required String? tags,
+    required int? newGoal,
+  });
 
   /// Inserts into records and returns class with all model fields
   Future<RecordWithActivitySettings> createRecord({

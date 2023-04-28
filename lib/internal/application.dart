@@ -6,6 +6,7 @@ import '../core/common/bloc/theame_cubit.dart';
 import '../core/common/widgets/main_scaffold.dart';
 import '../features/activities/presentation/bloc/activities_bloc.dart';
 import '../features/activities/presentation/bloc/edit_mode_cubit.dart';
+import '../features/card-editor/presentation/bloc/card_editor_bloc.dart';
 import '../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../features/firebase/presentation/bloc/auth_bloc.dart';
 import 'injectable.dart';
@@ -41,6 +42,7 @@ class _CopilotAppState extends State<CopilotApp> {
         ),
         BlocProvider(create: (context) => AuthBloc(sl())),
         BlocProvider(create: (context) => DashboardBloc(sl())),
+        BlocProvider(create: (context) => CardEditorBloc(sl(), sl())),        
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, state) {

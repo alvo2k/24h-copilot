@@ -24,7 +24,6 @@ class EditRecordsDialog extends StatefulWidget {
 }
 
 class _EditRecordsDialogState extends State<EditRecordsDialog> {
-  late FToast fToast;
   TimeOfDay? fixedTime;
   TimeOfDay? selectedTime;
 
@@ -33,8 +32,6 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
   @override
   void initState() {
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
   }
 
   List<Widget> cards() {
@@ -110,10 +107,11 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
                 } else {
                   setState(() {
                     selectedTime = null;
-                    fToast.showToast(
-                      child: MyToast(AppLocalizations.of(context)!.invalidTime),
-                      gravity: ToastGravity.BOTTOM,
-                      toastDuration: const Duration(seconds: 5),
+                    showTopSnackBar(
+                      Overlay.of(context),
+                      CustomSnackBar.error(
+                        message: AppLocalizations.of(context)!.invalidTime,
+                      ),
                     );
                   });
                 }
@@ -219,18 +217,20 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
           title: Text(AppLocalizations.of(context)!.save),
           onPressed: () {
             if (selectedTime == null) {
-              fToast.showToast(
-                child: MyToast(AppLocalizations.of(context)!.pickTime),
-                gravity: ToastGravity.BOTTOM,
-                toastDuration: const Duration(seconds: 5),
+              showTopSnackBar(
+                Overlay.of(context),
+                CustomSnackBar.error(
+                  message: AppLocalizations.of(context)!.pickTime,
+                ),
               );
               return;
             }
             if (_controller.text.isEmpty) {
-              fToast.showToast(
-                child: MyToast(AppLocalizations.of(context)!.chooseActivity),
-                gravity: ToastGravity.BOTTOM,
-                toastDuration: const Duration(seconds: 5),
+              showTopSnackBar(
+                Overlay.of(context),
+                CustomSnackBar.error(
+                  message: AppLocalizations.of(context)!.chooseActivity,
+                ),
               );
               return;
             }
@@ -243,46 +243,46 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
               );
               return;
             }
-              BlocProvider.of<ActivitiesBloc>(context).add(
-                ActivitiesEvent.editRecords(
-                  name: _controller.text.trim(),
-                  fixedTime: () {
-                    if (fixedTime != null) {
-                      if (fixedTime!.hour == 0 && fixedTime!.minute == 0) {
-                        if (!widget.addBefore) {
-                          return DateTime(
-                            widget.activityDayDate.year,
-                            widget.activityDayDate.month,
-                            widget.activityDayDate.day,
-                            fixedTime!.hour,
-                            fixedTime!.minute,
-                          ).add(const Duration(days: 1));
-                        }
-                      }
-                      return DateTime(
-                        widget.activityDayDate.year,
-                        widget.activityDayDate.month,
-                        widget.activityDayDate.day,
-                        fixedTime!.hour,
-                        fixedTime!.minute,
-                      );
-                    }
-                  }(),
-                  selectedTime: selectedTime == null
-                      ? null
-                      : DateTime(
+            BlocProvider.of<ActivitiesBloc>(context).add(
+              ActivitiesEvent.editRecords(
+                name: _controller.text.trim(),
+                fixedTime: () {
+                  if (fixedTime != null) {
+                    if (fixedTime!.hour == 0 && fixedTime!.minute == 0) {
+                      if (!widget.addBefore) {
+                        return DateTime(
                           widget.activityDayDate.year,
                           widget.activityDayDate.month,
                           widget.activityDayDate.day,
-                          selectedTime!.hour,
-                          selectedTime!.minute,
-                        ),
-                  toChange: widget.toChange,
-                ),
-              );
-              // exit edit mode
-              BlocProvider.of<EditModeCubit>(context).toggle();
-              Navigator.pop(context);
+                          fixedTime!.hour,
+                          fixedTime!.minute,
+                        ).add(const Duration(days: 1));
+                      }
+                    }
+                    return DateTime(
+                      widget.activityDayDate.year,
+                      widget.activityDayDate.month,
+                      widget.activityDayDate.day,
+                      fixedTime!.hour,
+                      fixedTime!.minute,
+                    );
+                  }
+                }(),
+                selectedTime: selectedTime == null
+                    ? null
+                    : DateTime(
+                        widget.activityDayDate.year,
+                        widget.activityDayDate.month,
+                        widget.activityDayDate.day,
+                        selectedTime!.hour,
+                        selectedTime!.minute,
+                      ),
+                toChange: widget.toChange,
+              ),
+            );
+            // exit edit mode
+            BlocProvider.of<EditModeCubit>(context).toggle();
+            Navigator.pop(context);
           },
         ),
       ],

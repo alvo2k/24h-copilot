@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -43,15 +45,23 @@ class ActivitySettingsCard extends StatelessWidget {
                     ],
                   ),
                   // tags
-                  SizedBox(
-                    width: 120,
-                    height: 35,
-                    child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      primary: true,
-                      children: ActivityListTile.buildTags(activity.tags ?? []),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minWidth: max(constraints.maxWidth, 150),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: ActivityListTile.buildTags(
+                                  activity.tags ?? []),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

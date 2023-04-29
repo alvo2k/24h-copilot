@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -181,129 +183,144 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              ActivitySettingsCard(activity: activity, onPressed: () {}),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Name:',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    TextField(
-                      controller: nameController,
-                      onChanged: (newName) => setState(() {
-                        activity = activity.changeName(newName);
-                      }),
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        constraints: BoxConstraints(
-                          minWidth: 200,
-                          maxWidth: MediaQuery.of(context).size.width - 90,
-                          maxHeight: 30,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Color:',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Row(
+          child: Center(
+            child: SizedBox(
+              width: min(MediaQuery.of(context).size.width, 400),
+              child: Column(
+                children: [
+                  ActivitySettingsCard(activity: activity, onPressed: () {}),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ActivityListTile.buildCircle(color),
-                        ElevatedButton(
-                          onPressed: () {
-                            selectColor(context);
-                          },
-                          child: const Text('Change color'),
+                        const Text(
+                          'Name:',
+                          style: TextStyle(fontSize: 18),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Goal:',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Row(
-                      children: [
-                        goal == null
-                            ? const SizedBox.shrink()
-                            : Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Text('$goal minutes'),
-                              ),
-                        ElevatedButton(
-                            onPressed: pickGoal,
-                            child: const Text('Pick a goal')),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Tags:',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 35,
-                      width: MediaQuery.of(context).size.width - 85,
-                      child: ListView(
-                        physics: const BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          ...buildTags(tags ?? []),
-                          Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12.0,
-                                vertical: 0,
-                              ),
-                              child: TextField(
-                                onSubmitted: addTag,
-                                decoration: const InputDecoration(
-                                  prefixText: '# ',
-                                  border: InputBorder.none,
-                                  constraints: BoxConstraints(
-                                      minWidth: 100,
-                                      maxHeight: 25,
-                                      maxWidth: 150),
-                                ),
-                              ),
+                        TextField(
+                          controller: nameController,
+                          onChanged: (newName) => setState(() {
+                            activity = activity.changeName(newName);
+                          }),
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            constraints: BoxConstraints(
+                              maxWidth: min(
+                                  MediaQuery.of(context).size.width - 90, 300),
+                              maxHeight: 30,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Color:',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Row(
+                          children: [
+                            ActivityListTile.buildCircle(color),
+                            ElevatedButton(
+                              onPressed: () {
+                                selectColor(context);
+                              },
+                              child: const Text('Change color'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Goal:',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Row(
+                          children: [
+                            goal == null
+                                ? const SizedBox.shrink()
+                                : Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Text('$goal minutes'),
+                                  ),
+                            ElevatedButton(
+                                onPressed: pickGoal,
+                                child: const Text('Pick a goal')),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Tags:',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    minWidth: max(constraints.maxWidth, 150),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ...buildTags(tags ?? []),
+                                      Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(100)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0,
+                                            vertical: 0,
+                                          ),
+                                          child: TextField(
+                                            onSubmitted: addTag,
+                                            decoration: const InputDecoration(
+                                              isDense: true,
+                                              prefixText: '# ',
+                                              border: InputBorder.none,
+                                              constraints: BoxConstraints(
+                                                maxWidth: 120,
+                                                maxHeight: 25,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

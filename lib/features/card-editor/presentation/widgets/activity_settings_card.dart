@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../core/common/activity_settings.dart';
 import '../../../activities/presentation/widgets/activity_list_tile.dart';
@@ -73,9 +72,7 @@ class ActivitySettingsCard extends StatelessWidget {
                   children: [
                     activity.goal == null
                         ? const SizedBox.shrink()
-                        : Text(
-                            '${AppLocalizations.of(context)!.goal}: ${activity.goal}${AppLocalizations.of(context)!.minuteLetter}',
-                          ),
+                        : ActivityListTile.buildGoal(activity.goal!, context),
                   ],
                 ),
               )

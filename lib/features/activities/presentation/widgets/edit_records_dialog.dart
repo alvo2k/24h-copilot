@@ -237,8 +237,8 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
             if (_controller.text.trim().length > Constants.maxActivityName) {
               showTopSnackBar(
                 Overlay.of(context),
-                const CustomSnackBar.error(
-                  message: 'Activity name is too long',
+                CustomSnackBar.error(
+                  message: AppLocalizations.of(context)!.activityNameTooLong,
                 ),
               );
               return;

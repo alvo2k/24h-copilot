@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -61,7 +62,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Pick a color!'),
+        title: Text(AppLocalizations.of(context)!.pickColor),
         content: SingleChildScrollView(
           child: ColorPicker(
             pickerColor: color,
@@ -70,15 +71,15 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Got it'),
+            child: Text(AppLocalizations.of(context)!.cancel),
             onPressed: () {
+              setColor(widget.initialActivitySettings.color);
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.save),
             onPressed: () {
-              setColor(widget.initialActivitySettings.color);
               Navigator.of(context).pop();
             },
           ),
@@ -152,8 +153,8 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
     if (nameController.text.trim().isEmpty) {
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Activity name cannot be empty',
+        CustomSnackBar.error(
+          message: AppLocalizations.of(context)!.activityNameIsEmpty,
         ),
       );
       return;
@@ -161,8 +162,8 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
     if (tags != null && tags!.join(';').length > Constants.maxTagsLength) {
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'There is too many tags or they are too long',
+        CustomSnackBar.error(
+          message: AppLocalizations.of(context)!.tooManyTags,
         ),
       );
       return;
@@ -170,8 +171,8 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
     if (nameController.text.trim().length > Constants.maxActivityName) {
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Activity name is too long',
+        CustomSnackBar.error(
+          message: AppLocalizations.of(context)!.activityNameTooLong,
         ),
       );
       return;
@@ -213,9 +214,9 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Name:',
-                          style: TextStyle(fontSize: 18),
+                        Text(
+                          '${AppLocalizations.of(context)!.activityName}:',
+                          style: const TextStyle(fontSize: 18),
                         ),
                         TextField(
                           controller: nameController,
@@ -239,9 +240,9 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Color:',
-                          style: TextStyle(fontSize: 18),
+                        Text(
+                          '${AppLocalizations.of(context)!.color}:)}',
+                          style: const TextStyle(fontSize: 18),
                         ),
                         Row(
                           children: [
@@ -250,7 +251,8 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                               onPressed: () {
                                 selectColor(context);
                               },
-                              child: const Text('Change color'),
+                              child: Text(
+                                  AppLocalizations.of(context)!.changeColor),
                             ),
                           ],
                         ),
@@ -262,9 +264,9 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Goal:',
-                          style: TextStyle(fontSize: 18),
+                        Text(
+                          '${AppLocalizations.of(context)!.goal}:',
+                          style: const TextStyle(fontSize: 18),
                         ),
                         Row(
                           children: [
@@ -272,11 +274,14 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                                 ? const SizedBox.shrink()
                                 : Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
-                                    child: Text('$goal minutes'),
+                                    child: ActivityListTile.buildGoal(
+                                        goal!, context),
                                   ),
                             ElevatedButton(
-                                onPressed: pickGoal,
-                                child: const Text('Pick a goal')),
+                              onPressed: pickGoal,
+                              child: Text(
+                                  AppLocalizations.of(context)!.selectGoal),
+                            ),
                           ],
                         ),
                       ],
@@ -285,11 +290,10 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Tags:',
-                          style: TextStyle(fontSize: 18),
+                        Text(
+                          '${AppLocalizations.of(context)!.tags}:',
+                          style: const TextStyle(fontSize: 18),
                         ),
                         Expanded(
                           child: LayoutBuilder(

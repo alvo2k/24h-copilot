@@ -155,10 +155,6 @@
   "@pickEmoji": {
     "description": "Предложение выбора эмодзи"
   },
-  "activities": "Активности",
-  "@activities": {
-    "description": "Название экрана с активностями"
-  },
   "dashboard": "Аналитика",
   "@dashboard": {
     "description": "Название экрана с аналитикой"
@@ -190,5 +186,45 @@
   "goal": "Цель",
   "@goal": {
     "description": "Цель установленная на активность"
+  },
+  "editActivities": "Редактировать активности",
+  "@editActivities": {
+    "description": "Страница редактирования активности"
+  },
+  "activityNameTooLong": "Название у активности слишком длинное",
+  "@activityNameTooLong": {
+    "description": "Если длинна вводимой активности превышает предел"
+  },  
+  "activityNameIsEmpty": "Название у активности не может быть пустым!",
+  "@activityNameIsEmpty": {
+    "description": "Ошибка при выборе имени у активности"
+  },
+  "tooManyTags": "Слишком много тегов или они слишком длинные!",
+  "@tooManyTags": {
+    "description": "Ошибка при выборе имени у активности"
+  },
+  "tags": "Теги",
+  "@tags": {
+    "description": "Теги активности"
+  },
+  "activityName": "Название",
+  "@activityName": {
+    "description": "Выбор имени активности"
+  },
+  "pickColor": "Выберите цвет",
+  "@pickColor": {
+    "description": "Экран выбора цвета у активности"
+  },
+  "color": "Цвет",
+  "@color": {
+    "description": "Выбор цвета активности"
+  },
+  "changeColor": "Изменить цвет",
+  "@changeColor": {
+    "description": "Кнопка выбора цвета у активности"
+  },
+  "selectGoal": "Выберите цель",
+  "@selectGoal": {
+    "description": "Кнопка выбора цели у активности"
   }
 }

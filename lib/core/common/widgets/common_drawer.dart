@@ -39,7 +39,7 @@ class CommonDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.edit_note),
-              title: const Text('Edit activities'),
+              title: Text(AppLocalizations.of(context)!.editActivities),
               onTap: () {
                 Navigator.push(
                     context,

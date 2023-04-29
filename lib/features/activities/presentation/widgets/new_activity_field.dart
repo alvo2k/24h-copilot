@@ -31,8 +31,8 @@ class _NewActivityFieldState extends State<NewActivityField> {
     if (name.trim().length > Constants.maxActivityName) {
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Activity name is too long',
+        CustomSnackBar.error(
+          message: AppLocalizations.of(context)!.activityNameTooLong,
         ),
       );
       return;
@@ -69,7 +69,7 @@ class _NewActivityFieldState extends State<NewActivityField> {
           hintText: AppLocalizations.of(context)!.newActivityPrompt,
           suffixIcon: IconButton(
             iconSize: 30,
-            tooltip: 'Add activity',
+            tooltip: AppLocalizations.of(context)!.chooseActivity,
             splashRadius: 20.0,
             icon: const Icon(Icons.play_circle_outline),
             onPressed: _controller.text.isEmpty

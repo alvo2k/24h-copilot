@@ -30,7 +30,7 @@
     "pickTime": "Pick a time for activity",
     "chooseActivity": "Choose a name for the activity",
     "invalidTime": "Invalid time",
-    "pickEmoji": "Choose an emoji",
+    "pickEmoji": "Pick an emoji",
     "activities": "Activities",
     "dashboard": "Dashboard",
     "editMode": "Edit mode",
@@ -39,5 +39,15 @@
     "logout": "Log out",
     "noInternet": "No Internet Connection",
     "checkConnection": "Please check your internet connection and try again.",
-    "goal": "Goal"
+    "goal": "Goal",
+    "editActivities": "Edit activities",
+    "activityNameTooLong": "The activity name is too long",
+    "activityNameIsEmpty": "The name of the activity cannot be empty!",
+    "tooManyTags": "There is too many tags or they are too long!",
+    "tags": "Tags",
+    "activityName": "Name",
+    "pickColor": "Pick a color",
+    "color": "Color",
+    "changeColor": "Change color",
+    "selectGoal": "Select a goal"
 }

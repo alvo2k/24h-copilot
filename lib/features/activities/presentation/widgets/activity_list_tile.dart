@@ -127,6 +127,25 @@ class ActivityListTile extends StatelessWidget {
     return height > maxHeight ? maxHeight : height;
   }
 
+  static Widget buildGoal(int goal, BuildContext context) {
+    final hours = goal ~/ 60;
+    if (hours > 0) {
+      return Text(AppLocalizations.of(context)!.timeFormat(
+        AppLocalizations.of(context)!.alreadyPrefix,
+        hours,
+        AppLocalizations.of(context)!.hourLetter,
+        goal - hours * 60,
+        AppLocalizations.of(context)!.minuteLetter,
+      ));
+    } else {
+      return Text(AppLocalizations.of(context)!.timeFormatMinutes(
+        AppLocalizations.of(context)!.alreadyPrefix,
+        goal,
+        AppLocalizations.of(context)!.minuteLetter,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -194,8 +213,7 @@ class ActivityListTile extends StatelessWidget {
                       children: [
                         activity.goal == null
                             ? const SizedBox.shrink()
-                            : Text(
-                                '${AppLocalizations.of(context)!.goal}: ${activity.goal}'),
+                            : buildGoal(activity.goal!, context),
                         ActivityTime(
                           startTime: activity.startTime,
                           endTime: activity.endTime,

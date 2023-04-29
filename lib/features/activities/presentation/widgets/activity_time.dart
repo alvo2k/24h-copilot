@@ -45,18 +45,6 @@ class _ActivityTimeState extends State<ActivityTime> {
         final hourLetter = AppLocalizations.of(context)!.hourLetter;
         final minuteLetter = AppLocalizations.of(context)!.minuteLetter;
 
-        if (widget.duration != null) {
-          final totalMinutes = widget.duration!.inMinutes;
-          final hours = widget.duration!.inHours;
-          return Text(AppLocalizations.of(context)!.timeFormat(
-            'В этом промежутке: ',
-            hours,
-            hourLetter,
-            totalMinutes - hours * 60,
-            minuteLetter,
-          ));
-        }
-
         if (widget.endTime == null) {
           final now = DateTime.now();
           final totalMinutes = now.difference(widget.startTime).inMinutes;

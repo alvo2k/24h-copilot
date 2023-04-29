@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../../../core/utils/constants.dart';
 import '../bloc/activities_bloc.dart';
 
 class NewActivityField extends StatefulWidget {
@@ -25,6 +28,15 @@ class _NewActivityFieldState extends State<NewActivityField> {
 
   void _submitActivity(BuildContext context, String name) {
     if (name.isEmpty) return;
+    if (name.trim().length > Constants.maxActivityName) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: 'Activity name is too long',
+        ),
+      );
+      return;
+    }
 
     BlocProvider.of<ActivitiesBloc>(context)
         .add(ActivitiesEvent.switchActivity(name.trim()));

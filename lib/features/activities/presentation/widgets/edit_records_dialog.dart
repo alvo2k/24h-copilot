@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-import '../../../../core/common/widgets/my_toast.dart';
+import '../../../../core/utils/constants.dart';
 import '../../domain/entities/activity.dart';
 import '../bloc/activities_bloc.dart';
 import '../bloc/edit_mode_cubit.dart';
@@ -232,7 +233,16 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
                 toastDuration: const Duration(seconds: 5),
               );
               return;
-            } else {
+            }
+            if (_controller.text.trim().length > Constants.maxActivityName) {
+              showTopSnackBar(
+                Overlay.of(context),
+                const CustomSnackBar.error(
+                  message: 'Activity name is too long',
+                ),
+              );
+              return;
+            }
               BlocProvider.of<ActivitiesBloc>(context).add(
                 ActivitiesEvent.editRecords(
                   name: _controller.text.trim(),
@@ -273,7 +283,6 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
               // exit edit mode
               BlocProvider.of<EditModeCubit>(context).toggle();
               Navigator.pop(context);
-            }
           },
         ),
       ],

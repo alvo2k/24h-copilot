@@ -8,6 +8,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../core/common/activity_settings.dart';
+import '../../../../core/utils/constants.dart';
 import '../../../activities/presentation/widgets/activity_list_tile.dart';
 import '../bloc/card_editor_bloc.dart';
 import '../widgets/activity_settings_card.dart';
@@ -153,6 +154,24 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
         Overlay.of(context),
         const CustomSnackBar.error(
           message: 'Activity name cannot be empty',
+        ),
+      );
+      return;
+    }
+    if (tags != null && tags!.join(';').length > Constants.maxTagsLength) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: 'There is too many tags or they are too long',
+        ),
+      );
+      return;
+    }
+    if (nameController.text.trim().length > Constants.maxActivityName) {
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: 'Activity name is too long',
         ),
       );
       return;

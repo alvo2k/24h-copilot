@@ -58,10 +58,20 @@ class ActivityListTile extends StatelessWidget {
             _rightPadding;
   }
 
-  static Color cardColor(BuildContext context) {
+  static Color cardColor(BuildContext context, [Activity? activity]) {
+    if (activity != null && activity.goal != null) {
+      final duration = (activity.endTime ?? DateTime.now())
+          .difference(activity.startTime)
+          .inMinutes;
+      if (duration >= activity.goal!) {
+        return Theme.of(context).brightness == Brightness.light
+            ? const Color.fromRGBO(193, 232, 197, 1)
+            : Colors.green[900]!;
+      }
+    }
     return Theme.of(context).brightness == Brightness.light
         ? const Color.fromRGBO(226, 226, 226, 1)
-        : const Color.fromARGB(255, 25, 25, 25);
+        : const Color.fromRGBO(25, 25, 25, 1);
   }
 
   static ShapeBorder get shape =>
@@ -129,7 +139,7 @@ class ActivityListTile extends StatelessWidget {
           height: cardHeight,
           child: Card(
             shape: shape,
-            color: cardColor(context),
+            color: cardColor(context, activity),
             child: Column(
               children: [
                 // color, name, tags

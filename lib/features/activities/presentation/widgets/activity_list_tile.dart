@@ -131,7 +131,7 @@ class ActivityListTile extends StatelessWidget {
     final hours = goal ~/ 60;
     if (hours > 0) {
       return Text(AppLocalizations.of(context)!.timeFormat(
-        AppLocalizations.of(context)!.alreadyPrefix,
+        AppLocalizations.of(context)!.goal,
         hours,
         AppLocalizations.of(context)!.hourLetter,
         goal - hours * 60,
@@ -139,7 +139,7 @@ class ActivityListTile extends StatelessWidget {
       ));
     } else {
       return Text(AppLocalizations.of(context)!.timeFormatMinutes(
-        AppLocalizations.of(context)!.alreadyPrefix,
+        AppLocalizations.of(context)!.goal,
         goal,
         AppLocalizations.of(context)!.minuteLetter,
       ));

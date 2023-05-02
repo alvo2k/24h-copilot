@@ -29,9 +29,17 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
     late Either<Failure, List<ActivityModel>> activities;
     if (params.to == DateUtils.dateOnly(DateTime.now())) {
       // because range picker returns date only if it's today - load the entire day
-      activities = await repository.getActivities(params.from, DateTime.now());
+      activities = await repository.getActivities(
+        from: params.from,
+        to: DateTime.now(),
+        search: params.search,
+      );
     } else {
-      activities = await repository.getActivities(params.from, to);
+      activities = await repository.getActivities(
+        from: params.from,
+        to: to,
+        search: params.search,
+      );
     }
 
     return activities.fold(
@@ -83,13 +91,26 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
       },
     );
   }
+
+  Future<List<String>> getSuggestions(String search) async {
+    final suggestions = await repository.getSuggestion(search);
+    return suggestions.fold(
+      (failure) => [],
+      (suggestions) => suggestions,
+    );
+  }
 }
 
 class PieChartDataParams {
-  PieChartDataParams({required this.from, required this.to});
+  PieChartDataParams({
+    required this.from,
+    required this.to,
+    this.search,
+  });
 
   final DateTime from;
   final DateTime to;
+  final String? search;
 }
 
 extension on ActivityModel {

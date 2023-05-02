@@ -14,13 +14,26 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
   final ActivityLocalDataSource localDataBase;
 
   @override
-  Future<Either<Failure, List<ActivityModel>>> getActivities(
-      DateTime from, DateTime to) async {
+  Future<Either<Failure, List<ActivityModel>>> getActivities({
+    required DateTime from,
+    required DateTime to,
+    String? search,
+  }) async {
     try {
-      final rows = await localDataBase.getRecordsRange(
-        from: from.toUtc().millisecondsSinceEpoch,
-        to: to.toUtc().millisecondsSinceEpoch,
-      );
+      final rows = await () async {
+        // TODO search for names
+        if (search != null && search.startsWith('#')) {
+          return localDataBase.getRecordsRangeWithTag(
+            from: from.toUtc().millisecondsSinceEpoch,
+            to: to.toUtc().millisecondsSinceEpoch,
+            tag: search.substring(1),
+          );
+        }
+        return localDataBase.getRecordsRange(
+          from: from.toUtc().millisecondsSinceEpoch,
+          to: to.toUtc().millisecondsSinceEpoch,
+        );
+      }();
 
       List<ActivityModel> records = [];
       for (int i = 0; i < rows.length; i++) {
@@ -41,6 +54,15 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
       return Right(records);
     } on CacheException catch (_) {
       return const Left(CacheFailure({'message': 'Cache failure'}));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getSuggestion(String search) async {
+    if (search.startsWith('#')) {
+      return Right(await localDataBase.searchTags(search.substring(1)));
+    } else {
+      return Right(await localDataBase.searchActivities(search) ?? []);
     }
   }
 }

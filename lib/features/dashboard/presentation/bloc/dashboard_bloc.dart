@@ -1,8 +1,8 @@
-import '../../domain/usecases/pie_chart_data_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/pie_chart_data.dart';
+import '../../domain/usecases/pie_chart_data_usecase.dart';
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -14,6 +14,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       final result = await usecase(PieChartDataParams(
         from: event.from,
         to: event.to,
+        search: event.search,
       ));
       result.fold(
         (l) => emit(DashboardFailure(l.prop['message'])),

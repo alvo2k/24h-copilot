@@ -13,6 +13,12 @@ abstract class ActivityLocalDataSource {
     required int to,
   });
 
+  Future<List<RecordWithActivitySettings>> getRecordsRangeWithTag({
+    required int from,
+    required int to,
+    required String tag,
+  });
+
   Future<List<DriftActivityModel>> getActivitiesSettings();
 
   Future<DriftActivityModel> updateActivitySettings({
@@ -50,4 +56,8 @@ abstract class ActivityLocalDataSource {
   Future<DriftActivityModel> createActivity(String name, int colorHex);
 
   Future<void> updateRecordEmoji(int idRecord, String emoji);
+
+  Future<List<String>?> searchActivities(String activityName);
+
+  Future<List<String>> searchTags(String tag);
 }

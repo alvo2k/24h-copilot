@@ -155,6 +155,54 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }
 
   @override
+  Future<List<RecordWithActivitySettings>> getRecordsRangeWithTag({
+    required int from,
+    required int to,
+    required String tag,
+  }) async {
+    // TODO needs some love
+    var query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..where(records.startTime.isSmallerOrEqualValue(from))
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+          mode: OrderingMode.desc,
+        )
+      ])
+      ..limit(1);
+    final firstRecord =
+        await query.map((r) => r.readTable(records)).getSingleOrNull();
+    if (firstRecord == null) {
+      // either there are no records or all records are after [from]
+      if (await (select(records)..limit(1)).getSingleOrNull() == null) {
+        return [];
+      }
+      throw CacheException();
+    }
+
+    // get all records between firstRecord.startTime and [to] with tag
+    query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..where(records.startTime.isBiggerOrEqualValue(firstRecord.startTime))
+      ..where(records.startTime.isSmallerThanValue(to))
+      ..where(activities.tags.like('%$tag%'))
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+        )
+      ]);
+
+    final result = query.get().then((rows) => rows
+        .map((row) => RecordWithActivitySettings(
+            row.readTable(records), row.readTable(activities)))
+        .toList());
+    return result;
+  }
+
+  @override
   Future<List<RecordWithActivitySettings>> getRecords({
     required int ammount,
     int? skip,
@@ -288,6 +336,38 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
           .write(RecordsCompanion(activityName: Value(newActivityName)));
     }
     return result[0];
+  }
+
+  @override
+  Future<List<String>?> searchActivities(String activityName) async {
+    final result = await (select(activities)
+          ..where((a) => a.name.like('%$activityName%')))
+        .get();
+
+    return result.map((a) => a.name).toList();
+  }
+
+  @override
+  Future<List<String>> searchTags(String tag) async {
+    final result = await () async {
+      if (tag.isEmpty) {
+        // get all tags
+        return await (select(activities)..where((a) => a.tags.isNotNull()))
+            .get();
+      } else {
+        return await (select(activities)..where((a) => a.tags.like('%$tag%')))
+            .get();
+      }
+    }();
+
+    final List<String> out = [];
+    for (final a in result) {
+      final tags = a.tags!.split(';');
+      for (final t in tags) {
+        if (tag.isNotEmpty && t.startsWith(tag) || tag.isEmpty) out.add('#$t');
+      }
+    }
+    return out;
   }
 }
 

@@ -81,6 +81,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     );
 
     final recordId = await into(records).insert(record);
+    _removeDuplicatesRecords();
 
     return RecordWithActivitySettings(
       await _getRecordModel(recordId),
@@ -272,6 +273,8 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }) async {
     await (update(records)..where((r) => r.idRecord.equals(idRecord)))
         .write(RecordsCompanion(activityName: Value(activityName)));
+    
+    _removeDuplicatesRecords();
 
     return RecordWithActivitySettings(
       await _getRecordModel(idRecord),
@@ -286,8 +289,35 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }) async {
     await (update(records)..where((r) => r.idRecord.equals(idRecord)))
         .write(RecordsCompanion(startTime: Value(startTime)));
-
+    
+    _removeDuplicatesRecords();
     return;
+  }
+
+  Future _removeDuplicatesRecords() async {
+    final last100 = (select(records)
+          ..orderBy([
+            (r) => OrderingTerm(
+                  expression: r.startTime,
+                  mode: OrderingMode.asc,
+                )
+          ])
+          ..limit(100))
+        .get();
+
+    last100.then((list) {
+      for (int i = 0; i < list.length; i++) {
+        try {
+          if (list[i + 1].activityName == list[i].activityName) {
+            // if there are two activities with the same name next to each other, 
+            // delete the record with the larger startTime
+            (delete(records)
+                  ..where((r) => r.startTime.equals(list[i + 1].startTime)))
+                .go();
+          }
+        } on RangeError catch (_) {}
+      }
+    });
   }
 
   Future<DriftRecordModel> _getRecordModel(int id) {

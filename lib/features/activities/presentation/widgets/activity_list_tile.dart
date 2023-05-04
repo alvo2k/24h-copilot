@@ -17,7 +17,7 @@ class ActivityListTile extends StatelessWidget {
     this.duration,
   });
 
-  static const cardHeight = 122.0;
+  static const cardHeight = 125.0;
 
   final Activity activity;
   final bool hideEmojiPicker;
@@ -208,7 +208,9 @@ class ActivityListTile extends StatelessWidget {
                       activity,
                       hideEmojiPicker: hideEmojiPicker,
                     ),
-                    Column(
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         activity.goal == null
@@ -220,6 +222,7 @@ class ActivityListTile extends StatelessWidget {
                           duration: duration,
                         ),
                       ],
+                      ),
                     ),
                   ],
                 ),

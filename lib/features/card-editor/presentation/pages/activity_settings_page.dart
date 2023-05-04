@@ -241,7 +241,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${AppLocalizations.of(context)!.color}:)}',
+                          '${AppLocalizations.of(context)!.color}:  ',
                           style: const TextStyle(fontSize: 18),
                         ),
                         Row(

@@ -130,10 +130,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         await query.map((r) => r.readTable(records)).getSingleOrNull();
     if (firstRecord == null) {
       // either there are no records or all records are after [from]
-      if (await (select(records)..limit(1)).getSingleOrNull() == null) {
-        return [];
-      }
-      throw CacheException();
+      return [];
     }
 
     // get all records between firstRecord.startTime and [to]
@@ -273,7 +270,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }) async {
     await (update(records)..where((r) => r.idRecord.equals(idRecord)))
         .write(RecordsCompanion(activityName: Value(activityName)));
-    
+
     _removeDuplicatesRecords();
 
     return RecordWithActivitySettings(
@@ -289,7 +286,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }) async {
     await (update(records)..where((r) => r.idRecord.equals(idRecord)))
         .write(RecordsCompanion(startTime: Value(startTime)));
-    
+
     _removeDuplicatesRecords();
     return;
   }
@@ -309,7 +306,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
       for (int i = 0; i < list.length; i++) {
         try {
           if (list[i + 1].activityName == list[i].activityName) {
-            // if there are two activities with the same name next to each other, 
+            // if there are two activities with the same name next to each other,
             // delete the record with the larger startTime
             (delete(records)
                   ..where((r) => r.startTime.equals(list[i + 1].startTime)))

@@ -65,4 +65,13 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
       return Right(await localDataBase.searchActivities(search) ?? []);
     }
   }
+
+  @override
+  Future<DateTime?> getFirstRecord() async {
+    final record = await localDataBase.getFirstRecord();
+    if (record != null) {
+      return DateTime.fromMillisecondsSinceEpoch(record.startTime);
+    }
+    return null;
+  }
 }

@@ -8,8 +8,9 @@ part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  DashboardBloc(this.usecase) : super(DashboardInitial()) {
-    on<DashboardLoad>((event, emit) async {
+  DashboardBloc(this.usecase)
+      : super(DashboardInitial(usecase.firstRecordDate())) {
+    on<DashboardLoad>((event, emit) async {      
       emit(DashboardLoading());
       final result = await usecase(PieChartDataParams(
         from: event.from,

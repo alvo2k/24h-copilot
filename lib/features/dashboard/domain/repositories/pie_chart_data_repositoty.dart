@@ -11,4 +11,6 @@ abstract class PieChartDataRepository {
   });
 
   Future<Either<Failure, List<String>>> getSuggestion(String search);
+
+  Future<DateTime?> getFirstRecord();
 }

@@ -19,6 +19,8 @@ abstract class ActivityLocalDataSource {
     required String tag,
   });
 
+  Future<DriftRecordModel?> getFirstRecord();
+
   Future<List<DriftActivityModel>> getActivitiesSettings();
 
   Future<DriftActivityModel> updateActivitySettings({

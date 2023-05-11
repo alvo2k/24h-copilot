@@ -22,6 +22,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   int currentIndex = 0;
   final dashbordSearchTo = DateTime.now();
   final dashbordSearchFrom = DateTime.now().subtract(const Duration(days: 30));
+  DateTime? firstDate;
 
   final List<Widget> _pages = [
     const ActivitiesPage(),
@@ -37,7 +38,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   void _rangePicker() {
     showDateRangePicker(
       context: context,
-      firstDate: DateTime.now().subtract(const Duration(days: 90)),
+      firstDate: firstDate ?? DateTime.now(),
       lastDate: DateTime.now(),
     ).then((range) {
       if (range != null) {
@@ -52,6 +53,12 @@ class _MainScaffoldState extends State<MainScaffold> {
   @override
   Widget build(BuildContext context) {
     final searchCubit = BlocProvider.of<SearchSuggestionsCubit>(context);
+    final dashboardBloc = BlocProvider.of<DashboardBloc>(context);
+    if (dashboardBloc.state is DashboardInitial) {
+      (dashboardBloc.state as DashboardInitial)
+          .firstRecordDate
+          .then((date) => setState(() => firstDate = date));
+    }
     return Scaffold(
       appBar: EasySearchBar(
         asyncSuggestions: (val) async {
@@ -69,7 +76,6 @@ class _MainScaffoldState extends State<MainScaffold> {
             dashbordSearchTo,
             search,
           ));
-          print('tap: $search');
         },
         actions: [
           currentIndex == 0

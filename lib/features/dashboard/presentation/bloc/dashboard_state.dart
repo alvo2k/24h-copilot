@@ -1,14 +1,17 @@
 part of 'dashboard_bloc.dart';
 
 abstract class DashboardState extends Equatable {
-  const DashboardState();  
+  const DashboardState();
 
   @override
   List<Object> get props => [];
 }
 
 // TODO: refactor to use SealedBloc
-class DashboardInitial extends DashboardState {}
+class DashboardInitial extends DashboardState {
+  const DashboardInitial(this.firstRecordDate);
+  final Future<DateTime?> firstRecordDate;
+}
 
 class DashboardLoading extends DashboardState {}
 

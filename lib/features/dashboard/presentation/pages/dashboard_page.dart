@@ -90,10 +90,15 @@ class DashboardPage extends StatelessWidget {
         );
       }
       if (state is DashboardInitial) {
-        final from = DateUtils.dateOnly(DateTime.now())
-            .subtract(const Duration(days: 3));
-        final to = DateTime.now();
-        BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(from, to));
+        state.firstRecordDate.then((date) {
+          var from = DateUtils.dateOnly(DateTime.now())
+              .subtract(const Duration(days: 3));
+          final to = DateTime.now();
+          if (date != null && date.isAfter(from)) {
+            from = date;
+          }
+          BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(from, to));
+        });
         return const Center(child: Text('State initial'));
       }
       return const Center(child: Text('Unknown state'));

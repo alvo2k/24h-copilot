@@ -107,6 +107,12 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     return query.map((r) => r.idRecord).getSingle();
   }
 
+  @override
+  Future<DriftRecordModel?> getFirstRecord() async => await (select(records)
+        ..orderBy([(r) => OrderingTerm.asc(r.startTime)])
+        ..limit(1))
+      .getSingleOrNull();
+
   /// Includes [from], excluding [to]
   @override
   Future<List<RecordWithActivitySettings>> getRecordsRange({

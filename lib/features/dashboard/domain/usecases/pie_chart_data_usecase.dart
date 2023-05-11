@@ -16,27 +16,39 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
 
   @override
   Future<Either<Failure, PieChartData>> call(PieChartDataParams params) async {
+    final firstDate = await firstRecordDate();
+    if (firstDate == null) {
+      return const Left(CacheFailure({'message': 'No records found'}));
+    }
+
+    final from = () {
+      if (params.from.isBefore(firstDate)) {
+        return firstDate;
+      }
+      return params.from;
+    }();
+
     final DateTime to = () {
       if (params.to == DateUtils.dateOnly(DateTime.now())) {
         return DateTime.now();
       }
-      if (params.to == params.from) {
+      if (params.to == from) {
         return params.to.add(const Duration(days: 1));
       }
       return params.to.add(const Duration(days: 1));
-    }();
+    }();    
 
     late Either<Failure, List<ActivityModel>> activities;
-    if (params.to == DateUtils.dateOnly(DateTime.now())) {
+    if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
       // because range picker returns date only if it's today - load the entire day
       activities = await repository.getActivities(
-        from: params.from,
+        from: from,
         to: DateTime.now(),
         search: params.search,
       );
     } else {
       activities = await repository.getActivities(
-        from: params.from,
+        from: from,
         to: to,
         search: params.search,
       );
@@ -51,9 +63,9 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
           if (!colorList.contains(activities[i].color)) {
             colorList.add(activities[i].color);
           }
-          if (activities[i].startTime.isBefore(params.from)) {
+          if (activities[i].startTime.isBefore(from)) {
             // dont count time before [from]
-            activities[i] = activities[i].changeStartTime(params.from);
+            activities[i] = activities[i].changeStartTime(from);
           }
           if (activities[i].endTime != null &&
               activities[i].endTime!.isAfter(to)) {
@@ -71,12 +83,12 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
           if (activitiesDuration.containsKey(activities[i].name)) {
             activitiesDuration[activities[i].name] =
                 activitiesDuration[activities[i].name]! +
-                    activities[i].durationSince(params.from);
+                    activities[i].durationSince(from);
             activities.removeAt(i);
             i--;
           } else {
             activitiesDuration[activities[i].name] =
-                activities[i].durationSince(params.from);
+                activities[i].durationSince(from);
           }
         }
         final data = PieChartData(
@@ -84,7 +96,7 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
           colorList: colorList,
           dataMap: activitiesDuration
               .map((key, value) => MapEntry(key, value.inMinutes.toDouble())),
-          from: params.from,
+          from: from,
           to: params.to,
         );
         return Right(data);
@@ -98,6 +110,10 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
       (failure) => [],
       (suggestions) => suggestions,
     );
+  }
+
+  Future<DateTime?> firstRecordDate() {
+    return repository.getFirstRecord();
   }
 }
 

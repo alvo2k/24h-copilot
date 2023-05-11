@@ -44,6 +44,13 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         loadedActivities
             // ignore: prefer_const_literals_to_create_immutables
             .add(ActivityDay([], DateUtils.dateOnly(now)));
+        // empty day at the end indicates that there are no more activities to load
+        loadedActivities.add(
+          ActivityDay(
+            const [],
+            loadedActivities.last.date,
+          ),
+        );
       }
       // add activity at the start (end) of the day
       final newDay = [

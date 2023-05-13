@@ -249,6 +249,11 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                           children: [
                             ActivityListTile.buildCircle(color),
                             ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        ActivityListTile.cardColor(context)),
+                              ),
                               onPressed: () {
                                 selectColor(context);
                               },
@@ -280,6 +285,11 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                                   ),
                             ElevatedButton(
                               onPressed: pickGoal,
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        ActivityListTile.cardColor(context)),
+                              ),
                               child: Text(
                                   AppLocalizations.of(context)!.selectGoal),
                             ),

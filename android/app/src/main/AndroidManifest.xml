@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alvo2k.copilot">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="copilot"
+        android:label="Copilot"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

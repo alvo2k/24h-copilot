@@ -7,6 +7,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../core/error/exceptions.dart';
+import '../../../utils/constants.dart';
 import 'data_sources_contracts.dart';
 
 part 'drift_db.g.dart';
@@ -414,12 +415,20 @@ class RecordWithActivitySettings {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     try {
-      final dbFolder = await getApplicationDocumentsDirectory();
-      final file = File(path.join(dbFolder.path, 'activities.sqlite'));
+      final documentsFolder = await getApplicationDocumentsDirectory();
+      final file = File(path.join(
+        documentsFolder.path,
+        Constants.appFolderName,
+        'activities.sqlite',
+      ));
       return NativeDatabase(file);
     } on MissingPlatformDirectoryException {
       return NativeDatabase(
-        File(path.join(Directory.current.path, 'activities.sqlite')),
+        File(path.join(
+          Directory.current.path,
+          Constants.appFolderName,
+          'activities.sqlite',
+        )),
       );
     }
   });

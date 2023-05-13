@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'core/utils/constants.dart';
 import 'features/activities/presentation/bloc/notification_controller.dart';
 import 'internal/application.dart';
 import 'internal/injectable.dart';
@@ -14,7 +15,7 @@ void main() {
   runZonedGuarded(() async {
     initDependencyInjection();
     WidgetsFlutterBinding.ensureInitialized();
-    await Hive.initFlutter();
+    await Hive.initFlutter(Constants.appFolderName);
     AwesomeNotifications().initialize(
       null,
       [

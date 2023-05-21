@@ -4,13 +4,6 @@ import 'dart:ui';
 import 'activity.dart';
 
 class EditRecord {
-  final String activityName;
-  final Color color;
-  final EditMode mode;
-  final DateTime? startTime;
-  final DateTime? endTime;
-  final Activity? toChange;
-
   EditRecord({
     required this.activityName,
     required this.color,
@@ -19,6 +12,13 @@ class EditRecord {
     this.endTime,
     this.toChange,
   });
+
+  final String activityName;
+  final Color color;
+  final DateTime? endTime;
+  final EditMode mode;
+  final DateTime? startTime;
+  final Activity? toChange;
 }
 
 enum EditMode {

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:copilot/core/common/activity_settings.dart';
-import 'package:copilot/core/common/data/datasources/drift_db.dart';
+import 'package:copilot/core/common/data/datasources/activity_database.dart';
 
 class ActivitySettingsModel extends ActivitySettings {
   const ActivitySettingsModel({

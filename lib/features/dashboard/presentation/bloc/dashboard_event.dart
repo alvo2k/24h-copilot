@@ -11,6 +11,6 @@ class DashboardLoad extends DashboardEvent {
   const DashboardLoad(this.from, this.to, [this.search]);
 
   final DateTime from;
-  final DateTime to;
   final String? search;
+  final DateTime to;
 }

@@ -1,4 +1,4 @@
-import 'drift_db.dart';
+import 'activity_database.dart';
 
 mixin ActivityLocalDataSource {
   /// Gets list with all model fields.

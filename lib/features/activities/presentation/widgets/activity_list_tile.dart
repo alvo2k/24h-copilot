@@ -20,10 +20,10 @@ class ActivityListTile extends StatelessWidget {
   static const cardHeight = 125.0;
 
   final Activity activity;
+  final Duration? duration;
   final bool hideEmojiPicker;
   final bool minimalVersion;
   final double padding;
-  final Duration? duration;
 
   static const _leftBarWidth = 4.0;
   static const _leftPadding = 40.0;
@@ -79,21 +79,6 @@ class ActivityListTile extends StatelessWidget {
   static ShapeBorder get shape =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
 
-  Widget _buildLeftBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: _leftPadding, right: _rightPadding),
-      child: Container(
-        color: activity.color,
-        width: _leftBarWidth,
-        height: _determineLeftBarHeight(
-            activity.endTime == null
-                ? DateTime.now().difference(activity.startTime)
-                : activity.endTime!.difference(activity.startTime),
-            context),
-      ),
-    );
-  }
-
   static List<Widget> buildTags(List<String> tags) {
     if (tags.isEmpty) {
       return [];
@@ -118,15 +103,6 @@ class ActivityListTile extends StatelessWidget {
         .toList();
   }
 
-  double _determineLeftBarHeight(Duration duration, BuildContext context) {
-    const hourValue = 28.0;
-    // todo: make this dynamic (maxHeight - appBarHeight - bottomBarHeight)
-    final maxHeight = MediaQuery.of(context).size.height - 200;
-    final height = cardHeight + (hourValue * duration.inHours);
-
-    return height > maxHeight ? maxHeight : height;
-  }
-
   static Widget buildGoal(int goal, BuildContext context) {
     final hours = goal ~/ 60;
     if (hours > 0) {
@@ -144,6 +120,30 @@ class ActivityListTile extends StatelessWidget {
         AppLocalizations.of(context)!.minuteLetter,
       ));
     }
+  }
+
+  Widget _buildLeftBar(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: _leftPadding, right: _rightPadding),
+      child: Container(
+        color: activity.color,
+        width: _leftBarWidth,
+        height: _determineLeftBarHeight(
+            activity.endTime == null
+                ? DateTime.now().difference(activity.startTime)
+                : activity.endTime!.difference(activity.startTime),
+            context),
+      ),
+    );
+  }
+
+  double _determineLeftBarHeight(Duration duration, BuildContext context) {
+    const hourValue = 28.0;
+    // todo: make this dynamic (maxHeight - appBarHeight - bottomBarHeight)
+    final maxHeight = MediaQuery.of(context).size.height - 200;
+    final height = cardHeight + (hourValue * duration.inHours);
+
+    return height > maxHeight ? maxHeight : height;
   }
 
   @override

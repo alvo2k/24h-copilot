@@ -11,8 +11,6 @@ part 'card_editor_event.dart';
 part 'card_editor_state.dart';
 
 class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
-  final LoadActivitiesSettingsUsecase loadUsecase;
-  final UpdateActivitySettingsUsecase updateUsecase;
   CardEditorBloc(this.loadUsecase, this.updateUsecase)
       : super(CardEditorStateInitial()) {
     on<CardEditorEvent>((event, emit) async {
@@ -55,4 +53,7 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
       }
     });
   }
+
+  final LoadActivitiesSettingsUsecase loadUsecase;
+  final UpdateActivitySettingsUsecase updateUsecase;
 }

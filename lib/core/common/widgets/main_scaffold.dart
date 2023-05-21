@@ -20,8 +20,8 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   int currentIndex = 0;
-  final dashbordSearchTo = DateTime.now();
   final dashbordSearchFrom = DateTime.now().subtract(const Duration(days: 30));
+  final dashbordSearchTo = DateTime.now();
   DateTime? firstDate;
 
   final List<Widget> _pages = [

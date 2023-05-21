@@ -16,7 +16,6 @@ class LoadActivitiesSettingsUsecase extends UseCase<List<ActivitySettings>, Load
   Future<Either<Failure, List<ActivitySettings>>> call(LoadActivitiesSettingsParams params) {
     return _repository.loadActivitiesSettings();
   }
-
 }
 
 class LoadActivitiesSettingsParams {}

@@ -10,12 +10,6 @@ abstract class CardEditorEvent extends Equatable {
 class LoadActivitiesSettings extends CardEditorEvent {}
 
 class UpdateActivitiesSettings extends CardEditorEvent {
-  final String activityName;
-  final String newActivityName;
-  final Color newColor;
-  final List<String>? tags;
-  final int? newGoal;
-
   const UpdateActivitiesSettings({
     required this.activityName,
     required this.newActivityName,
@@ -23,6 +17,12 @@ class UpdateActivitiesSettings extends CardEditorEvent {
     this.tags,
     this.newGoal,
   });
+
+  final String activityName;
+  final String newActivityName;
+  final Color newColor;
+  final int? newGoal;
+  final List<String>? tags;
 
   @override
   List<Object> get props => [

@@ -125,8 +125,8 @@ class PieChartDataParams {
   });
 
   final DateTime from;
-  final DateTime to;
   final String? search;
+  final DateTime to;
 }
 
 extension on ActivityModel {

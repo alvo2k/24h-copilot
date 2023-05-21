@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../../features/activities/domain/entities/activity.dart';
-import '../datasources/drift_db.dart';
+import '../datasources/activity_database.dart';
 
 part 'activity_model.g.dart';
 

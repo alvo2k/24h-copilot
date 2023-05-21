@@ -21,6 +21,7 @@ class ActivitySettingsPage extends StatefulWidget {
   }) {
     initialActivitySettings = activity;
   }
+
   late final ActivitySettings initialActivitySettings;
 
   @override
@@ -28,11 +29,17 @@ class ActivitySettingsPage extends StatefulWidget {
 }
 
 class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
-  late TextEditingController nameController;
-  late Color color;
   late ActivitySettings activity;
+  late Color color;
   late int? goal;
+  late TextEditingController nameController;
   late List<String>? tags;
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -43,12 +50,6 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
     goal = activity.goal;
     tags = activity.tags == null ? null : List.from(activity.tags!); // copy
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    super.dispose();
   }
 
   void setColor(Color newColor) {

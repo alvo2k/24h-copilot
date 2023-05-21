@@ -29,6 +29,15 @@ class LoadActivitiesUsecase
     });
   }
 
+  Future<Either<Failure, ActivityDay>> getActivitiesFromDate(
+      DateTime date, int searchInTop) async {
+    final result = await repository.getActivities(ammount: searchInTop);
+
+    return result.fold((l) => Left(l), (r) {
+      return Right(_formDay(r, date));
+    });
+  }
+
   List<ActivityDay> _splitActivitiesByDays(List<Activity> list) {
     if (list.isEmpty) return [];
 
@@ -76,15 +85,6 @@ class LoadActivitiesUsecase
       }
     }
     return activityDay;
-  }
-
-  Future<Either<Failure, ActivityDay>> getActivitiesFromDate(
-      DateTime date, int searchInTop) async {
-    final result = await repository.getActivities(ammount: searchInTop);
-
-    return result.fold((l) => Left(l), (r) {
-      return Right(_formDay(r, date));
-    });
   }
 }
 

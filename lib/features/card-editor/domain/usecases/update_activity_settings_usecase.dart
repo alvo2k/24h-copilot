@@ -29,12 +29,6 @@ class UpdateActivitySettingsUsecase
 }
 
 class UpdateActivitySettingsParams {
-  final String activityName;
-  final String newActivityName;
-  final Color newColor;
-  final List<String>? tags;
-  final int? newGoal;
-
   UpdateActivitySettingsParams({
     required this.activityName,
     required this.newActivityName,
@@ -42,4 +36,10 @@ class UpdateActivitySettingsParams {
     this.tags,
     this.newGoal,
   });
+
+  final String activityName;
+  final String newActivityName;
+  final Color newColor;
+  final int? newGoal;
+  final List<String>? tags;
 }

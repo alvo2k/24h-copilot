@@ -8,9 +8,9 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../../core/error/exceptions.dart';
 import '../../../utils/constants.dart';
-import 'data_sources_contracts.dart';
+import 'activity_local_data_source.dart';
 
-part 'drift_db.g.dart';
+part 'activity_database.g.dart';
 
 @DataClassName('DriftRecordModel')
 class Records extends Table {
@@ -99,6 +99,16 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }
 
   @override
+  Future<List<DriftActivityModel>> getActivitiesSettings() =>
+      select(activities).get();
+
+  @override
+  Future<DriftRecordModel?> getFirstRecord() async => await (select(records)
+        ..orderBy([(r) => OrderingTerm.asc(r.startTime)])
+        ..limit(1))
+      .getSingleOrNull();
+
+  @override
   Future<int> getLastRecordId() {
     final query = select(records)
       ..orderBy([
@@ -109,10 +119,28 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }
 
   @override
-  Future<DriftRecordModel?> getFirstRecord() async => await (select(records)
-        ..orderBy([(r) => OrderingTerm.asc(r.startTime)])
-        ..limit(1))
-      .getSingleOrNull();
+  Future<List<RecordWithActivitySettings>> getRecords({
+    required int ammount,
+    int? skip,
+  }) {
+    final query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+          mode: OrderingMode.desc,
+        )
+      ])
+      ..limit(ammount, offset: skip);
+
+    final result = query.get().then((rows) => rows
+        .map((row) => RecordWithActivitySettings(
+            row.readTable(records), row.readTable(activities)))
+        .toList());
+
+    return result;
+  }
 
   /// Includes [from], excluding [to]
   @override
@@ -208,33 +236,6 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }
 
   @override
-  Future<List<RecordWithActivitySettings>> getRecords({
-    required int ammount,
-    int? skip,
-  }) {
-    final query = select(records).join([
-      innerJoin(activities, activities.name.equalsExp(records.activityName))
-    ])
-      ..orderBy([
-        OrderingTerm(
-          expression: records.startTime,
-          mode: OrderingMode.desc,
-        )
-      ])
-      ..limit(ammount, offset: skip);
-
-    final result = query.get().then((rows) => rows
-        .map((row) => RecordWithActivitySettings(
-            row.readTable(records), row.readTable(activities)))
-        .toList());
-
-    return result;
-  }
-
-  @override
-  int get schemaVersion => 2;
-
-  @override
   MigrationStrategy get migration {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
@@ -260,6 +261,77 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         }
       },
     );
+  }
+
+  @override
+  int get schemaVersion => 2;
+
+  @override
+  Future<List<String>?> searchActivities(String activityName) async {
+    final result = await (select(activities)
+          ..where((a) => a.name.like('%$activityName%')))
+        .get();
+
+    return result.map((a) => a.name).toList();
+  }
+
+  @override
+  Future<List<String>> searchTags(String tag) async {
+    final result = await () async {
+      if (tag.isEmpty) {
+        // get all tags
+        return await (select(activities)..where((a) => a.tags.isNotNull()))
+            .get();
+      } else {
+        return await (select(activities)..where((a) => a.tags.like('%$tag%')))
+            .get();
+      }
+    }();
+
+    final List<String> out = [];
+    for (final a in result) {
+      final tags = a.tags!.split(';');
+      for (final t in tags) {
+        if (tag.isNotEmpty && t.startsWith(tag) || tag.isEmpty) out.add('#$t');
+      }
+    }
+    return out;
+  }
+
+  @override
+  Future<DriftActivityModel> updateActivitySettings({
+    required String activityName,
+    required String newActivityName,
+    required int newColorHex,
+    required String? tags,
+    required int? newGoal,
+  }) async {
+    final bool nameChanged = newActivityName != activityName;
+    if (nameChanged) {
+      // new name shouldn't be already taken
+      final exists = await (select(activities)
+            ..where((a) => a.name.equals(newActivityName)))
+          .getSingleOrNull();
+      if (exists != null) throw CacheException();
+    }
+    final result = await (update(activities)
+          ..where((a) => a.name.equals(activityName)))
+        .writeReturning(
+      ActivitiesCompanion(
+        name: Value(newActivityName),
+        color: Value(newColorHex),
+        tags: Value(tags),
+        goal: newGoal == 0 ? const Value(null) : Value(newGoal),
+      ),
+    );
+    if (result.length != 1) throw CacheException();
+
+    if (nameChanged) {
+      // change activityName in records
+      await (update(records)..where((r) => r.activityName.equals(activityName)))
+          .write(RecordsCompanion(activityName: Value(newActivityName)));
+    }
+    return result[0];
   }
 
   @override
@@ -330,78 +402,6 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
 
   Future<DriftActivityModel> _getActivityModel(String name) {
     return (select(activities)..where((a) => a.name.equals(name))).getSingle();
-  }
-
-  @override
-  Future<List<DriftActivityModel>> getActivitiesSettings() =>
-      select(activities).get();
-
-  @override
-  Future<DriftActivityModel> updateActivitySettings({
-    required String activityName,
-    required String newActivityName,
-    required int newColorHex,
-    required String? tags,
-    required int? newGoal,
-  }) async {
-    final bool nameChanged = newActivityName != activityName;
-    if (nameChanged) {
-      // new name shouldn't be already taken
-      final exists = await (select(activities)
-            ..where((a) => a.name.equals(newActivityName)))
-          .getSingleOrNull();
-      if (exists != null) throw CacheException();
-    }
-    final result = await (update(activities)
-          ..where((a) => a.name.equals(activityName)))
-        .writeReturning(
-      ActivitiesCompanion(
-        name: Value(newActivityName),
-        color: Value(newColorHex),
-        tags: Value(tags),
-        goal: newGoal == 0 ? const Value(null) : Value(newGoal),
-      ),
-    );
-    if (result.length != 1) throw CacheException();
-
-    if (nameChanged) {
-      // change activityName in records
-      await (update(records)..where((r) => r.activityName.equals(activityName)))
-          .write(RecordsCompanion(activityName: Value(newActivityName)));
-    }
-    return result[0];
-  }
-
-  @override
-  Future<List<String>?> searchActivities(String activityName) async {
-    final result = await (select(activities)
-          ..where((a) => a.name.like('%$activityName%')))
-        .get();
-
-    return result.map((a) => a.name).toList();
-  }
-
-  @override
-  Future<List<String>> searchTags(String tag) async {
-    final result = await () async {
-      if (tag.isEmpty) {
-        // get all tags
-        return await (select(activities)..where((a) => a.tags.isNotNull()))
-            .get();
-      } else {
-        return await (select(activities)..where((a) => a.tags.like('%$tag%')))
-            .get();
-      }
-    }();
-
-    final List<String> out = [];
-    for (final a in result) {
-      final tags = a.tags!.split(';');
-      for (final t in tags) {
-        if (tag.isNotEmpty && t.startsWith(tag) || tag.isEmpty) out.add('#$t');
-      }
-    }
-    return out;
   }
 }
 

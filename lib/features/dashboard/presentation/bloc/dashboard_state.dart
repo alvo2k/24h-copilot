@@ -10,6 +10,7 @@ abstract class DashboardState extends Equatable {
 // TODO: refactor to use SealedBloc
 class DashboardInitial extends DashboardState {
   const DashboardInitial(this.firstRecordDate);
+
   final Future<DateTime?> firstRecordDate;
 }
 

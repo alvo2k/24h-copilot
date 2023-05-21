@@ -9,9 +9,10 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:copilot/core/common/data/datasources/data_sources_contracts.dart'
+import 'package:copilot/core/common/data/datasources/activity_database.dart'
+    as _i4;
+import 'package:copilot/core/common/data/datasources/activity_local_data_source.dart'
     as _i3;
-import 'package:copilot/core/common/data/datasources/drift_db.dart' as _i4;
 import 'package:copilot/features/activities/data/repositories/activity_repository_impl.dart'
     as _i6;
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart'

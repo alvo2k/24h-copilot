@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/activity_settings.dart';
-import '../../../../core/common/data/datasources/data_sources_contracts.dart';
+import '../../../../core/common/data/datasources/activity_local_data_source.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/return_types.dart';
 import '../../domain/repositories/activity_settings_repository.dart';

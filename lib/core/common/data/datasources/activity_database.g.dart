@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'drift_db.dart';
+part of 'activity_database.dart';
 
 // ignore_for_file: type=lint
 class $ActivitiesTable extends Activities

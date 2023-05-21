@@ -11,9 +11,9 @@ class ActivityTime extends StatefulWidget {
     super.key,
   });
 
+  final Duration? duration;
   final DateTime? endTime;
   final DateTime startTime;
-  final Duration? duration;
 
   @override
   State<ActivityTime> createState() => _ActivityTimeState();

@@ -12,16 +12,16 @@ class CardEditorStateInitial extends CardEditorState {}
 class CardEditorStateLoading extends CardEditorState {}
 
 class CardEditorStateLoaded extends CardEditorState {
-  final List<ActivitySettings> activitiesSettings;
-
   const CardEditorStateLoaded(this.activitiesSettings);
+
+  final List<ActivitySettings> activitiesSettings;
 
   @override
   List<Object> get props => [activitiesSettings];
 }
 
 class CardEditorStateFailure extends CardEditorState {
-  final String message;
-
   const CardEditorStateFailure(this.message);
+
+  final String message;
 }

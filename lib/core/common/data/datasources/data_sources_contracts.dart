@@ -1,6 +1,6 @@
 import 'drift_db.dart';
 
-abstract class ActivityLocalDataSource {
+mixin ActivityLocalDataSource {
   /// Gets list with all model fields.
   /// amount - ammount of records; skip - ammount of skiped records
   Future<List<RecordWithActivitySettings>> getRecords({

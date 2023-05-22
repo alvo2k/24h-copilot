@@ -23,9 +23,6 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
   }) : super(ActivitiesState.initial()) {
     List<ActivityDay> loadedActivities = [];
 
-    int loadedAmmount = 0;
-    const loadAmmount = 30;
-
     void changeActivity(Activity newActivity) {
       try {
         // add endTime to prev activity
@@ -65,30 +62,12 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         (loadActivities) async {
           emit(ActivitiesState.loading());
           final result = await loadActivitiesUsecase(
-            LoadActivitiesParams(
-              ammount: loadAmmount,
-              skip: loadedAmmount,
-            ),
+            LoadActivitiesParams(loadActivities.forTheDay),
           );
           result.fold(
             (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (r) {
-              if (r.isEmpty) {
-                if (loadedActivities.isNotEmpty) {
-                  // empty day at the end indicates that there are no more activities to load
-                  loadedActivities.add(ActivityDay(
-                    const [],
-                    loadedActivities.last.date,
-                  ));
-                } // else first load ever
-              } else {
-                int ammountLoaded = 0;
-                for (final day in r) {
-                  ammountLoaded += day.activitiesInThisDay.length;
-                }
-                loadedAmmount += ammountLoaded;
-                loadedActivities.addAll(r);
-              }
+              loadedActivities.add(r);
               emit(ActivitiesState.loaded(loadedActivities));
             },
           );
@@ -138,8 +117,8 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
             (r) async {
               final DateTime editedDate = DateUtils.dateOnly(r.startTime);
 
-              final result = await loadActivitiesUsecase.getActivitiesFromDate(
-                  editedDate, loadAmmount);
+              final result =
+                  await loadActivitiesUsecase(LoadActivitiesParams(editedDate));
               result.fold(
                   (l) => emit(ActivitiesState.failure(l.prop['message'])), (r) {
                 for (int i = 0; i < loadedActivities.length; i++) {

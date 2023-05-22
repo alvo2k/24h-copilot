@@ -56,8 +56,8 @@ class ActivityListView extends StatelessWidget {
                       children: [
                         ActivityDayDate(day.date),
                         ActivityDayWidget(day),
-                        Row(
-                          children: const [
+                        const Row(
+                          children: [
                             Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 29.0, vertical: 16),

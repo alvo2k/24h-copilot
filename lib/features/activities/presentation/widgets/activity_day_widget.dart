@@ -14,7 +14,7 @@ class ActivityDayWidget extends StatelessWidget {
   List<Widget> activityTiles(bool editMode) {
     List<Widget> activityList = [];
 
-    for (int i = activities.activitiesInThisDay.length - 1; i != -1; i--) {
+    for (int i = 0; i < activities.activitiesInThisDay.length; i++) {
       var activity = activities.activitiesInThisDay[i];
       if (editMode) {
         activityList.add(EditModeSeparator(
@@ -33,7 +33,7 @@ class ActivityDayWidget extends StatelessWidget {
       }
       try {
         final endTimeText = activity.endTime.toString().substring(11, 16);
-        if (i != 0) {
+        if (i != activities.activitiesInThisDay.length - 1) {
           // if activity isnt last in the day
           // dont print endTime for the last activity
           activityList.add(

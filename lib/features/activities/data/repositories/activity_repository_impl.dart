@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/data/datasources/activity_local_data_source.dart';
@@ -122,11 +121,33 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<Either<Failure, List<ActivityModel>>> getActivities(
-      {required int ammount, int? skip}) async {
+  Future<Either<Failure, List<ActivityModel>>> getActivities({
+    required int from,
+    required int to,
+  }) async {
     try {
-      final activities = await _getActititiesFromDataSource(ammount, skip);
-      return Right(activities);
+      final rows = await localDataSource.getRecordsRange(
+        from: from,
+        to: to,
+      );
+
+      // add endTime (startTime of the next row)
+      List<ActivityModel> records = [];
+      for (int i = 0; i < rows.length; i++) {
+        final activityRow = rows[i];
+        try {
+          final activity = ActivityModel.fromDriftRow(
+              activityRow, rows[i + 1].record.startTime);
+          records.add(activity);
+        } on RangeError catch (_) {
+          final activity = ActivityModel.fromDriftRow(activityRow);
+          records.add(activity);
+        }
+      }
+      if (records.isEmpty) {
+        return const Left(CacheFailure({'message': 'No records found'}));
+      }
+      return Right(records);
     } on CacheException {
       return const Left(CacheFailure());
     }

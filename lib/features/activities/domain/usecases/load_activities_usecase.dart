@@ -9,90 +9,41 @@ import '../entities/activity_day.dart';
 import '../repositories/activity_repository.dart';
 
 @LazySingleton()
-class LoadActivitiesUsecase
-    extends UseCase<List<ActivityDay>, LoadActivitiesParams> {
+class LoadActivitiesUsecase extends UseCase<ActivityDay, LoadActivitiesParams> {
   LoadActivitiesUsecase(this.repository);
 
   final ActivityRepository repository;
 
   @override
-  Future<Either<Failure, List<ActivityDay>>> call(
+  Future<Either<Failure, ActivityDay>> call(
     LoadActivitiesParams params,
   ) async {
-    final result = await repository.getActivities(
-      ammount: params.ammount,
-      skip: params.skip,
+    assert(DateUtils.dateOnly(params.forTheDay) == params.forTheDay);
+
+    final from = params.forTheDay.toUtc().millisecondsSinceEpoch;
+    final to = () {
+      if (DateUtils.dateOnly(DateTime.now()) == params.forTheDay) {
+        // if load today - load entire day
+        return DateTime.now().toUtc().millisecondsSinceEpoch;
+      }
+      return params.forTheDay
+          .add(const Duration(days: 1))
+          .toUtc()
+          .millisecondsSinceEpoch;
+    }();
+    final result = await repository.getActivities(from: from, to: to);
+
+    return result.fold(
+      (l) => Left(l),
+      (r) => Right(ActivityDay(r, DateUtils.dateOnly(params.forTheDay))),
     );
-
-    return result.fold((l) => Left(l), (r) {
-      return Right(_splitActivitiesByDays(r));
-    });
-  }
-
-  Future<Either<Failure, ActivityDay>> getActivitiesFromDate(
-      DateTime date, int searchInTop) async {
-    final result = await repository.getActivities(ammount: searchInTop);
-
-    return result.fold((l) => Left(l), (r) {
-      return Right(_formDay(r, date));
-    });
-  }
-
-  List<ActivityDay> _splitActivitiesByDays(List<Activity> list) {
-    if (list.isEmpty) return [];
-
-    final daysAmmount = DateUtils.dateOnly(list[0].endTime ?? DateTime.now())
-            .difference(DateUtils.dateOnly(list.last.startTime))
-            .inDays +
-        1;
-    final listDates = List<DateTime>.generate(
-        daysAmmount,
-        (index) => DateUtils.dateOnly(list[0].endTime ?? DateTime.now())
-            .subtract(Duration(days: index)),
-        growable: false);
-
-    Map<DateTime, List<Activity>> activityDaysMap =
-        Map<DateTime, List<Activity>>.fromIterable(listDates, value: (_) => []);
-
-    for (final activity in list) {
-      final activityDates = activity.takesPlacesDates();
-      for (final date in activityDates) {
-        if (activityDaysMap[date] != null) {
-          activityDaysMap[date]!.add(activity);
-        } else {
-          activityDaysMap[date] = [activity];
-        }
-      }
-    }
-
-    List<ActivityDay> outList = [];
-    activityDaysMap
-        .forEach((key, value) => outList.add(ActivityDay(value, key)));
-
-    return outList;
-  }
-
-  ActivityDay _formDay(List<Activity> activities, DateTime date) {
-    date = DateUtils.dateOnly(date);
-    // ignore: prefer_const_literals_to_create_immutables
-    final activityDay = ActivityDay([], date);
-    for (final activity in activities) {
-      final activityDates = activity.takesPlacesDates();
-      for (final activityDate in activityDates) {
-        if (activityDate == date) {
-          activityDay.activitiesInThisDay.add(activity);
-        }
-      }
-    }
-    return activityDay;
   }
 }
 
 class LoadActivitiesParams {
-  const LoadActivitiesParams({required this.ammount, this.skip});
+  const LoadActivitiesParams(this.forTheDay);
 
-  final int ammount;
-  final int? skip;
+  final DateTime forTheDay;
 }
 
 extension TakesPlacesDates on Activity {

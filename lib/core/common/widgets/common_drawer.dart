@@ -14,7 +14,7 @@ class CommonDrawer extends StatelessWidget {
   void _leaveFeedback() {
     final email = Uri(
       scheme: 'mailto',
-      path: 'smith@example.com',
+      path: 'alvo2k@proton.me',
       queryParameters: {'subject': 'Feedback on the copilot app'},
     );
     launchUrl(email);

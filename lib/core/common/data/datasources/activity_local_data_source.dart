@@ -8,7 +8,7 @@ mixin ActivityLocalDataSource {
     int? skip,
   });
 
-  Future<List<RecordWithActivitySettings>> getRecordsRange({
+  Future<Stream<List<RecordWithActivitySettings>>> getRecordsRange({
     required int from,
     required int to,
   });

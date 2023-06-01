@@ -144,7 +144,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
 
   /// Includes [from], excluding [to]
   @override
-  Future<List<RecordWithActivitySettings>> getRecordsRange({
+  Future<Stream<List<RecordWithActivitySettings>>> getRecordsRange({
     required int from,
     required int to,
   }) async {
@@ -163,16 +163,16 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
       ..limit(1);
     final firstRecord =
         await query.map((r) => r.readTable(records)).getSingleOrNull();
-    if (firstRecord == null) {
-      // either there are no records or all records are after [from]
-      return [];
-    }
+    // if (firstRecord == null) {
+    //   // either there are no records or all records are after [from]
+    //   return [];
+    // }
 
     // get all records between firstRecord.startTime and [to]
     query = select(records).join([
       innerJoin(activities, activities.name.equalsExp(records.activityName))
     ])
-      ..where(records.startTime.isBiggerOrEqualValue(firstRecord.startTime))
+      ..where(records.startTime.isBiggerOrEqualValue(firstRecord?.startTime ?? from))
       ..where(records.startTime.isSmallerThanValue(to))
       ..orderBy([
         OrderingTerm(
@@ -180,11 +180,10 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         )
       ]);
 
-    final result = query.get().then((rows) => rows
+    return query.watch().map((rows) => rows
         .map((row) => RecordWithActivitySettings(
             row.readTable(records), row.readTable(activities)))
         .toList());
-    return result;
   }
 
   @override

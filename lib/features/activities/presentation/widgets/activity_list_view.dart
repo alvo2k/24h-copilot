@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
 import '../bloc/activities_bloc.dart';
@@ -23,6 +24,7 @@ class ActivityListView extends StatelessWidget {
         },
         (loading) => const Center(child: CircularProgressIndicator()),
         (loaded) {
+          final bloc = BlocProvider.of<ActivitiesBloc>(context);
           return BlocBuilder<EditModeCubit, bool>(
             builder: (context, editMode) => SingleChildScrollView(
               controller: controller,
@@ -35,14 +37,9 @@ class ActivityListView extends StatelessWidget {
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 physics: const BouncingScrollPhysics(),
-                itemCount: loaded.days.length,
-                itemBuilder: (context, index) {
-                  // if (loaded.days.length == 1 &&
-                  //     loaded.days[0].activitiesInThisDay.isEmpty) {
-                  //   // app launches for the first time
-                  //   return const Text('First launch');
-                  // }
-                  final day = loaded.days[index];
+                itemCount: bloc.loadedActivities.length,
+                itemBuilder: (context, index) => Obx(() {
+                  final day = bloc.loadedActivities[index];
                   if (day.activitiesInThisDay.isEmpty) {
                     return const SizedBox.shrink();
                   }
@@ -83,7 +80,7 @@ class ActivityListView extends StatelessWidget {
                       ActivityDayWidget(day),
                     ],
                   );
-                },
+                }),
               ),
             ),
           );

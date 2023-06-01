@@ -2,40 +2,34 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/return_types.dart';
-import '../../../../core/usecases/usecase.dart';
 import '../entities/activity.dart';
 import '../entities/activity_day.dart';
 import '../repositories/activity_repository.dart';
 
 @LazySingleton()
-class LoadActivitiesUsecase extends UseCase<ActivityDay, LoadActivitiesParams> {
+class LoadActivitiesUsecase {
   LoadActivitiesUsecase(this.repository);
 
   final ActivityRepository repository;
 
-  @override
-  Future<Either<Failure, ActivityDay>> call(
+  Future<Stream<ActivityDay>> call(
     LoadActivitiesParams params,
   ) async {
     assert(DateUtils.dateOnly(params.forTheDay) == params.forTheDay);
 
     final from = params.forTheDay.toUtc().millisecondsSinceEpoch;
-    final to = () {
-      if (DateUtils.dateOnly(DateTime.now()) == params.forTheDay) {
-        // if load today - load entire day
-        return DateTime.now().toUtc().millisecondsSinceEpoch;
-      }
-      return params.forTheDay
-          .add(const Duration(days: 1))
-          .toUtc()
-          .millisecondsSinceEpoch;
-    }();
-    final result = await repository.getActivities(from: from, to: to);
+    final to = params.forTheDay
+        .add(const Duration(days: 1))
+        .toUtc()
+        .millisecondsSinceEpoch;
 
-    return result.fold(
-      (l) => Left(l),
-      (r) => Right(ActivityDay(r, DateUtils.dateOnly(params.forTheDay))),
+    final stream = await repository.getActivities(from: from, to: to);
+
+    return stream.map<ActivityDay>(
+      (result) => result.fold(
+        (l) => throw Left(l),
+        (r) => ActivityDay(r, DateUtils.dateOnly(params.forTheDay)),
+      ),
     );
   }
 }

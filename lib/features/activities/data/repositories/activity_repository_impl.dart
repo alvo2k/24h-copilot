@@ -121,35 +121,37 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<Either<Failure, List<ActivityModel>>> getActivities({
+  Future<Stream<Either<Failure, List<Activity>>>> getActivities({
     required int from,
     required int to,
   }) async {
     try {
-      final rows = await localDataSource.getRecordsRange(
+      final rowsStream = await localDataSource.getRecordsRange(
         from: from,
         to: to,
       );
 
       // add endTime (startTime of the next row)
-      List<ActivityModel> records = [];
-      for (int i = 0; i < rows.length; i++) {
-        final activityRow = rows[i];
-        try {
-          final activity = ActivityModel.fromDriftRow(
-              activityRow, rows[i + 1].record.startTime);
-          records.add(activity);
-        } on RangeError catch (_) {
-          final activity = ActivityModel.fromDriftRow(activityRow);
-          records.add(activity);
+      return rowsStream.map<Either<Failure, List<ActivityModel>>>((rows) {
+        List<ActivityModel> records = [];
+        for (int i = 0; i < rows.length; i++) {
+          final activityRow = rows[i];
+          try {
+            final activity = ActivityModel.fromDriftRow(
+                activityRow, rows[i + 1].record.startTime);
+            records.add(activity);
+          } on RangeError catch (_) { // last activity, endTime = null
+            final activity = ActivityModel.fromDriftRow(activityRow);
+            records.add(activity);
+          }
         }
-      }
-      if (records.isEmpty) {
-        return const Left(CacheFailure({'message': 'No records found'}));
-      }
-      return Right(records);
+        if (records.isEmpty) {
+          return const Left(CacheFailure({'message': 'No records found'}));
+        }
+        return Right(records);
+      });
     } on CacheException {
-      return const Left(CacheFailure());
+      return Stream.value(const Left(CacheFailure()));
     }
   }
 

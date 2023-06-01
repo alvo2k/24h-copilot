@@ -8,7 +8,7 @@ import '../entities/edit_record.dart';
 
 abstract class ActivityRepository {
   /// Loads [Activities] in the range
-  Future<Either<Failure, List<Activity>>> getActivities({
+  Future<Stream<Either<Failure, List<Activity>>>> getActivities({
     required int from,
     required int to,
   });

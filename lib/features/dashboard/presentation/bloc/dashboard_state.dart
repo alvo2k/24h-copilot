@@ -19,7 +19,7 @@ class DashboardLoading extends DashboardState {}
 class DashboardLoaded extends DashboardState {
   const DashboardLoaded(this.data);
 
-  final PieChartData data;
+  final PieChartData? data;
 }
 
 class DashboardFailure extends DashboardState {

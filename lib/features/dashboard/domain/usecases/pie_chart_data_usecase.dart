@@ -4,21 +4,20 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/data/models/activity_model.dart';
 import '../../../../core/error/return_types.dart';
-import '../../../../core/usecases/usecase.dart';
 import '../entities/pie_chart_data.dart';
 import '../repositories/pie_chart_data_repositoty.dart';
 
 @LazySingleton()
-class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
+class PieChartDataUsecase {
   PieChartDataUsecase(this.repository);
 
   final PieChartDataRepository repository;
 
-  @override
-  Future<Either<Failure, PieChartData>> call(PieChartDataParams params) async {
+  Future<Stream<PieChartData>> call(PieChartDataParams params) async {
     final firstDate = await firstRecordDate();
     if (firstDate == null) {
-      return const Left(CacheFailure({'message': 'No records found'}));
+      return Stream.value(
+          throw const Left(CacheFailure({'message': 'No records found'})));
     }
 
     final from = () {
@@ -36,71 +35,74 @@ class PieChartDataUsecase extends UseCase<PieChartData, PieChartDataParams> {
         return params.to.add(const Duration(days: 1));
       }
       return params.to.add(const Duration(days: 1));
-    }();    
+    }();
 
-    late Either<Failure, List<ActivityModel>> activities;
-    if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
-      // because range picker returns date only if it's today - load the entire day
-      activities = await repository.getActivities(
-        from: from,
-        to: DateTime.now(),
-        search: params.search,
-      );
-    } else {
-      activities = await repository.getActivities(
-        from: from,
-        to: to,
-        search: params.search,
-      );
-    }
+    final activitiesStream = await () async {
+      if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
+        // because range picker returns date only if it's today - load the entire day
+        return repository.getActivities(
+          from: from.toUtc().millisecondsSinceEpoch,
+          to: DateTime.now().toUtc().millisecondsSinceEpoch,
+          search: params.search,
+        );
+      } else {
+        return repository.getActivities(
+          from: from.toUtc().millisecondsSinceEpoch,
+          to: to.toUtc().millisecondsSinceEpoch,
+          search: params.search,
+        );
+      }
+    }();
 
-    return activities.fold(
-      (failure) => Left(failure),
-      (activities) {
-        List<Color> colorList = [];
-        Map<String, Duration> activitiesDuration = {};
-        for (int i = 0; i < activities.length; i++) {
-          if (!colorList.contains(activities[i].color)) {
-            colorList.add(activities[i].color);
-          }
-          if (activities[i].startTime.isBefore(from)) {
-            // dont count time before [from]
-            activities[i] = activities[i].changeStartTime(from);
-          }
-          if (activities[i].endTime != null &&
-              activities[i].endTime!.isAfter(to)) {
-            // dont count time after [to]
-            final endTime = to;
-            activities[i] = activities[i].changeEndTime(endTime);
-          }
-          if (activities[i].endTime == null) {
-            if (to == DateUtils.dateOnly(DateTime.now())) {
-              activities[i] = activities[i].changeEndTime(DateTime.now());
+    return activitiesStream.map(
+      (result) => result.fold(
+        (l) => throw l,
+        (activities) {
+          List<Color> colorList = [];
+          Map<String, Duration> activitiesDuration = {};
+          for (int i = 0; i < activities.length; i++) {
+            if (!colorList.contains(activities[i].color)) {
+              colorList.add(activities[i].color);
+            }
+            if (activities[i].startTime.isBefore(from)) {
+              // dont count time before [from]
+              activities[i] = activities[i].changeStartTime(from);
+            }
+            if (activities[i].endTime != null &&
+                activities[i].endTime!.isAfter(to)) {
+              // dont count time after [to]
+              final endTime = to;
+              activities[i] = activities[i].changeEndTime(endTime);
+            }
+            if (activities[i].endTime == null) {
+              if (to == DateUtils.dateOnly(DateTime.now())) {
+                activities[i] = activities[i].changeEndTime(DateTime.now());
+              } else {
+                activities[i] = activities[i].changeEndTime(to);
+              }
+            }
+            if (activitiesDuration.containsKey(activities[i].name)) {
+              activitiesDuration[activities[i].name] =
+                  activitiesDuration[activities[i].name]! +
+                      activities[i].durationSince(from);
+              activities.removeAt(i);
+              i--;
             } else {
-              activities[i] = activities[i].changeEndTime(to);
+              activitiesDuration[activities[i].name] =
+                  activities[i].durationSince(from);
             }
           }
-          if (activitiesDuration.containsKey(activities[i].name)) {
-            activitiesDuration[activities[i].name] =
-                activitiesDuration[activities[i].name]! +
-                    activities[i].durationSince(from);
-            activities.removeAt(i);
-            i--;
-          } else {
-            activitiesDuration[activities[i].name] =
-                activities[i].durationSince(from);
-          }
-        }
-        final data = PieChartData(
-          activities: activities,
-          colorList: colorList,
-          dataMap: activitiesDuration
-              .map((key, value) => MapEntry(key, value.inMinutes.toDouble())),
-          from: from,
-          to: params.to,
-        );
-        return Right(data);
-      },
+          final data = PieChartData(
+            activities: activities,
+            colorList: colorList,
+            dataMap: activitiesDuration
+                .map((key, value) => MapEntry(key, value.inMinutes.toDouble())),
+            from: from,
+            to: params.to,
+          );
+          return data;
+        },
+      ),
     );
   }
 

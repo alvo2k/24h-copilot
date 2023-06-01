@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
@@ -27,7 +26,7 @@ class LoadActivitiesUsecase {
 
     return stream.map<ActivityDay>(
       (result) => result.fold(
-        (l) => throw Left(l),
+        (l) => throw l,
         (r) => ActivityDay(r, DateUtils.dateOnly(params.forTheDay)),
       ),
     );

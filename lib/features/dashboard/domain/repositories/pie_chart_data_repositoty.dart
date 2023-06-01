@@ -4,9 +4,9 @@ import '../../../../core/common/data/models/activity_model.dart';
 import '../../../../core/error/return_types.dart';
 
 abstract class PieChartDataRepository {
-  Future<Either<Failure, List<ActivityModel>>> getActivities({
-    required DateTime from,
-    required DateTime to,
+  Future<Stream<Either<Failure, List<ActivityModel>>>> getActivities({
+    required int from,
+    required int to,
     String? search,
   });
 

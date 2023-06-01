@@ -13,7 +13,7 @@ mixin ActivityLocalDataSource {
     required int to,
   });
 
-  Future<List<RecordWithActivitySettings>> getRecordsRangeWithTag({
+  Future<Stream<List<RecordWithActivitySettings>>> getRecordsRangeWithTag({
     required int from,
     required int to,
     required String tag,

@@ -148,31 +148,14 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     required int from,
     required int to,
   }) async {
-    // find record with startTime closest to [from],
-    // this would be the first record because endTime of it would be in range
-    var query = select(records).join([
-      innerJoin(activities, activities.name.equalsExp(records.activityName))
-    ])
-      ..where(records.startTime.isSmallerOrEqualValue(from))
-      ..orderBy([
-        OrderingTerm(
-          expression: records.startTime,
-          mode: OrderingMode.desc,
-        )
-      ])
-      ..limit(1);
-    final firstRecord =
-        await query.map((r) => r.readTable(records)).getSingleOrNull();
-    // if (firstRecord == null) {
-    //   // either there are no records or all records are after [from]
-    //   return [];
-    // }
+    var firstRecord = await _findFirstRecord(from);
 
     // get all records between firstRecord.startTime and [to]
-    query = select(records).join([
+    final query = select(records).join([
       innerJoin(activities, activities.name.equalsExp(records.activityName))
     ])
-      ..where(records.startTime.isBiggerOrEqualValue(firstRecord?.startTime ?? from))
+      ..where(records.startTime
+          .isBiggerOrEqualValue(firstRecord?.startTime ?? from))
       ..where(records.startTime.isSmallerThanValue(to))
       ..orderBy([
         OrderingTerm(
@@ -187,13 +170,38 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   }
 
   @override
-  Future<List<RecordWithActivitySettings>> getRecordsRangeWithTag({
+  Future<Stream<List<RecordWithActivitySettings>>> getRecordsRangeWithTag({
     required int from,
     required int to,
     required String tag,
   }) async {
-    // TODO needs some love
-    var query = select(records).join([
+    final firstRecord = await _findFirstRecord(from);
+
+    // get all records between firstRecord.startTime and [to] with tag
+    final query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..where(records.startTime
+          .isBiggerOrEqualValue(firstRecord?.startTime ?? from))
+      ..where(records.startTime.isSmallerThanValue(to))
+      ..where(activities.tags.like('%$tag%'))
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+        )
+      ]);
+
+    final result = query.watch().map((rows) => rows
+        .map((row) => RecordWithActivitySettings(
+            row.readTable(records), row.readTable(activities)))
+        .toList());
+    return result;
+  }
+
+  Future<DriftRecordModel?> _findFirstRecord(int from) async {
+    // find record with startTime closest to [from],
+    // this would be the first record because endTime of it would be in range
+    final query = select(records).join([
       innerJoin(activities, activities.name.equalsExp(records.activityName))
     ])
       ..where(records.startTime.isSmallerOrEqualValue(from))
@@ -204,34 +212,8 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         )
       ])
       ..limit(1);
-    final firstRecord =
-        await query.map((r) => r.readTable(records)).getSingleOrNull();
-    if (firstRecord == null) {
-      // either there are no records or all records are after [from]
-      if (await (select(records)..limit(1)).getSingleOrNull() == null) {
-        return [];
-      }
-      throw CacheException();
-    }
 
-    // get all records between firstRecord.startTime and [to] with tag
-    query = select(records).join([
-      innerJoin(activities, activities.name.equalsExp(records.activityName))
-    ])
-      ..where(records.startTime.isBiggerOrEqualValue(firstRecord.startTime))
-      ..where(records.startTime.isSmallerThanValue(to))
-      ..where(activities.tags.like('%$tag%'))
-      ..orderBy([
-        OrderingTerm(
-          expression: records.startTime,
-        )
-      ]);
-
-    final result = query.get().then((rows) => rows
-        .map((row) => RecordWithActivitySettings(
-            row.readTable(records), row.readTable(activities)))
-        .toList());
-    return result;
+    return await query.map((r) => r.readTable(records)).getSingleOrNull();
   }
 
   @override

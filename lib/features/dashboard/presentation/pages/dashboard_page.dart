@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:copilot/features/activities/presentation/widgets/activity_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 
@@ -76,18 +77,27 @@ class DashboardPage extends StatelessWidget {
         return Center(child: Text(state.message));
       }
       if (state is DashboardLoaded) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: _buildDate(state.data.from, state.data.to, context),
+        final bloc = BlocProvider.of<DashboardBloc>(context);
+        return Obx(() {
+          if (bloc.data.value != null) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: _buildDate(
+                        bloc.data.value!.from, bloc.data.value!.to, context),
+                  ),
+                  _buildPie(bloc.data.value!.dataMap,
+                      bloc.data.value!.colorList, context),
+                  _buildActivities(bloc.data.value!),
+                ],
               ),
-              _buildPie(state.data.dataMap, state.data.colorList, context),
-              _buildActivities(state.data),
-            ],
-          ),
-        );
+            );
+          } else {
+            return const Text('empty data');
+          }
+        });
       }
       if (state is DashboardInitial) {
         state.firstRecordDate.then((date) {

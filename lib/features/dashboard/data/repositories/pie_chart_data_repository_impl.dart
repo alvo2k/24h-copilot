@@ -1,4 +1,3 @@
-import 'package:copilot/core/error/exceptions.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -14,27 +13,27 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
   final ActivityLocalDataSource localDataBase;
 
   @override
-  Future<Either<Failure, List<ActivityModel>>> getActivities({
-    required DateTime from,
-    required DateTime to,
+  Future<Stream<Either<Failure, List<ActivityModel>>>> getActivities({
+    required int from,
+    required int to,
     String? search,
   }) async {
-    try {
-      final rows = await () async {
-        // TODO search for names
-        if (search != null && search.startsWith('#')) {
-          return localDataBase.getRecordsRangeWithTag(
-            from: from.toUtc().millisecondsSinceEpoch,
-            to: to.toUtc().millisecondsSinceEpoch,
-            tag: search.substring(1),
-          );
-        }
-        return localDataBase.getRecordsRange(
-          from: from.toUtc().millisecondsSinceEpoch,
-          to: to.toUtc().millisecondsSinceEpoch,
+    final rowsStream = await () async {
+      // TODO search for names
+      if (search != null && search.startsWith('#')) {
+        return localDataBase.getRecordsRangeWithTag(
+          from: from,
+          to: to,
+          tag: search.substring(1),
         );
-      }();
+      }
+      return localDataBase.getRecordsRange(
+        from: from,
+        to: to,
+      );
+    }();
 
+    return rowsStream.map<Either<Failure, List<ActivityModel>>>((rows) {
       List<ActivityModel> records = [];
       for (int i = 0; i < rows.length; i++) {
         final activityRow = rows[i];
@@ -43,8 +42,7 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
               activityRow, rows[i + 1].record.startTime);
           records.add(activity);
         } on RangeError catch (_) {
-          final activity = ActivityModel.fromDriftRow(
-              activityRow, to.millisecondsSinceEpoch);
+          final activity = ActivityModel.fromDriftRow(activityRow, to);
           records.add(activity);
         }
       }
@@ -52,9 +50,7 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
         return const Left(CacheFailure({'message': 'No records found'}));
       }
       return Right(records);
-    } on CacheException catch (_) {
-      return const Left(CacheFailure({'message': 'Cache failure'}));
-    }
+    });
   }
 
   @override

@@ -25,10 +25,7 @@ class LoadActivitiesUsecase {
     final stream = await repository.getActivities(from: from, to: to);
 
     return stream.map<ActivityDay>(
-      (result) => result.fold(
-        (l) => throw l,
-        (r) => ActivityDay(r, DateUtils.dateOnly(params.forTheDay)),
-      ),
+      (result) => ActivityDay(result, DateUtils.dateOnly(params.forTheDay)),
     );
   }
 }

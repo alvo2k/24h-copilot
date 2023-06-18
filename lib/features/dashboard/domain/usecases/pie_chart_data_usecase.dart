@@ -1,9 +1,7 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/data/models/activity_model.dart';
-import '../../../../core/error/return_types.dart';
 import '../entities/pie_chart_data.dart';
 import '../repositories/pie_chart_data_repositoty.dart';
 
@@ -14,24 +12,11 @@ class PieChartDataUsecase {
   final PieChartDataRepository repository;
 
   Future<Stream<PieChartData>> call(PieChartDataParams params) async {
-    final firstDate = await firstRecordDate();
-    if (firstDate == null) {
-      return Stream.value(
-          throw const Left(CacheFailure({'message': 'No records found'})));
-    }
-
-    final from = () {
-      if (params.from.isBefore(firstDate)) {
-        return firstDate;
-      }
-      return params.from;
-    }();
-
     final DateTime to = () {
       if (params.to == DateUtils.dateOnly(DateTime.now())) {
         return DateTime.now();
       }
-      if (params.to == from) {
+      if (params.to == params.from) {
         return params.to.add(const Duration(days: 1));
       }
       return params.to.add(const Duration(days: 1));
@@ -41,13 +26,13 @@ class PieChartDataUsecase {
       if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
         // because range picker returns date only if it's today - load the entire day
         return repository.getActivities(
-          from: from.toUtc().millisecondsSinceEpoch,
+          from: params.from.toUtc().millisecondsSinceEpoch,
           to: DateTime.now().toUtc().millisecondsSinceEpoch,
           search: params.search,
         );
       } else {
         return repository.getActivities(
-          from: from.toUtc().millisecondsSinceEpoch,
+          from: params.from.toUtc().millisecondsSinceEpoch,
           to: to.toUtc().millisecondsSinceEpoch,
           search: params.search,
         );
@@ -64,9 +49,9 @@ class PieChartDataUsecase {
             if (!colorList.contains(activities[i].color)) {
               colorList.add(activities[i].color);
             }
-            if (activities[i].startTime.isBefore(from)) {
+            if (activities[i].startTime.isBefore(params.from)) {
               // dont count time before [from]
-              activities[i] = activities[i].changeStartTime(from);
+              activities[i] = activities[i].changeStartTime(params.from);
             }
             if (activities[i].endTime != null &&
                 activities[i].endTime!.isAfter(to)) {
@@ -84,12 +69,12 @@ class PieChartDataUsecase {
             if (activitiesDuration.containsKey(activities[i].name)) {
               activitiesDuration[activities[i].name] =
                   activitiesDuration[activities[i].name]! +
-                      activities[i].durationSince(from);
+                      activities[i].durationSince(params.from);
               activities.removeAt(i);
               i--;
             } else {
               activitiesDuration[activities[i].name] =
-                  activities[i].durationSince(from);
+                  activities[i].durationSince(params.from);
             }
           }
           final data = PieChartData(
@@ -97,7 +82,7 @@ class PieChartDataUsecase {
             colorList: colorList,
             dataMap: activitiesDuration
                 .map((key, value) => MapEntry(key, value.inMinutes.toDouble())),
-            from: from,
+            from: params.from,
             to: params.to,
           );
           return data;

@@ -21,7 +21,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         search: event.search,
       ));
 
-      stream.listen((pieData) {
+      stream.handleError((error) {
+        print('Error loading PieChartData:');
+        print(error);
+      }).listen((pieData) {
         data.trigger(pieData);
       });
 

@@ -1,4 +1,4 @@
-import 'package:copilot/features/activities/data/models/activity_model.dart';
+import 'package:copilot/core/common/data/models/activity_model.dart';
 import 'package:copilot/features/activities/domain/entities/activity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

@@ -1,6 +1,6 @@
+import 'package:copilot/core/common/data/datasources/activity_database.dart';
+import 'package:copilot/core/common/data/datasources/activity_local_data_source.dart';
 import 'package:copilot/core/error/exceptions.dart';
-import 'package:copilot/features/activities/data/datasources/data_sources_contracts.dart';
-import 'package:copilot/features/activities/data/datasources/drift/drift_db.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,8 +10,8 @@ void main() {
 
   setUp(() {
     sut = ActivityDatabase.testConnection(NativeDatabase.memory(
-      //logStatements: true,
-    ));
+        //logStatements: true,
+        ));
   });
 
   tearDown(() async {
@@ -22,7 +22,7 @@ void main() {
   const color = 0xFFFFFFFF;
   final startTime = DateTime.now().toUtc().millisecondsSinceEpoch;
 
-  populateDB() async {
+  Future<void> populateDB() async {
     await sut.createActivity(name, color);
     await sut.createRecord(
       activityName: name,
@@ -129,23 +129,22 @@ void main() {
       row = await sut.createRecord(
         activityName: name,
         startTime: startTime,
-        endTime: endTime,
       );
     });
     test(
       'should get records including endTime',
       () async {
-        final result = await sut.getRecords(
+        final result = await sut.getRecordsRange(
           from: endTime,
           to: endTime + minute,
         );
 
         expect(
-          result.first.activity,
+          (await result.first).first.activity,
           row.activity,
         );
         expect(
-          result.first.record,
+          (await result.first).first.record,
           row.record,
         );
       },
@@ -153,15 +152,12 @@ void main() {
     test(
       'should get records excluding startTime',
       () async {
-        final result = await sut.getRecords(
+        final result = await sut.getRecordsRange(
           from: startTime - minute,
           to: startTime,
         );
 
-        expect(
-          result.isEmpty,
-          true,
-        );
+        expect((await result.first).isEmpty, true);
       },
     );
   });
@@ -211,17 +207,16 @@ void main() {
         await sut.updateRecordTime(
           idRecord: 1,
           startTime: startTime,
-          endTime: endTime,
         );
 
         expect(
-            await sut.records.select().getSingle(),
-            DriftRecordModel(
-              idRecord: 1,
-              activityName: name,
-              startTime: startTime,
-              endTime: endTime,
-            ));
+          await sut.records.select().getSingle(),
+          DriftRecordModel(
+            idRecord: 1,
+            activityName: name,
+            startTime: startTime,
+          ),
+        );
       },
     );
     test(
@@ -231,27 +226,12 @@ void main() {
 
         await sut.updateRecordTime(idRecord: 1, startTime: startTime + minute);
 
-        expect(await sut.records.select().getSingle(),
+        expect(
+            await sut.records.select().getSingle(),
             DriftRecordModel(
               idRecord: 1,
               activityName: name,
               startTime: startTime + minute,
-            ));
-      },
-    );
-    test(
-      'should update records end time',
-      () async {
-        await populateDB();
-
-        await sut.updateRecordTime(idRecord: 1, endTime: endTime);
-
-        expect(await sut.records.select().getSingle(),
-            DriftRecordModel(
-              idRecord: 1,
-              activityName: name,
-              startTime: startTime,
-              endTime: endTime,
             ));
       },
     );

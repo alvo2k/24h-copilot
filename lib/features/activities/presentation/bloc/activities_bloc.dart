@@ -60,7 +60,6 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
           );
         },
         (editName) async {
-          // emit(ActivitiesState.loading());
           final result = await editNameUsecase(
               EditNameParams(editName.recordId, editName.name));
           result.fold(
@@ -71,7 +70,6 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
           );
         },
         (editRecords) async {
-          // emit(ActivitiesState.loading());
           final edit = await editRecordsUsecase(EditRecordsParams(
             name: editRecords.name,
             fixedTime: editRecords.fixedTime,
@@ -82,22 +80,6 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
             (l) => emit(ActivitiesState.failure(l.prop['message'])),
             (r) => null,
           );
-          //     final DateTime editedDate = DateUtils.dateOnly(r.startTime);
-
-          //     final result =
-          //         await loadActivitiesUsecase(LoadActivitiesParams(editedDate));
-          //     result.fold(
-          //         (l) => emit(ActivitiesState.failure(l.prop['message'])), (r) {
-          //       for (int i = 0; i < loadedActivities.length; i++) {
-          //         if (loadedActivities[i].date == editedDate) {
-          //           loadedActivities[i] = r;
-          //           emit(ActivitiesState.loaded(loadedActivities));
-          //           return;
-          //         }
-          //       }
-          //     });
-          //   },
-          // );
         },
       );
     });

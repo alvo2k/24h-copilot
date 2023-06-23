@@ -1,8 +1,7 @@
-import 'package:copilot/features/activities/domain/entities/activity.dart';
+import 'package:copilot/features/activities/domain/entities/activity_day.dart';
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart';
 import 'package:copilot/features/activities/domain/usecases/load_activities_usecase.dart';
-import 'package:dartz/dartz.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -22,32 +21,42 @@ void main() {
     () => expect(sut.repository, isA<ActivityRepository>()),
   );
   test(
-    'should call repository with DateTime in UTC format',
+    "should call repository and return ActivityDay with callable date",
     () async {
-      when(mockRepository.getActivities(any)).thenAnswer(
-        (_) async => const Right(<Activity>[]),
+      when(mockRepository.getActivities(
+              from: anyNamed('from'), to: anyNamed('to')))
+          .thenAnswer(
+        (_) async => Stream.value([]),
       );
 
-      await sut(LoadActivitiesParams(DateTime(1)));
+      final arg = DateTime(1);
+      var result = await sut(LoadActivitiesParams(arg));
 
-      var result = verify(mockRepository.getActivities(captureAny))
-          .captured
-          .first;
-      expect(result.isUtc, true);
+      verify(mockRepository.getActivities(
+              from: anyNamed('from'), to: anyNamed('to')))
+          .called(1);
+      verifyNoMoreInteractions(mockRepository);
+      expect((await result.first).date, arg);
     },
   );
   test(
-    "should call repository and return its value",
+    'should call repository with millisecondsSinceEpoch and with one day difference',
     () async {
-      when(mockRepository.getActivities(any)).thenAnswer(
-        (_) async => const Right(<Activity>[]),
+      when(mockRepository.getActivities(
+              from: anyNamed('from'), to: anyNamed('to')))
+          .thenAnswer(
+        (_) async => Stream.value([]),
       );
 
-      var result = await sut(LoadActivitiesParams(DateTime(1)));
+      final forTheDay = DateUtils.dateOnly(DateTime.now());
+      await sut(LoadActivitiesParams(forTheDay));
 
-      verify(mockRepository.getActivities(any)).called(1);
-      verifyNoMoreInteractions(mockRepository);
-      expect(result, const Right(<Activity>[]));
+      var result = verify(mockRepository.getActivities(
+              from: captureAnyNamed('from'), to: captureAnyNamed('to')))
+          .captured;
+      expect(DateTime.fromMillisecondsSinceEpoch(result[0]), forTheDay);
+      expect(DateTime.fromMillisecondsSinceEpoch(result[1]),
+          forTheDay.add(const Duration(days: 1)));
     },
-  );
+  );  
 }

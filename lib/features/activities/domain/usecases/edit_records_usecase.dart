@@ -26,11 +26,10 @@ class EditRecordsUsecase extends UseCase<Activity, EditRecordsParams> {
           : params.selectedTime!;
       final startsSame =
           params.toChange.startTime.difference(newStartTime).inMinutes == 0;
-      final endsSame = () {
-        return params.toChange.endTime != null
+      final endsSame = params.toChange.endTime != null
             ? params.toChange.endTime!.difference(newEndTime).inMinutes == 0
             : false;
-      }();
+      
       if (startsSame && endsSame) {
         // overwrite record
         return repository.editRecords(EditRecord(

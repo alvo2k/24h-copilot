@@ -15,10 +15,10 @@ workflows:
               echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
           - name: Set up firebase_options.dart
             script: |
-              echo $FIREBASE_OPTIONS > "$CM_BUILD_DIR/lib/firebase_options.dart"
-          - name: Set up firebase_options.dart
+              echo "$FIREBASE_OPTIONS" > "$CM_BUILD_DIR/lib/firebase_options.dart"
+          - name: Set up google-services.json
             script: |
-              echo $GOOGLE_SERVICES > "$CM_BUILD_DIR/android/app/google-services.json"
+              echo "$GOOGLE_SERVICES" > "$CM_BUILD_DIR/android/app/google-services.json"
           - name: Get Flutter packages
             script: |
               flutter packages pub get

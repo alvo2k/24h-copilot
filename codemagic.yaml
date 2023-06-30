@@ -1,0 +1,41 @@
+workflows:
+    android-apk-workflow:
+        name: Android APK
+        max_build_duration: 120
+        instance_type: mac_mini_m1
+        environment:
+          flutter: stable
+          groups:
+            - firebase
+          android_signing:
+            - keystore_reference
+        scripts:
+          - name: Set up local.properties
+            script: |
+              echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+          - name: Set up firebase_options.dart
+            script: |
+              echo $FIREBASE_OPTIONS > "$CM_BUILD_DIR/lib/firebase_options.dart"
+          - name: Set up firebase_options.dart
+            script: |
+              echo $GOOGLE_SERVICES > "$CM_BUILD_DIR/android/app/google-services.json"
+          - name: Get Flutter packages
+            script: |
+              flutter packages pub get
+          - name: Flutter unit tests
+            script: |
+              flutter test
+            ignore_failure: true
+          - name: Build APK with Flutter
+            script: |    
+              flutter build apk --release
+        artifacts:
+          - build/app/outputs/flutter-apk/*.apk
+        publishing: 
+          email:
+            recipients:
+              - alvo2k@proton.me
+            notify:
+              success: true
+              failure: false
+

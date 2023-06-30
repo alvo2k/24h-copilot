@@ -8,7 +8,7 @@ workflows:
           groups:
             - firebase
           android_signing:
-            - keystore_reference
+            - upload-keystore
         scripts:
           - name: Set up local.properties
             script: |

@@ -14,13 +14,11 @@ class ActivityListTile extends StatelessWidget {
     this.minimalVersion = false,
     this.padding = 76,
     this.hideEmojiPicker = false,
-    this.duration,
   });
 
   static const cardHeight = 125.0;
 
   final Activity activity;
-  final Duration? duration;
   final bool hideEmojiPicker;
   final bool minimalVersion;
   final double padding;
@@ -219,7 +217,6 @@ class ActivityListTile extends StatelessWidget {
                         ActivityTime(
                           startTime: activity.startTime,
                           endTime: activity.endTime,
-                          duration: duration,
                         ),
                       ],
                       ),

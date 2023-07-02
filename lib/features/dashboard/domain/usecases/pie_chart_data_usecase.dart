@@ -13,7 +13,7 @@ class PieChartDataUsecase {
 
   Future<Stream<PieChartData>> call(PieChartDataParams params) async {
     final DateTime to = () {
-      if (params.to == DateUtils.dateOnly(DateTime.now())) {
+      if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
         return DateTime.now();
       }
       if (params.to == params.from) {
@@ -58,13 +58,6 @@ class PieChartDataUsecase {
               // dont count time after [to]
               final endTime = to;
               activities[i] = activities[i].changeEndTime(endTime);
-            }
-            if (activities[i].endTime == null) {
-              if (to == DateUtils.dateOnly(DateTime.now())) {
-                activities[i] = activities[i].changeEndTime(DateTime.now());
-              } else {
-                activities[i] = activities[i].changeEndTime(to);
-              }
             }
             if (activitiesDuration.containsKey(activities[i].name)) {
               activitiesDuration[activities[i].name] =

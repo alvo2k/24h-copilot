@@ -57,7 +57,6 @@ class DashboardPage extends StatelessWidget {
             minimalVersion: true,
             padding: 0,
             hideEmojiPicker: true,
-            duration: Duration(minutes: data.dataMap[activity.name]!.toInt()),
           ),
       ],
     );

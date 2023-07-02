@@ -42,7 +42,8 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
               activityRow, rows[i + 1].record.startTime);
           records.add(activity);
         } on RangeError catch (_) {
-          final activity = ActivityModel.fromDriftRow(activityRow, to);
+          // endTime = null
+          final activity = ActivityModel.fromDriftRow(activityRow);
           records.add(activity);
         }
       }

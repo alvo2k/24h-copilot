@@ -7,11 +7,9 @@ class ActivityTime extends StatefulWidget {
   const ActivityTime({
     required this.startTime,
     required this.endTime,
-    this.duration,
     super.key,
   });
 
-  final Duration? duration;
   final DateTime? endTime;
   final DateTime startTime;
 
@@ -44,24 +42,6 @@ class _ActivityTimeState extends State<ActivityTime> {
         final alreadyPrefix = AppLocalizations.of(context)!.alreadyPrefix;
         final hourLetter = AppLocalizations.of(context)!.hourLetter;
         final minuteLetter = AppLocalizations.of(context)!.minuteLetter;
-
-        if (widget.duration != null) {
-          final totalMinutes = widget.duration!.inMinutes;
-          final hours = widget.duration!.inHours;
-
-          if (hours > 0) {
-            return Text(AppLocalizations.of(context)!.timeFormat(
-              alreadyPrefix,
-              hours,
-              hourLetter,
-              totalMinutes - hours * 60,
-              minuteLetter,
-            ));
-          } else {
-            return Text(AppLocalizations.of(context)!
-                .timeFormatMinutes(alreadyPrefix, totalMinutes, minuteLetter));
-          }
-        }
 
         if (widget.endTime == null) {
           final now = DateTime.now();

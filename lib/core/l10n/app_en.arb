@@ -50,5 +50,6 @@
     "color": "Color",
     "changeColor": "Change color",
     "selectGoal": "Select a goal",
-    "tutorialPrompt": "Enter what you want to do now"
+    "tutorialPrompt": "Enter what you want to do now",
+    "emptyDashboard": "Here you can keep track of your activities"
 }

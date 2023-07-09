@@ -10,6 +10,7 @@ import 'package:pie_chart/pie_chart.dart';
 import '../../../activities/presentation/widgets/activity_day_date.dart';
 import '../../domain/entities/pie_chart_data.dart';
 import '../bloc/dashboard_bloc.dart';
+import '../widgets/empty_dashboard_illustration.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -94,7 +95,7 @@ class DashboardPage extends StatelessWidget {
               ),
             );
           } else {
-            return const Text('empty data');
+            return const EmptyDashboardIllustration();
           }
         });
       }

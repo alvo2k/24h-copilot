@@ -50,6 +50,8 @@
     "color": "Color",
     "changeColor": "Change color",
     "selectGoal": "Select a goal",
-    "tutorialPrompt": "Enter what you want to do now",
-    "emptyDashboard": "Here you can keep track of your activities"
+    "tutorialPrompt": "Enter what you want to do now.",
+    "emptyDashboard": "Here you can keep track of your activities.",
+    "nothingToEdit": "Nothing to edit yet.",
+    "addActivityAtActivities": "Add a new activity to the Activities screen."
 }

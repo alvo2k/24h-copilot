@@ -14,7 +14,7 @@ class PieChartDataUsecase {
   Future<Stream<PieChartData>> call(PieChartDataParams params) async {
     final DateTime to = () {
       if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
-        return DateTime.now();
+        return DateUtils.dateOnly(DateTime.now()).add(const Duration(days: 1));
       }
       if (params.to == params.from) {
         return params.to.add(const Duration(days: 1));
@@ -22,22 +22,11 @@ class PieChartDataUsecase {
       return params.to.add(const Duration(days: 1));
     }();
 
-    final activitiesStream = await () async {
-      if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
-        // because range picker returns date only if it's today - load the entire day
-        return repository.getActivities(
-          from: params.from.toUtc().millisecondsSinceEpoch,
-          to: DateTime.now().toUtc().millisecondsSinceEpoch,
-          search: params.search,
-        );
-      } else {
-        return repository.getActivities(
-          from: params.from.toUtc().millisecondsSinceEpoch,
-          to: to.toUtc().millisecondsSinceEpoch,
-          search: params.search,
-        );
-      }
-    }();
+    final activitiesStream = await repository.getActivities(
+      from: params.from.toUtc().millisecondsSinceEpoch,
+      to: to.toUtc().millisecondsSinceEpoch,
+      search: params.search,
+    );
 
     return activitiesStream.map(
       (result) => result.fold(

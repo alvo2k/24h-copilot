@@ -71,9 +71,6 @@ class DashboardPage extends StatelessWidget {
         return const Center(child: CircularProgressIndicator.adaptive());
       }
       if (state is DashboardFailure) {
-        if (state.message == 'No records found') {
-          // first launch
-        }
         return Center(child: Text(state.message));
       }
       if (state is DashboardLoaded) {
@@ -101,15 +98,21 @@ class DashboardPage extends StatelessWidget {
       }
       if (state is DashboardInitial) {
         state.firstRecordDate.then((date) {
-          var from = DateUtils.dateOnly(DateTime.now())
-              .subtract(const Duration(days: 3));
-          final to = DateTime.now();
-          if (date != null && date.isAfter(from)) {
-            from = date;
-          }
-          BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(from, to));
+          final today =
+              DateUtils.dateOnly(DateTime.now());
+          final from = () {
+            if (date != null) {
+              if (date.isAfter(today.subtract(const Duration(days: 7)))) {
+                return date;
+              }
+              return today.subtract(const Duration(days: 7));
+            }
+            return DateUtils.dateOnly(DateTime.now());
+          }();
+          // load last 7 days or load entire [today]
+          BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(from, today));
         });
-        return const Center(child: Text('State initial'));
+        return const Center(child: CircularProgressIndicator.adaptive());
       }
       return const Center(child: Text('Unknown state'));
     });

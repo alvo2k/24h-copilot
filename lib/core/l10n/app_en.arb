@@ -49,5 +49,6 @@
     "pickColor": "Pick a color",
     "color": "Color",
     "changeColor": "Change color",
-    "selectGoal": "Select a goal"
+    "selectGoal": "Select a goal",
+    "tutorialPrompt": "Enter what you want to do now"
 }

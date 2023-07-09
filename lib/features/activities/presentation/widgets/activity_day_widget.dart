@@ -57,9 +57,10 @@ class ActivityDayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool editMode = BlocProvider.of<EditModeCubit>(context).state;
-    return Column(
-      children: activityTiles(editMode),
+    return BlocBuilder<EditModeCubit, bool>(
+      builder: (context, editMode) => Column(
+        children: activityTiles(editMode),
+      ),
     );
   }
 }

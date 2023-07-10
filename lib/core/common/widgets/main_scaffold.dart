@@ -82,7 +82,11 @@ class _MainScaffoldState extends State<MainScaffold> {
               ? IconButton(
                   icon: SvgPicture.asset(
                     'assets/icons/edit_mode.svg',
-                    color: Theme.of(context).primaryIconTheme.color,
+                    alignment: Alignment.bottomRight,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).iconTheme.color!,
+                      BlendMode.srcIn,
+                    ),
                   ),
                   tooltip: AppLocalizations.of(context)!.editMode,
                   onPressed: () {

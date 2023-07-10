@@ -69,9 +69,7 @@ class ActivityListTile extends StatelessWidget {
             : Colors.green[900]!;
       }
     }
-    return Theme.of(context).brightness == Brightness.light
-        ? const Color.fromRGBO(226, 226, 226, 1)
-        : const Color.fromRGBO(25, 25, 25, 1);
+    return Theme.of(context).cardColor;
   }
 
   static ShapeBorder get shape =>
@@ -209,16 +207,16 @@ class ActivityListTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        activity.goal == null
-                            ? const SizedBox.shrink()
-                            : buildGoal(activity.goal!, context),
-                        ActivityTime(
-                          startTime: activity.startTime,
-                          endTime: activity.endTime,
-                        ),
-                      ],
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          activity.goal == null
+                              ? const SizedBox.shrink()
+                              : buildGoal(activity.goal!, context),
+                          ActivityTime(
+                            startTime: activity.startTime,
+                            endTime: activity.endTime,
+                          ),
+                        ],
                       ),
                     ),
                   ],

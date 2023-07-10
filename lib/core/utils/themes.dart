@@ -12,7 +12,8 @@ class AppTheme {
       interactionEffects: false,
       tintedDisabledControls: false,
       useTextTheme: true,
-      inputDecoratorBorderType: FlexInputBorderType.underline,
+      inputDecoratorBorderType: FlexInputBorderType.outline,
+      inputDecoratorRadius: 12,
       inputDecoratorUnfocusedBorderIsColored: false,
       tooltipRadius: 4,
       tooltipSchemeColor: SchemeColor.inverseSurface,
@@ -44,6 +45,8 @@ class AppTheme {
     swapLegacyOnMaterial3: true,
     // To use the Playground font, add GoogleFonts package and uncomment
     // fontFamily: GoogleFonts.notoSans().fontFamily,
+  ).copyWith(
+    cardColor: const Color.fromRGBO(226, 226, 226, 1),
   );
 
   static final darkTheme = FlexThemeData.dark(
@@ -52,7 +55,8 @@ class AppTheme {
       interactionEffects: false,
       tintedDisabledControls: false,
       useTextTheme: true,
-      inputDecoratorBorderType: FlexInputBorderType.underline,
+      inputDecoratorBorderType: FlexInputBorderType.outline,
+      inputDecoratorRadius: 12,
       inputDecoratorUnfocusedBorderIsColored: false,
       tooltipRadius: 4,
       tooltipSchemeColor: SchemeColor.inverseSurface,
@@ -84,5 +88,5 @@ class AppTheme {
     swapLegacyOnMaterial3: true,
     // To use the Playground font, add GoogleFonts package and uncomment
     // fontFamily: GoogleFonts.notoSans().fontFamily,
-  );
+  ).copyWith(cardColor: const Color(0xFF2F2F2F));
 }

@@ -224,6 +224,12 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                           onChanged: (newName) => setState(() {
                             activity = activity.changeName(newName);
                           }),
+                          strutStyle: const StrutStyle(
+                            height: .9,
+                            leading: 0,
+                            forceStrutHeight: true,
+                          ),
+                          cursorHeight: 18,
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(),
                             constraints: BoxConstraints(
@@ -319,25 +325,26 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       ...buildTags(tags ?? []),
-                                      Card(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(100)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0,
-                                            vertical: 0,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12.0,
+                                          vertical: 0,
+                                        ),
+                                        child: TextField(
+                                          onSubmitted: addTag,
+                                          strutStyle: const StrutStyle(
+                                            height: .9,
+                                            leading: 0,
+                                            forceStrutHeight: true,
                                           ),
-                                          child: TextField(
-                                            onSubmitted: addTag,
-                                            decoration: const InputDecoration(
-                                              isDense: true,
-                                              prefixText: '# ',
-                                              border: InputBorder.none,
-                                              constraints: BoxConstraints(
-                                                maxWidth: 120,
-                                                maxHeight: 25,
-                                              ),
+                                          cursorHeight: 18,
+                                          decoration: const InputDecoration(
+                                            isDense: true,
+                                            prefixText: '# ',
+                                            border: InputBorder.none,
+                                            constraints: BoxConstraints(
+                                              maxWidth: 120,
+                                              maxHeight: 25,
                                             ),
                                           ),
                                         ),

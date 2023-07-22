@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../domain/entities/activity_day.dart';
 import '../bloc/activities_bloc.dart';
 import '../bloc/notification_controller.dart';
 import '../widgets/activity_list_view.dart';
@@ -24,6 +23,21 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     controller.addListener(loadMoreDays);
 
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final newActivityFromNotification =
+        ModalRoute.of(context)?.settings.arguments as String?;
+    if (newActivityFromNotification != null &&
+        newActivityFromNotification.trim().isNotEmpty) {
+      BlocProvider.of<ActivitiesBloc>(context).add(
+          ActivitiesEvent.switchActivity(newActivityFromNotification.trim()));
+    }
+
+    createNotification();
+
+    super.didChangeDependencies();
   }
 
   void createNotification() {
@@ -65,42 +79,23 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     // load next day
     if (controller.position.extentAfter < 20 &&
         controller.position.outOfRange == false) {
-      var activitiesBlock = BlocProvider.of<ActivitiesBloc>(context);
+      var activitiesBloc = BlocProvider.of<ActivitiesBloc>(context);
 
-      late DateTime dateToLoad;
-      late ActivityDay lastLoadedActivityDay;
-      activitiesBlock.state.join(
-        (_) => null,
-        (_) => null,
-        (loaded) {
-          lastLoadedActivityDay = loaded.days.last;
-          dateToLoad =
-              lastLoadedActivityDay.date.subtract(const Duration(days: 1));
-        },
-        (_) => null,
-      );
+      final lastLoadedActivityDay = activitiesBloc.loadedActivities.last;
+      final dateToLoad =
+          lastLoadedActivityDay.date.subtract(const Duration(days: 1));
 
       if (lastLoadedActivityDay.activitiesInThisDay.isEmpty) {
         // all activities in DB allready loaded
         controller.removeListener(loadMoreDays);
         return;
       }
-      activitiesBlock.add(ActivitiesEvent.loadActivities(dateToLoad));
+      activitiesBloc.add(ActivitiesEvent.loadActivities(dateToLoad));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    createNotification();
-
-    final newActivityFromNotification =
-        ModalRoute.of(context)?.settings.arguments as String?;
-    if (newActivityFromNotification != null &&
-        newActivityFromNotification.isNotEmpty) {
-      BlocProvider.of<ActivitiesBloc>(context).add(
-          ActivitiesEvent.switchActivity(newActivityFromNotification.trim()));
-    }
-
     return Column(
       children: [
         Expanded(child: ActivityListView(controller)),

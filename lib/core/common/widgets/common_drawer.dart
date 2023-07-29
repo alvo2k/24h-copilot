@@ -4,8 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../features/card-editor/presentation/pages/activities_settings_page.dart';
-import '../../../features/firebase/presentation/widgets/login_logout_list_tile.dart';
-import '../../../features/firebase/presentation/widgets/user_drawer_header.dart';
+import '../../../features/auth/presentation/widgets/login_logout_list_tile.dart';
+import '../../../features/auth/presentation/widgets/user_drawer_header.dart';
 import '../bloc/theame_cubit.dart';
 
 class CommonDrawer extends StatelessWidget {

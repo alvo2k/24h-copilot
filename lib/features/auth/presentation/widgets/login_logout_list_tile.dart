@@ -22,7 +22,7 @@ class LoginLogOutListTile extends StatelessWidget {
           leading: const Icon(Icons.exit_to_app),
           title: Text(AppLocalizations.of(context)!.logout),
           onTap: () {
-            BlocProvider.of<AuthBloc>(context).add(AuthEvent.signOut());
+            // BlocProvider.of<AuthBloc>(context).add(AuthEvent.signOut());
           },
         ),
         (loggedOut) => ListTile(

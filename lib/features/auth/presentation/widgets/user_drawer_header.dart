@@ -9,7 +9,7 @@ class UserDrawerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<AuthBloc>(context).add(AuthEvent.getUserData());
+    // BlocProvider.of<AuthBloc>(context).add(AuthEvent.getUserData());
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) => state.join(
         (initial) => const SizedBox.shrink(),

@@ -18,7 +18,7 @@ import 'package:copilot/features/activities/data/repositories/activity_repositor
 import 'package:copilot/features/activities/domain/repositories/activity_repository.dart'
     as _i5;
 import 'package:copilot/features/activities/domain/usecases/activities_usecases.dart'
-    as _i22;
+    as _i20;
 import 'package:copilot/features/activities/domain/usecases/add_emoji_usecase.dart'
     as _i9;
 import 'package:copilot/features/activities/domain/usecases/edit_name_usecase.dart'
@@ -26,31 +26,25 @@ import 'package:copilot/features/activities/domain/usecases/edit_name_usecase.da
 import 'package:copilot/features/activities/domain/usecases/edit_records_usecase.dart'
     as _i11;
 import 'package:copilot/features/activities/domain/usecases/load_activities_usecase.dart'
-    as _i15;
+    as _i13;
 import 'package:copilot/features/activities/domain/usecases/switch_activities_usecase.dart'
-    as _i19;
+    as _i17;
 import 'package:copilot/features/activities/presentation/bloc/activities_bloc.dart'
-    as _i21;
+    as _i19;
 import 'package:copilot/features/card-editor/data/repositories/activity_settings_repository_impl.dart'
     as _i8;
 import 'package:copilot/features/card-editor/domain/repositories/activity_settings_repository.dart'
     as _i7;
 import 'package:copilot/features/card-editor/domain/usecases/load_activities_settings_usecase.dart'
-    as _i14;
-import 'package:copilot/features/card-editor/domain/usecases/update_activity_settings_usecase.dart'
-    as _i20;
-import 'package:copilot/features/dashboard/data/repositories/pie_chart_data_repository_impl.dart'
-    as _i17;
-import 'package:copilot/features/dashboard/domain/repositories/pie_chart_data_repositoty.dart'
-    as _i16;
-import 'package:copilot/features/dashboard/domain/usecases/pie_chart_data_usecase.dart'
-    as _i18;
-import 'package:copilot/features/firebase/data/repositories/firebase_auth_repository_impl.dart'
-    as _i13;
-import 'package:copilot/features/firebase/domain/repositories/firebase_auth_repository.dart'
     as _i12;
-import 'package:copilot/features/firebase/domain/usecases/auth_usecase.dart'
-    as _i23;
+import 'package:copilot/features/card-editor/domain/usecases/update_activity_settings_usecase.dart'
+    as _i18;
+import 'package:copilot/features/dashboard/data/repositories/pie_chart_data_repository_impl.dart'
+    as _i15;
+import 'package:copilot/features/dashboard/domain/repositories/pie_chart_data_repositoty.dart'
+    as _i14;
+import 'package:copilot/features/dashboard/domain/usecases/pie_chart_data_usecase.dart'
+    as _i16;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
@@ -76,31 +70,27 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i10.EditNameUsecase(gh<_i5.ActivityRepository>()));
     gh.lazySingleton<_i11.EditRecordsUsecase>(
         () => _i11.EditRecordsUsecase(gh<_i5.ActivityRepository>()));
-    gh.lazySingleton<_i12.FirebaseAuthRepository>(
-        () => _i13.FirebaseAuthRepositoryImpl());
-    gh.lazySingleton<_i14.LoadActivitiesSettingsUsecase>(() =>
-        _i14.LoadActivitiesSettingsUsecase(
+    gh.lazySingleton<_i12.LoadActivitiesSettingsUsecase>(() =>
+        _i12.LoadActivitiesSettingsUsecase(
             gh<_i7.ActivitySettingsRepository>()));
-    gh.lazySingleton<_i15.LoadActivitiesUsecase>(
-        () => _i15.LoadActivitiesUsecase(gh<_i5.ActivityRepository>()));
-    gh.lazySingleton<_i16.PieChartDataRepository>(() =>
-        _i17.PieChartDataRepositoryImpl(gh<_i3.ActivityLocalDataSource>()));
-    gh.lazySingleton<_i18.PieChartDataUsecase>(
-        () => _i18.PieChartDataUsecase(gh<_i16.PieChartDataRepository>()));
-    gh.lazySingleton<_i19.SwitchActivitiesUsecase>(
-        () => _i19.SwitchActivitiesUsecase(gh<_i5.ActivityRepository>()));
-    gh.lazySingleton<_i20.UpdateActivitySettingsUsecase>(() =>
-        _i20.UpdateActivitySettingsUsecase(
+    gh.lazySingleton<_i13.LoadActivitiesUsecase>(
+        () => _i13.LoadActivitiesUsecase(gh<_i5.ActivityRepository>()));
+    gh.lazySingleton<_i14.PieChartDataRepository>(() =>
+        _i15.PieChartDataRepositoryImpl(gh<_i3.ActivityLocalDataSource>()));
+    gh.lazySingleton<_i16.PieChartDataUsecase>(
+        () => _i16.PieChartDataUsecase(gh<_i14.PieChartDataRepository>()));
+    gh.lazySingleton<_i17.SwitchActivitiesUsecase>(
+        () => _i17.SwitchActivitiesUsecase(gh<_i5.ActivityRepository>()));
+    gh.lazySingleton<_i18.UpdateActivitySettingsUsecase>(() =>
+        _i18.UpdateActivitySettingsUsecase(
             gh<_i7.ActivitySettingsRepository>()));
-    gh.factory<_i21.ActivitiesBloc>(() => _i21.ActivitiesBloc(
-          loadActivitiesUsecase: gh<_i22.LoadActivitiesUsecase>(),
-          switchActivityUsecase: gh<_i22.SwitchActivitiesUsecase>(),
-          addEmojiUsecase: gh<_i22.AddEmojiUsecase>(),
-          editNameUsecase: gh<_i22.EditNameUsecase>(),
-          editRecordsUsecase: gh<_i22.EditRecordsUsecase>(),
+    gh.factory<_i19.ActivitiesBloc>(() => _i19.ActivitiesBloc(
+          loadActivitiesUsecase: gh<_i20.LoadActivitiesUsecase>(),
+          switchActivityUsecase: gh<_i20.SwitchActivitiesUsecase>(),
+          addEmojiUsecase: gh<_i20.AddEmojiUsecase>(),
+          editNameUsecase: gh<_i20.EditNameUsecase>(),
+          editRecordsUsecase: gh<_i20.EditRecordsUsecase>(),
         ));
-    gh.lazySingleton<_i23.AuthUsecase>(
-        () => _i23.AuthUsecase(gh<_i12.FirebaseAuthRepository>()));
     return this;
   }
 }

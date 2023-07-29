@@ -7,10 +7,10 @@ import '../core/common/widgets/main_scaffold.dart';
 import '../core/utils/themes.dart';
 import '../features/activities/presentation/bloc/activities_bloc.dart';
 import '../features/activities/presentation/bloc/edit_mode_cubit.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/card-editor/presentation/bloc/card_editor_bloc.dart';
 import '../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
-import '../features/firebase/presentation/bloc/auth_bloc.dart';
 import 'injectable.dart';
 
 class CopilotApp extends StatefulWidget {
@@ -42,7 +42,7 @@ class _CopilotAppState extends State<CopilotApp> {
           )..add(ActivitiesEvent.loadActivities(
               DateUtils.dateOnly(DateTime.now()))),
         ),
-        BlocProvider(create: (context) => AuthBloc(sl())),
+        BlocProvider(create: (context) => AuthBloc()),
         BlocProvider(create: (context) => DashboardBloc(sl())),
         BlocProvider(create: (context) => CardEditorBloc(sl(), sl())),
         BlocProvider(create: (context) => SearchSuggestionsCubit(sl())),

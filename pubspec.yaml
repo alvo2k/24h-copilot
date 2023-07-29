@@ -12,7 +12,6 @@ dependencies:
   awesome_notifications: ^0.7.5-dev.3
   bloc_test: ^9.1.0
   category_navigator: ^1.1.6
-  cloud_firestore: ^4.5.0
   cupertino_icons: ^1.0.2
   dartz: ^0.10.1
   dotted_line: ^3.1.0
@@ -20,8 +19,6 @@ dependencies:
   easy_search_bar: ^2.5.0
   email_validator: ^2.1.17
   equatable: ^2.0.3
-  firebase_auth: ^4.4.0
-  firebase_core: ^2.8.0
   flex_color_scheme: ^7.1.2
   flutter:
     sdk: flutter

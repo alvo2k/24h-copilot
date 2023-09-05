@@ -19,7 +19,7 @@ class DashboardPage extends StatelessWidget {
       DateUtils.dateOnly(to).isAtSameMomentAs(from)
           ? Text(
               ActivityDayDate.formatDate(to, context),
-              style: const TextStyle(fontSize: 28),
+              style: Theme.of(context).textTheme.headlineMedium,
             )
           : Text(
               '${ActivityDayDate.formatDate(
@@ -31,7 +31,7 @@ class DashboardPage extends StatelessWidget {
                 context,
                 DateFormat.MONTH_DAY,
               )}',
-              style: const TextStyle(fontSize: 28),
+              style: Theme.of(context).textTheme.headlineMedium,
             );
 
   Widget _buildPie(Map<String, double> dataMap, List<Color> colorList,
@@ -98,8 +98,7 @@ class DashboardPage extends StatelessWidget {
       }
       if (state is DashboardInitial) {
         state.firstRecordDate.then((date) {
-          final today =
-              DateUtils.dateOnly(DateTime.now());
+          final today = DateUtils.dateOnly(DateTime.now());
           final from = () {
             if (date != null) {
               if (date.isAfter(today.subtract(const Duration(days: 7)))) {
@@ -110,7 +109,8 @@ class DashboardPage extends StatelessWidget {
             return DateUtils.dateOnly(DateTime.now());
           }();
           // load last 7 days or load entire [today]
-          BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(from, today));
+          BlocProvider.of<DashboardBloc>(context)
+              .add(DashboardLoad(from, today));
         });
         return const Center(child: CircularProgressIndicator.adaptive());
       }

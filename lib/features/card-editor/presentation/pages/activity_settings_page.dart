@@ -129,7 +129,10 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                     Text(
                       '#$tag',
                       overflow: TextOverflow.fade,
-                      style: const TextStyle(fontSize: 14, color: Colors.green),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium!
+                          .copyWith(color: Colors.green),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -193,6 +196,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          // TODO change to TextButton('save')
           IconButton(
             onPressed: saveChanges,
             icon: const Icon(Icons.save),
@@ -217,7 +221,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                       children: [
                         Text(
                           '${AppLocalizations.of(context)!.activityName}:',
-                          style: const TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         TextField(
                           controller: nameController,
@@ -249,7 +253,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                       children: [
                         Text(
                           '${AppLocalizations.of(context)!.color}:  ',
-                          style: const TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Row(
                           children: [
@@ -278,7 +282,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                       children: [
                         Text(
                           '${AppLocalizations.of(context)!.goal}:',
-                          style: const TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Row(
                           children: [
@@ -310,7 +314,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                       children: [
                         Text(
                           '${AppLocalizations.of(context)!.tags}:',
-                          style: const TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Expanded(
                           child: LayoutBuilder(

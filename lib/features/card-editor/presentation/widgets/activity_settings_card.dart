@@ -37,7 +37,7 @@ class ActivitySettingsCard extends StatelessWidget {
                       ActivityListTile.buildCircle(activity.color),
                       Text(
                         activity.name,
-                        style: const TextStyle(fontSize: 24),
+                        style: Theme.of(context).textTheme.titleLarge,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -56,7 +56,7 @@ class ActivitySettingsCard extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: ActivityListTile.buildTags(
-                                  activity.tags ?? []),
+                                  activity.tags ?? [], context),
                             ),
                           ),
                         );

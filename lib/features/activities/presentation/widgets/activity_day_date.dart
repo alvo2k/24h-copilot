@@ -34,7 +34,7 @@ class ActivityDayDate extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Text(
             formatDate(date, context),
-            style: const TextStyle(fontSize: 28),
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
         ),
       ],

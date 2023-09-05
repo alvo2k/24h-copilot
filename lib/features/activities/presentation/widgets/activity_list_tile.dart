@@ -75,7 +75,7 @@ class ActivityListTile extends StatelessWidget {
   static ShapeBorder get shape =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(10));
 
-  static List<Widget> buildTags(List<String> tags) {
+  static List<Widget> buildTags(List<String> tags, context) {
     if (tags.isEmpty) {
       return [];
     }
@@ -91,7 +91,10 @@ class ActivityListTile extends StatelessWidget {
                   child: Text(
                     '#$tag',
                     overflow: TextOverflow.fade,
-                    style: const TextStyle(fontSize: 12, color: Colors.green),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium!
+                        .copyWith(color: Colors.green),
                   ),
                 ),
               ),
@@ -169,7 +172,7 @@ class ActivityListTile extends StatelessWidget {
                         buildCircle(activity.color),
                         Text(
                           activity.name,
-                          style: const TextStyle(fontSize: 24),
+                          style: Theme.of(context).textTheme.titleLarge,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -187,7 +190,8 @@ class ActivityListTile extends StatelessWidget {
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
-                                children: buildTags(activity.tags ?? []),
+                                children:
+                                    buildTags(activity.tags ?? [], context),
                               ),
                             ),
                           );

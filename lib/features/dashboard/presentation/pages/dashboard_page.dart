@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:copilot/features/activities/presentation/widgets/activity_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -8,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 import '../../../activities/presentation/widgets/activity_day_date.dart';
+import '../../../activities/presentation/widgets/activity_list_tile.dart';
 import '../../domain/entities/pie_chart_data.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../widgets/empty_dashboard_illustration.dart';

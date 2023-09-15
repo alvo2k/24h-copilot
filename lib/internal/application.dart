@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../core/common/bloc/card_editor_screen_cubit.dart';
+import '../core/common/bloc/home_screen_cubit.dart';
 import '../core/common/bloc/theame_cubit.dart';
-import '../core/common/widgets/main_scaffold.dart';
+import '../core/layout/home_screen/home_screen.dart';
 import '../core/utils/themes.dart';
 import '../features/activities/presentation/bloc/activities_bloc.dart';
 import '../features/activities/presentation/bloc/edit_mode_cubit.dart';
@@ -46,6 +48,11 @@ class _CopilotAppState extends State<CopilotApp> {
         BlocProvider(create: (context) => DashboardBloc(sl())),
         BlocProvider(create: (context) => CardEditorBloc(sl(), sl())),
         BlocProvider(create: (context) => SearchSuggestionsCubit(sl())),
+        BlocProvider(
+            create: (context) => HomeScreenCubit()..getFirstDate(context)),
+        BlocProvider(
+          create: (context) => CardEditorScreenCubit(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, state) {
@@ -58,7 +65,7 @@ class _CopilotAppState extends State<CopilotApp> {
             themeMode: state,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const MainScaffold(),
+            home: const HomeScreen(),
           );
         },
       ),

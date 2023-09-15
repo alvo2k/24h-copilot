@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../features/card-editor/presentation/pages/activities_settings_page.dart';
 import '../../../features/auth/presentation/widgets/login_logout_list_tile.dart';
 import '../../../features/auth/presentation/widgets/user_drawer_header.dart';
+import '../../layout/card_editor/card_editor.dart';
 import '../bloc/theame_cubit.dart';
 
 class CommonDrawer extends StatelessWidget {
@@ -44,7 +44,7 @@ class CommonDrawer extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ActivitiesSettingsPage()));
+                        builder: (context) => const CardEditorScreen()));
               },
             ),
             ListTile(

@@ -31,7 +31,6 @@
     "chooseActivity": "Choose a name for the activity",
     "invalidTime": "Invalid time",
     "pickEmoji": "Pick an emoji",
-    "activities": "Activities",
     "dashboard": "Dashboard",
     "editMode": "Edit mode",
     "dateRange": "Choose date range",
@@ -53,5 +52,6 @@
     "tutorialPrompt": "Enter what you want to do now.",
     "emptyDashboard": "Here you can keep track of your activities.",
     "nothingToEdit": "Nothing to edit yet.",
-    "addActivityAtActivities": "Add a new activity to the Activities screen."
+    "addActivityAtActivities": "Add a new activity to the Activities screen.",
+    "editActivitiesShort": "Edit"
 }

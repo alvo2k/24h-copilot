@@ -13,6 +13,7 @@ import '../../../../core/utils/constants.dart';
 import '../../../activities/presentation/widgets/activity_list_tile.dart';
 import '../bloc/card_editor_bloc.dart';
 import '../widgets/activity_settings_card.dart';
+import '../widgets/setting_row.dart';
 
 class ActivitySettingsPage extends StatefulWidget {
   ActivitySettingsPage({
@@ -153,7 +154,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
         .toList();
   }
 
-  saveChanges() {
+  void saveChanges() {
     if (nameController.text.trim().isEmpty) {
       showTopSnackBar(
         Overlay.of(context),
@@ -196,10 +197,9 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          // TODO change to TextButton('save')
-          IconButton(
+          TextButton(
             onPressed: saveChanges,
-            icon: const Icon(Icons.save),
+            child: Text(AppLocalizations.of(context)!.save),
           ),
         ],
         title: Text(widget.initialActivitySettings.name),
@@ -214,15 +214,9 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
               child: Column(
                 children: [
                   ActivitySettingsCard(activity: activity, onPressed: () {}),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  SettingRow(
+                      settingName: AppLocalizations.of(context)!.activityName,
                       children: [
-                        Text(
-                          '${AppLocalizations.of(context)!.activityName}:',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
                         TextField(
                           controller: nameController,
                           onChanged: (newName) => setState(() {
@@ -243,125 +237,92 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${AppLocalizations.of(context)!.color}:  ',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Row(
-                          children: [
-                            ActivityListTile.buildCircle(color),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        ActivityListTile.cardColor(context)),
-                              ),
-                              onPressed: () {
-                                selectColor(context);
-                              },
-                              child: Text(
-                                  AppLocalizations.of(context)!.changeColor),
+                      ]),
+                  SettingRow(
+                    settingName: AppLocalizations.of(context)!.color,
+                    children: [
+                      Row(
+                        children: [
+                          ActivityListTile.buildCircle(color),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  ActivityListTile.cardColor(context)),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                            onPressed: () => selectColor(context),
+                            child:
+                                Text(AppLocalizations.of(context)!.changeColor),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${AppLocalizations.of(context)!.goal}:',
-                          style: Theme.of(context).textTheme.titleMedium,
+                  SettingRow(
+                    settingName: AppLocalizations.of(context)!.goal,
+                    children: [
+                      if (goal != null)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ActivityListTile.buildGoal(goal!, context),
                         ),
-                        Row(
-                          children: [
-                            goal == null
-                                ? const SizedBox.shrink()
-                                : Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: ActivityListTile.buildGoal(
-                                        goal!, context),
-                                  ),
-                            ElevatedButton(
-                              onPressed: pickGoal,
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        ActivityListTile.cardColor(context)),
-                              ),
-                              child: Text(
-                                  AppLocalizations.of(context)!.selectGoal),
-                            ),
-                          ],
+                      ElevatedButton(
+                        onPressed: pickGoal,
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              ActivityListTile.cardColor(context)),
                         ),
-                      ],
-                    ),
+                        child: Text(AppLocalizations.of(context)!.selectGoal),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      children: [
-                        Text(
-                          '${AppLocalizations.of(context)!.tags}:',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Expanded(
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              return SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    minWidth: max(constraints.maxWidth, 150),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      ...buildTags(tags ?? []),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0,
-                                          vertical: 0,
+                  SettingRow(
+                    settingName: AppLocalizations.of(context)!.tags,
+                    children: [
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: max(constraints.maxWidth, 150),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ...buildTags(tags ?? []),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 0,
+                                      ),
+                                      child: TextField(
+                                        onSubmitted: addTag,
+                                        strutStyle: const StrutStyle(
+                                          height: .9,
+                                          leading: 0,
+                                          forceStrutHeight: true,
                                         ),
-                                        child: TextField(
-                                          onSubmitted: addTag,
-                                          strutStyle: const StrutStyle(
-                                            height: .9,
-                                            leading: 0,
-                                            forceStrutHeight: true,
-                                          ),
-                                          cursorHeight: 18,
-                                          decoration: const InputDecoration(
-                                            isDense: true,
-                                            prefixText: '# ',
-                                            border: InputBorder.none,
-                                            constraints: BoxConstraints(
-                                              maxWidth: 120,
-                                              maxHeight: 25,
-                                            ),
+                                        cursorHeight: 18,
+                                        decoration: const InputDecoration(
+                                          isDense: true,
+                                          prefixText: '# ',
+                                          border: InputBorder.none,
+                                          constraints: BoxConstraints(
+                                            maxWidth: 120,
+                                            maxHeight: 25,
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            );
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

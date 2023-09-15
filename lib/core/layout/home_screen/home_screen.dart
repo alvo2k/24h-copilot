@@ -8,6 +8,7 @@ import 'home_screen_tablet.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
   static String path = '/';
 
   @override

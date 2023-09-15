@@ -14,16 +14,16 @@ class HomeScreenCubit extends Cubit<HomeScreenState> {
           hideAnalyticsDestination: false,
         ));
 
-  DateTime? _dateOfFirstActivity;
-  final _dashbordSearchFrom = DateTime.now().subtract(const Duration(days: 30));
-  final _dashbordSearchTo = DateTime.now();
-  late bool _isMobileLayout;
-
   final List<Widget> pages = [
     const ActivitiesPage(),
     const DashboardPage(),
     const CircularProgressIndicator.adaptive(),
   ];
+
+  final _dashbordSearchFrom = DateTime.now().subtract(const Duration(days: 30));
+  final _dashbordSearchTo = DateTime.now();
+  DateTime? _dateOfFirstActivity;
+  late bool _isMobileLayout;
 
   void isMobileLayout(bool isMobileLayout) => _isMobileLayout = isMobileLayout;
 
@@ -97,6 +97,7 @@ class HomeScreenState {
     this.selectedIndex = 0,
     required this.hideAnalyticsDestination,
   });
+
   final bool hideAnalyticsDestination;
   final int selectedIndex;
 

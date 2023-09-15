@@ -10,6 +10,10 @@ import 'activity_settings_page.dart';
 class ActivitiesSettingsPage extends StatelessWidget {
   const ActivitiesSettingsPage(
       {this.onActivitySelected = _defaultHandler, super.key});
+
+  final void Function(BuildContext context, ActivitySettings activity)
+      onActivitySelected;
+
   static void _defaultHandler(
           BuildContext context, ActivitySettings activity) =>
       Navigator.push(
@@ -20,9 +24,6 @@ class ActivitiesSettingsPage extends StatelessWidget {
           ),
         ),
       );
-
-  final void Function(BuildContext context, ActivitySettings activity)
-      onActivitySelected;
 
   @override
   Widget build(BuildContext context) {

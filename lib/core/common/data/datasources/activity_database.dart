@@ -198,24 +198,6 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     return result;
   }
 
-  Future<DriftRecordModel?> _findFirstRecord(int from) async {
-    // find record with startTime closest to [from],
-    // this would be the first record because endTime of it would be in range
-    final query = select(records).join([
-      innerJoin(activities, activities.name.equalsExp(records.activityName))
-    ])
-      ..where(records.startTime.isSmallerOrEqualValue(from))
-      ..orderBy([
-        OrderingTerm(
-          expression: records.startTime,
-          mode: OrderingMode.desc,
-        )
-      ])
-      ..limit(1);
-
-    return await query.map((r) => r.readTable(records)).getSingleOrNull();
-  }
-
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
@@ -349,6 +331,24 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
 
     _removeDuplicatesRecords();
     return;
+  }
+
+  Future<DriftRecordModel?> _findFirstRecord(int from) async {
+    // find record with startTime closest to [from],
+    // this would be the first record because endTime of it would be in range
+    final query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..where(records.startTime.isSmallerOrEqualValue(from))
+      ..orderBy([
+        OrderingTerm(
+          expression: records.startTime,
+          mode: OrderingMode.desc,
+        )
+      ])
+      ..limit(1);
+
+    return await query.map((r) => r.readTable(records)).getSingleOrNull();
   }
 
   Future _removeDuplicatesRecords() async {

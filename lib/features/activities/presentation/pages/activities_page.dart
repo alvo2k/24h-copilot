@@ -19,13 +19,6 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   final controller = ScrollController();
 
   @override
-  void initState() {
-    controller.addListener(loadMoreDays);
-
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     final newActivityFromNotification =
         ModalRoute.of(context)?.settings.arguments as String?;
@@ -38,6 +31,13 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     createNotification();
 
     super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    controller.addListener(loadMoreDays);
+
+    super.initState();
   }
 
   void createNotification() {

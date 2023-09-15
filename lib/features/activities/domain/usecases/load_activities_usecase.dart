@@ -7,7 +7,7 @@ import '../repositories/activity_repository.dart';
 @LazySingleton()
 class LoadActivitiesUsecase {
   LoadActivitiesUsecase(this.repository);
- 
+
   final ActivityRepository repository;
 
   Future<Stream<ActivityDay>> call(

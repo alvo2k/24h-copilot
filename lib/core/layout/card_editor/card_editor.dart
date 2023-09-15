@@ -6,8 +6,8 @@ import 'card_editor_tablet.dart';
 
 class CardEditorScreen extends StatelessWidget {
   const CardEditorScreen({super.key});
-  static String path = '/card_editor';
 
+  static String path = '/card_editor';
 
   @override
   Widget build(BuildContext context) {

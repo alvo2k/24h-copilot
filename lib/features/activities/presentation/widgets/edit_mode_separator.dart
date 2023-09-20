@@ -48,6 +48,7 @@ class EditModeSeparator extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).iconTheme.color ?? Colors.black87;
     return TextButton(
+      key: const PageStorageKey('activityListView'),
       onPressed: () => showEditRecordsDialog(context),
       child: Row(
         children: [

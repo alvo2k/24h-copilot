@@ -58,6 +58,7 @@ class ActivityDayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EditModeCubit, bool>(
+      key: const PageStorageKey('activityDay'),
       builder: (context, editMode) => Column(
         children: activityTiles(editMode),
       ),

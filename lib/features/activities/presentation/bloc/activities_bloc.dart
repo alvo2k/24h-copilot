@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
@@ -14,6 +15,7 @@ part 'activities_state.dart';
 @injectable
 class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
   final loadedActivities = <ActivityDay>[].obs;
+  final pageStorageBucket = PageStorageBucket();
 
   ActivitiesBloc({
     required LoadActivitiesUsecase loadActivitiesUsecase,

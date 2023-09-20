@@ -96,11 +96,14 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(child: ActivityListView(controller)),
-        NewActivityField(controller),
-      ],
+    return PageStorage(
+      bucket: context.read<ActivitiesBloc>().pageStorageBucket,
+      child: Column(
+        children: [
+          Expanded(child: ActivityListView(controller)),
+          NewActivityField(controller),
+        ],
+      ),
     );
   }
 }

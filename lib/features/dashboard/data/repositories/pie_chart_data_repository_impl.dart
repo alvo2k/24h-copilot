@@ -55,7 +55,7 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
   }
 
   @override
-  Future<DateTime?> getFirstRecord() async {
+  Future<DateTime?> getFirstEverRecordStartTime() async {
     final record = await localDataBase.getFirstRecord();
     if (record != null) {
       return DateTime.fromMillisecondsSinceEpoch(record.startTime);

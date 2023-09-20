@@ -82,7 +82,7 @@ class PieChartDataUsecase {
   }
 
   Future<DateTime?> firstRecordDate() {
-    return repository.getFirstRecord();
+    return repository.getFirstEverRecordStartTime();
   }
 }
 

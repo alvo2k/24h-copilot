@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/common/data/models/activity_model.dart';
 import '../entities/pie_chart_data.dart';
 import '../repositories/pie_chart_data_repositoty.dart';
 
@@ -12,15 +11,14 @@ class PieChartDataUsecase {
   final PieChartDataRepository repository;
 
   Future<Stream<PieChartData>> call(PieChartDataParams params) async {
-    final DateTime to = () {
-      if (DateUtils.dateOnly(params.to) == DateUtils.dateOnly(DateTime.now())) {
-        return DateUtils.dateOnly(DateTime.now()).add(const Duration(days: 1));
-      }
-      if (params.to == params.from) {
-        return params.to.add(const Duration(days: 1));
-      }
-      return params.to.add(const Duration(days: 1));
-    }();
+    assert(params.to == DateUtils.dateOnly(params.to));
+
+    // add one day because DateTimePicker returns date only
+    // example:
+    // from: 17.09.2023; to: 17.09.2023 
+    // and we want 
+    // from: 17.09.2023; to: 18.09.2023, [to] not included
+    final DateTime to = params.to.add(const Duration(days: 1));
 
     final activitiesStream = await repository.getActivities(
       from: params.from.toUtc().millisecondsSinceEpoch,
@@ -47,16 +45,22 @@ class PieChartDataUsecase {
               // dont count time after [to]
               final endTime = to;
               activities[i] = activities[i].changeEndTime(endTime);
+            } else if (activities[i].endTime == null) {
+              // so that view can correctly calculate Activity duration
+              activities[i] = activities[i].changeEndTime(
+                  to.isAfter(DateTime.now()) ? DateTime.now() : to);
             }
             if (activitiesDuration.containsKey(activities[i].name)) {
               activitiesDuration[activities[i].name] =
                   activitiesDuration[activities[i].name]! +
-                      activities[i].durationSince(params.from);
+                      activities[i].durationBetween(params.from,
+                          to.isAfter(DateTime.now()) ? DateTime.now() : to);
               activities.removeAt(i);
               i--;
             } else {
-              activitiesDuration[activities[i].name] =
-                  activities[i].durationSince(params.from);
+              activitiesDuration[activities[i].name] = activities[i]
+                  .durationBetween(params.from,
+                      to.isAfter(DateTime.now()) ? DateTime.now() : to);
             }
           }
           final data = PieChartData(
@@ -96,19 +100,4 @@ class PieChartDataParams {
   final DateTime from;
   final String? search;
   final DateTime to;
-}
-
-extension on ActivityModel {
-  Duration durationSince(DateTime since) {
-    late Duration totalDuration;
-    if (endTime == null) {
-      totalDuration = DateTime.now().difference(startTime);
-    } else {
-      totalDuration = endTime!.difference(startTime);
-    }
-    if (startTime.isBefore(since)) {
-      totalDuration -= since.difference(startTime);
-    }
-    return totalDuration;
-  }
 }

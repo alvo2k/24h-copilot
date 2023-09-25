@@ -111,4 +111,17 @@ class ActivityModel extends Activity {
         tags: inLineTags,
         goal: goal,
       );
+
+  Duration durationBetween(DateTime since, DateTime before) {
+    late Duration totalDuration;
+    if (endTime == null) {
+      totalDuration = before.difference(startTime);
+    } else {
+      totalDuration = endTime!.difference(startTime);
+    }
+    if (startTime.isBefore(since)) {
+      totalDuration -= since.difference(startTime);
+    }
+    return totalDuration;
+  }
 }

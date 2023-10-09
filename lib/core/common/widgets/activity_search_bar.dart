@@ -1,7 +1,6 @@
 import 'package:easy_search_bar/easy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
 
@@ -9,6 +8,7 @@ buildSearchAppbar(
   BuildContext context, {
   required List<Widget> actionButtons,
   required dynamic Function(String) onSuggestionTap,
+  required String title,
 }) {
   return EasySearchBar(
     asyncSuggestions: (val) async {
@@ -16,7 +16,7 @@ buildSearchAppbar(
       await searchCubit.search(val);
       return searchCubit.state;
     },
-    title: Text(AppLocalizations.of(context)!.activities),
+    title: Text(title),
     onSearch: (_) {},
     onSuggestionTap: onSuggestionTap,
     actions: actionButtons,

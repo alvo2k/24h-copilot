@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../bloc/home_screen_cubit.dart';
+import '../bloc/navigation_cubit.dart';
 import '../bloc/theame_cubit.dart';
 
 class NavigatorRail extends StatelessWidget {
@@ -10,7 +10,7 @@ class NavigatorRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeScreenCubit, HomeScreenState>(
+    return BlocBuilder<NavigationCubit, NavigationState>(
       builder: (context, state) => NavigationRail(
         labelType: NavigationRailLabelType.all,
         destinations: [
@@ -19,7 +19,7 @@ class NavigatorRail extends StatelessWidget {
             selectedIcon: const Icon(Icons.home),
             label: Text(AppLocalizations.of(context)!.activities),
           ),
-          if (!state.hideAnalyticsDestination)
+          if (!state.hideDashboardDestination)
             NavigationRailDestination(
               icon: const Icon(Icons.dashboard_outlined),
               selectedIcon: const Icon(Icons.dashboard),
@@ -71,9 +71,9 @@ class NavigatorRail extends StatelessWidget {
             ),
           ),
         ),
-        selectedIndex: state.selectedIndex,
+        selectedIndex: state.navRailIndex,
         onDestinationSelected: (int index) => context
-            .read<HomeScreenCubit>()
+            .read<NavigationCubit>()
             .onDestinationSelected(index, context),
       ),
     );

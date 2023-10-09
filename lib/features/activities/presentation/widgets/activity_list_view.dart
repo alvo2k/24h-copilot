@@ -48,7 +48,9 @@ class ActivityListView extends StatelessWidget {
                   if (index == 0) {
                     Future(() {
                       // calls loadMoreDays() witch loads prev. day
-                      controller.position.notifyListeners();
+                      if (controller.hasClients) {
+                        controller.position.notifyListeners();
+                      }
                     });
                     // if this is today, print icon at the end
                     return Column(

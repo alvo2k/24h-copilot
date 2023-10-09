@@ -40,6 +40,14 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    controller.removeListener(loadMoreDays);
+    controller.dispose();
+
+    super.dispose();
+  }
+
   void createNotification() {
     final newActivityPrompt = AppLocalizations.of(context)!.newActivityPrompt;
     final newActivityPromptShort =

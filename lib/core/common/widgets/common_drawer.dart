@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../features/auth/presentation/widgets/login_logout_list_tile.dart';
 import '../../../features/auth/presentation/widgets/user_drawer_header.dart';
-import '../../layout/card_editor/card_editor.dart';
 import '../bloc/theame_cubit.dart';
 
 class CommonDrawer extends StatelessWidget {
@@ -40,12 +40,7 @@ class CommonDrawer extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.edit_note),
               title: Text(AppLocalizations.of(context)!.editActivities),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CardEditorScreen()));
-              },
+              onTap: () => context.go('/card_editor'),
             ),
             ListTile(
               leading: const Icon(Icons.feedback),

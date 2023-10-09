@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class EmojiButton extends StatelessWidget {
   const EmojiButton(this.emoji, this.onEmojiSelected, {super.key});
@@ -19,7 +20,7 @@ class EmojiButton extends StatelessWidget {
           ])),
       onPressed: () {
         onEmojiSelected(emoji);
-        Navigator.pop(context);
+        context.pop(context);
       },
     );
   }

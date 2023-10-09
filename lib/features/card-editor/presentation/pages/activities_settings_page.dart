@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/common/activity_settings.dart';
 import '../bloc/card_editor_bloc.dart';
@@ -16,14 +17,7 @@ class ActivitiesSettingsPage extends StatelessWidget {
 
   static void _defaultHandler(
           BuildContext context, ActivitySettings activity) =>
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ActivitySettingsPage(
-            activity: activity,
-          ),
-        ),
-      );
+      context.go('/card_editor/:${activity.name}', extra: activity);
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -211,7 +212,7 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
       actions: <Widget>[
         BasicDialogAction(
           title: Text(AppLocalizations.of(context)!.cancel),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(context),
         ),
         BasicDialogAction(
           title: Text(AppLocalizations.of(context)!.save),
@@ -282,7 +283,7 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
             );
             // exit edit mode
             BlocProvider.of<EditModeCubit>(context).toggle();
-            Navigator.pop(context);
+            context.pop(context);
           },
         ),
       ],

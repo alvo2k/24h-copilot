@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -76,13 +77,13 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
             child: Text(AppLocalizations.of(context)!.cancel),
             onPressed: () {
               setColor(widget.initialActivitySettings.color);
-              Navigator.of(context).pop();
+              context.pop();
             },
           ),
           TextButton(
             child: Text(AppLocalizations.of(context)!.save),
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
             },
           ),
         ],
@@ -189,7 +190,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
       newGoal: goal,
       tags: tags,
     ));
-    Navigator.of(context).pop();
+    context.go('/card_editor');
   }
 
   @override

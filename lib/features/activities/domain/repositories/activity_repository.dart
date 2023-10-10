@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
 
+import '../../../../core/common/activity_settings.dart';
 import '../../../../core/error/return_types.dart';
 import '../entities/activity.dart';
 import '../entities/edit_record.dart';
@@ -35,4 +36,10 @@ abstract class ActivityRepository {
   Future<Either<Failure, Activity>> editRecords(EditRecord record);
 
   Future<Either<Failure, bool>> hasActivitySettings(String activityName);
+
+  Future<List<ActivitySettings>> mostCommonActivities({
+    required int ammount,
+  });
+
+  Future<void> countActivity(String activityName);
 }

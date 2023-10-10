@@ -16,10 +16,19 @@ class SwitchActivitiesUsecase
 
   @override
   Future<Either<Failure, Activity>> call(SwitchActivitiesParams params) async {
-    return repository.switchActivities(
+    final switchResult = await repository.switchActivities(
       nextActivityName: params.nextActivityName,
       startTime: DateTime.now().toUtc(),
       color: RandomColor.generate,
+    );
+    
+    return switchResult.fold(
+      (failure) async => Left(failure),
+      (activity) async {
+        await repository.countActivity(activity.name);
+
+        return Right(activity);
+      },
     );
   }
 }

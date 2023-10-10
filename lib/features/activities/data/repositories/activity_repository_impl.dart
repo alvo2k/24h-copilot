@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/common/activity_settings.dart';
 import '../../../../core/common/data/datasources/activity_local_data_source.dart';
 import '../../../../core/common/data/models/activity_model.dart';
 import '../../../../core/error/exceptions.dart';
@@ -9,12 +10,14 @@ import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/entities/edit_record.dart';
 import '../../domain/repositories/activity_repository.dart';
+import '../datasources/recommended_activities_data_source.dart';
 
 @LazySingleton(as: ActivityRepository)
 class ActivityRepositoryImpl implements ActivityRepository {
-  ActivityRepositoryImpl(this.localDataSource);
+  ActivityRepositoryImpl(this.localDataSource, this.recomendedDataSource);
 
   final ActivityLocalDataSource localDataSource;
+  final RecommendedActivitiesDataSource recomendedDataSource;
 
   @override
   Future<Either<Failure, Success>> addEmoji(
@@ -204,4 +207,25 @@ class ActivityRepositoryImpl implements ActivityRepository {
       return outList;
     });
   }
+
+  @override
+  Future<List<ActivitySettings>> mostCommonActivities({
+    required int ammount,
+  }) async {
+    final names = recomendedDataSource.mostCommonActivitiesNames(ammount);
+
+    final out = <ActivitySettings>[];
+    for (final name in names) {
+      final model = await localDataSource.findActivitySettings(name);
+      if (model != null) {
+        out.add(ActivitySettings.fromDrift(model));
+      }
+    }
+
+    return out;
+  }
+
+  @override
+  Future<void> countActivity(String activityName) async =>
+      recomendedDataSource.countActivity(activityName);
 }

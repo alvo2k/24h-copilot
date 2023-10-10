@@ -11,21 +11,16 @@ class UserDrawerHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     // BlocProvider.of<AuthBloc>(context).add(AuthEvent.getUserData());
     return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) => state.join(
-        (initial) => const SizedBox.shrink(),
-        (failure) {
-          return const SizedBox.shrink();
-        },
-        (loading) => const SizedBox.shrink(),
-        (loggedIn) => UserAccountsDrawerHeader(
-          accountName: Text(loggedIn.displayName ?? ''),
-          accountEmail: Text(loggedIn.email),
+      builder: (context, state) => switch(state) {
+        LoggedIn() => UserAccountsDrawerHeader(
+          accountName: Text(state.displayName ?? ''),
+          accountEmail: Text(state.email),
         ),
-        (loggedOut) => const SizedBox.shrink(),
-        (noInternet) => DrawerHeader(
+        NoInternet() => DrawerHeader(
           child: Text(AppLocalizations.of(context)!.noInternet),
         ),
-      ),
+        _ => const SizedBox.shrink(),
+      }
     );
   }
 }

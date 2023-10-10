@@ -61,7 +61,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         controller.removeListener(loadMoreDays);
         return;
       }
-      activitiesBloc.add(ActivitiesEvent.loadActivities(dateToLoad));
+      activitiesBloc.add(LoadActivities(dateToLoad));
     }
   }
 

@@ -1,7 +1,9 @@
 part of 'activities_bloc.dart';
 
-class LoadActivities extends Equatable {
-  const LoadActivities(this.forTheDay);
+abstract class ActivitiesEvent extends Equatable {}
+
+class LoadActivities extends ActivitiesEvent {
+  LoadActivities(this.forTheDay);
 
   final DateTime forTheDay;
 
@@ -9,8 +11,8 @@ class LoadActivities extends Equatable {
   List<Object> get props => [forTheDay];
 }
 
-class SwitchActivity extends Equatable {
-  const SwitchActivity(this.nextActivityName);
+class SwitchActivity extends ActivitiesEvent {
+  SwitchActivity(this.nextActivityName);
 
   final String nextActivityName;
 
@@ -18,8 +20,8 @@ class SwitchActivity extends Equatable {
   List<Object> get props => [nextActivityName];
 }
 
-class AddEmoji extends Equatable {
-  const AddEmoji(this.recordId, this.emoji);
+class AddEmoji extends ActivitiesEvent {
+  AddEmoji(this.recordId, this.emoji);
 
   final String emoji;
   final int recordId;
@@ -28,8 +30,8 @@ class AddEmoji extends Equatable {
   List<Object> get props => [recordId, emoji];
 }
 
-class EditName extends Equatable {
-  const EditName(this.name, this.recordId);
+class EditName extends ActivitiesEvent {
+  EditName(this.name, this.recordId);
 
   final String name;
   final int recordId;
@@ -38,8 +40,8 @@ class EditName extends Equatable {
   List<Object> get props => [name, recordId];
 }
 
-class EditRecords extends Equatable {
-  const EditRecords({
+class EditRecords extends ActivitiesEvent {
+  EditRecords({
     required this.name,
     this.fixedTime,
     this.selectedTime,
@@ -55,46 +57,3 @@ class EditRecords extends Equatable {
   List<Object?> get props => [fixedTime, name, selectedTime, toChange];
 }
 
-class ActivitiesEvent extends Union5Impl<LoadActivities, SwitchActivity,
-    AddEmoji, EditName, EditRecords> {
-  ActivitiesEvent._(
-      Union5<LoadActivities, SwitchActivity, AddEmoji, EditName, EditRecords>
-          union)
-      : super(union);
-
-  factory ActivitiesEvent.addEmoji(int recordId, String emoji) =>
-      ActivitiesEvent._(
-        unions.third(AddEmoji(recordId, emoji)),
-      );
-
-  factory ActivitiesEvent.editName(int recordId, String name) =>
-      ActivitiesEvent._(
-        unions.fourth(EditName(name, recordId)),
-      );
-
-  factory ActivitiesEvent.editRecords({
-    DateTime? fixedTime,
-    required String name,
-    DateTime? selectedTime,
-    required Activity toChange,
-  }) =>
-      ActivitiesEvent._(unions.fifth(EditRecords(
-        fixedTime: fixedTime,
-        name: name,
-        selectedTime: selectedTime,
-        toChange: toChange,
-      )));
-
-  factory ActivitiesEvent.loadActivities(DateTime forTheDay) =>
-      ActivitiesEvent._(
-        unions.first(LoadActivities(forTheDay)),
-      );
-
-  factory ActivitiesEvent.switchActivity(String nextActivityName) =>
-      ActivitiesEvent._(
-        unions.second(SwitchActivity(nextActivityName)),
-      );
-
-  static const unions = Quintet<LoadActivities, SwitchActivity, AddEmoji,
-      EditName, EditRecords>();
-}

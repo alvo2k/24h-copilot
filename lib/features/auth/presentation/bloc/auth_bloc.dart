@@ -1,12 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthState.initial()) {
+  AuthBloc() : super(Initial()) {
   //   on<AuthEvent>((event, emit) async {
   //     await event.join((register) async {
   //       emit(AuthState.loading());

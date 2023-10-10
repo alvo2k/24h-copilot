@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:copilot/core/common/data/models/activity_model.dart';
 import 'package:copilot/core/error/return_types.dart';
 import 'package:copilot/features/activities/domain/entities/activity.dart';
 import 'package:copilot/features/activities/domain/entities/activity_day.dart';
@@ -54,7 +53,7 @@ void main() {
     'verify empty initial state',
     build: () => sut,
     verify: (ActivitiesBloc bloc) =>
-        expect(bloc.state, ActivitiesState.initial()),
+        expect(bloc.state, Initial()),
   );
 
   group('Usecases:', () {
@@ -76,10 +75,10 @@ void main() {
       },
       build: () => sut,
       act: (ActivitiesBloc bloc) =>
-          bloc.add(ActivitiesEvent.loadActivities(date)),
+          bloc.add(LoadActivities(date)),
       expect: () => [
-        ActivitiesState.loading(),
-        ActivitiesState.loaded([activityDay]),
+        Loading(),
+        Loaded([activityDay]),
       ],
       verify: (bloc) {
         verify(() => mockLoadActivitiesUsecase(any())).called(1);
@@ -94,7 +93,7 @@ void main() {
             .thenAnswer((_) async => const Right(Success()));
       },
       build: () => sut,
-      act: (ActivitiesBloc bloc) => bloc.add(ActivitiesEvent.addEmoji(1, '')),
+      act: (ActivitiesBloc bloc) => bloc.add(AddEmoji(1, '')),
       expect: () => [],
       verify: (_) {
         verify(() => mockAddEmojiUsecase(any())).called(1);

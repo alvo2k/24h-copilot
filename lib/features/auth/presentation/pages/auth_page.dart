@@ -56,50 +56,48 @@ class _AuthPageState extends State<AuthPage> {
               ),
             ],
           ),
-          listener: (context, state) => state.join(
-            (initial) {},
-            (failure) {
-              showTopSnackBar(
-                Overlay.of(context),
-                CustomSnackBar.error(
-                  message: failure.message,
-                ),
-              );
-              setState(() {
-                loading = false;
-              });
-            },
-            (load) {
-              showTopSnackBar(
-                Overlay.of(context),
-                const CustomSnackBar.info(
-                  message: 'Loading...',
-                ),
-              );
-              setState(() {
-                loading = true;
-              });
-            },
-            (loggedIn) {
-              showTopSnackBar(
-                Overlay.of(context),
-                const CustomSnackBar.success(
-                  message: 'Login successful!',
-                ),
-              );
-              setState(() {
-                loading = true;
-              });
-              Navigator.of(context).pop();
-            },
-            (loggedOut) {},
-            (noInternet) => showTopSnackBar(
-              Overlay.of(context),
-              const CustomSnackBar.info(
-                message: 'No internet',
-              ),
-            ),
-          ),
+          listener: (context, state) {
+            switch (state) {
+              case Failure():
+                showTopSnackBar(
+                  Overlay.of(context),
+                  CustomSnackBar.error(
+                    message: state.message,
+                  ),
+                );
+                setState(() {
+                  loading = false;
+                });
+              case Loading():
+                showTopSnackBar(
+                  Overlay.of(context),
+                  const CustomSnackBar.info(
+                    message: 'Loading...',
+                  ),
+                );
+                setState(() {
+                  loading = true;
+                });
+              case LoggedIn():
+                showTopSnackBar(
+                  Overlay.of(context),
+                  const CustomSnackBar.success(
+                    message: 'Login successful!',
+                  ),
+                );
+                setState(() {
+                  loading = true;
+                });
+                Navigator.of(context).pop();
+              case NoInternet():
+                showTopSnackBar(
+                  Overlay.of(context),
+                  const CustomSnackBar.info(
+                    message: 'No internet',
+                  ),
+                );
+            }
+          },
         ),
       ),
     );

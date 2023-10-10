@@ -26,10 +26,10 @@ class _AuthFormState extends State<AuthForm> {
     if (formState.validate()) {
       if (widget.register) {
         BlocProvider.of<AuthBloc>(context)
-            .add(AuthEvent.register(email.text, password.text));
+            .add(Register(email: email.text, pass: password.text));
       } else {
         BlocProvider.of<AuthBloc>(context)
-            .add(AuthEvent.signIn(email.text, password.text));
+            .add(SignIn(email: email.text, pass: password.text));
       }
     }
   }

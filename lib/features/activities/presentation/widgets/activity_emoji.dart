@@ -32,7 +32,7 @@ class _ActivityEmojiState extends State<ActivityEmoji> {
       builder: (context) {
         return EmojiDialogPicker(
           onEmojiSelected: (selectedEmoji) {
-            activityBloc.add(ActivitiesEvent.addEmoji(
+            activityBloc.add(AddEmoji(
                 widget.activity.recordId, selectedEmoji));
             setState(() {
               emoji = selectedEmoji;

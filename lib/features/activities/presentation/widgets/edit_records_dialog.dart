@@ -245,7 +245,7 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
               return;
             }
             BlocProvider.of<ActivitiesBloc>(context).add(
-              ActivitiesEvent.editRecords(
+              EditRecords(
                 name: _controller.text.trim(),
                 fixedTime: () {
                   if (fixedTime != null) {

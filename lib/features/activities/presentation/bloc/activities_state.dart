@@ -1,31 +1,14 @@
 part of 'activities_bloc.dart';
 
-class ActivitiesState extends Union4Impl<Initial, Loading, Loaded, Failure> {
-  ActivitiesState._(Union4<Initial, Loading, Loaded, Failure> union)
-      : super(union);
+sealed class ActivitiesState extends Equatable {}
 
-  factory ActivitiesState.failure(String message) =>
-      ActivitiesState._(unions.fourth(Failure(message)));
-
-  factory ActivitiesState.initial() =>
-      ActivitiesState._(unions.first(Initial()));
-
-  factory ActivitiesState.loaded(List<ActivityDay> activities) =>
-      ActivitiesState._(unions.third(Loaded(activities)));
-
-  factory ActivitiesState.loading() =>
-      ActivitiesState._(unions.second(Loading()));
-
-  static const unions = Quartet<Initial, Loading, Loaded, Failure>();
-}
-
-class Initial extends Equatable {
+class Initial extends ActivitiesState {
   @override
   List<Object> get props => [];
 }
 
-class Failure extends Equatable {
-  const Failure(this.message);
+class Failure extends ActivitiesState {
+  Failure(this.message);
 
   final String message;
 
@@ -33,13 +16,13 @@ class Failure extends Equatable {
   List<Object> get props => [message];
 }
 
-class Loading extends Equatable {
+class Loading extends ActivitiesState {
   @override
   List<Object?> get props => [];
 }
 
-class Loaded extends Equatable {
-  const Loaded(this.days);
+class Loaded extends ActivitiesState {
+  Loaded(this.days);
 
   final List<ActivityDay> days;
 

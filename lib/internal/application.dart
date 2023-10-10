@@ -32,7 +32,7 @@ class CopilotApp extends StatelessWidget {
             addEmojiUsecase: sl(),
             editNameUsecase: sl(),
             editRecordsUsecase: sl(),
-          )..add(ActivitiesEvent.loadActivities(
+          )..add(LoadActivities(
               DateUtils.dateOnly(DateTime.now()))),
         ),
         BlocProvider(create: (context) => AuthBloc()),

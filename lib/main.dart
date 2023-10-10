@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'core/utils/constants.dart';
-import 'features/activities/presentation/bloc/notification_controller.dart';
 import 'internal/application.dart';
 import 'internal/injectable.dart';
 
@@ -17,16 +15,7 @@ void main() {
     initDependencyInjection();
     WidgetsFlutterBinding.ensureInitialized();
     await Hive.initFlutter(Constants.appFolderName);
-    AwesomeNotifications().initialize(
-      null,
-      [
-        NotificationChannel(
-            channelKey: NotificationController.inputActivityChannelKey,
-            channelName: 'New Activity Input',
-            channelDescription: 'Enter new activity',
-            importance: NotificationImportance.Low),
-      ],
-    );
+    
     FlutterError.onError = (FlutterErrorDetails details) async {
       FlutterError.presentError(details);
       await Sentry.captureException(

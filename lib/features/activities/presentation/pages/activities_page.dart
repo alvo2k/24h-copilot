@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,10 +6,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/bloc/navigation_cubit.dart';
 import '../../../../core/common/widgets/activity_search_bar.dart';
 import '../../../../core/common/widgets/common_drawer.dart';
+import '../../../../core/notification_controller.dart';
 import '../../../../core/utils/constants.dart';
+import '../../../../internal/injectable.dart';
 import '../bloc/activities_bloc.dart';
 import '../bloc/edit_mode_cubit.dart';
-import '../bloc/notification_controller.dart';
 import '../widgets/activity_list_view.dart';
 import '../widgets/new_activity_field.dart';
 
@@ -23,21 +23,6 @@ class ActivitiesPage extends StatefulWidget {
 
 class _ActivitiesPageState extends State<ActivitiesPage> {
   final controller = ScrollController();
-
-  @override
-  void didChangeDependencies() {
-    final newActivityFromNotification =
-        ModalRoute.of(context)?.settings.arguments as String?;
-    if (newActivityFromNotification != null &&
-        newActivityFromNotification.trim().isNotEmpty) {
-      BlocProvider.of<ActivitiesBloc>(context).add(
-          ActivitiesEvent.switchActivity(newActivityFromNotification.trim()));
-    }
-
-    createNotification();
-
-    super.didChangeDependencies();
-  }
 
   @override
   void initState() {
@@ -54,39 +39,11 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     super.dispose();
   }
 
-  void createNotification() {
-    final newActivityPrompt = AppLocalizations.of(context)!.newActivityPrompt;
-    final newActivityPromptShort =
-        AppLocalizations.of(context)!.newActivityPromptShort;
-    AwesomeNotifications().setListeners(
-      onActionReceivedMethod: NotificationController.onActionReceivedMethod,
-    );
-
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) async {
-      if (!isAllowed) {
-        // TODO ask user to allow notifications and save the result
-        isAllowed =
-            await AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-      if (isAllowed) {
-        AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: 1,
-            channelKey: NotificationController.inputActivityChannelKey,
-            title: newActivityPrompt,
-            autoDismissible: false,
-            fullScreenIntent: true,
-          ),
-          actionButtons: [
-            NotificationActionButton(
-              key: 'INPUT_BUTTON',
-              label: newActivityPromptShort,
-              requireInputText: true,
-            ),
-          ],
-        );
-      }
-    });
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    sl<NotificationController>().createNotification(context);
   }
 
   void loadMoreDays() {

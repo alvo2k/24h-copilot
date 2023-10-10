@@ -70,6 +70,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         returnValue: _i4.Future<List<_i2.RecordWithActivitySettings>>.value(
             <_i2.RecordWithActivitySettings>[]),
       ) as _i4.Future<List<_i2.RecordWithActivitySettings>>);
+
   @override
   _i4.Future<_i4.Stream<List<_i2.RecordWithActivitySettings>>> getRecordsRange({
     required int? from,
@@ -88,6 +89,7 @@ class MockActivityLocalDataSource extends _i1.Mock
             _i4.Future<_i4.Stream<List<_i2.RecordWithActivitySettings>>>.value(
                 _i4.Stream<List<_i2.RecordWithActivitySettings>>.empty()),
       ) as _i4.Future<_i4.Stream<List<_i2.RecordWithActivitySettings>>>);
+
   @override
   _i4.Future<_i4.Stream<List<_i2.RecordWithActivitySettings>>>
       getRecordsRangeWithTag({
@@ -109,6 +111,7 @@ class MockActivityLocalDataSource extends _i1.Mock
                 .Future<_i4.Stream<List<_i2.RecordWithActivitySettings>>>.value(
                 _i4.Stream<List<_i2.RecordWithActivitySettings>>.empty()),
           ) as _i4.Future<_i4.Stream<List<_i2.RecordWithActivitySettings>>>);
+
   @override
   _i4.Future<_i2.DriftRecordModel?> getFirstRecord() => (super.noSuchMethod(
         Invocation.method(
@@ -117,6 +120,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         ),
         returnValue: _i4.Future<_i2.DriftRecordModel?>.value(),
       ) as _i4.Future<_i2.DriftRecordModel?>);
+
   @override
   _i4.Future<List<_i2.DriftActivityModel>> getActivitiesSettings() =>
       (super.noSuchMethod(
@@ -127,6 +131,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         returnValue: _i4.Future<List<_i2.DriftActivityModel>>.value(
             <_i2.DriftActivityModel>[]),
       ) as _i4.Future<List<_i2.DriftActivityModel>>);
+
   @override
   _i4.Future<_i2.DriftActivityModel> updateActivitySettings({
     required String? activityName,
@@ -163,6 +168,7 @@ class MockActivityLocalDataSource extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.DriftActivityModel>);
+
   @override
   _i4.Future<_i2.RecordWithActivitySettings> createRecord({
     required String? activityName,
@@ -190,6 +196,7 @@ class MockActivityLocalDataSource extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.RecordWithActivitySettings>);
+
   @override
   _i4.Future<void> updateRecordTime({
     required int? idRecord,
@@ -207,6 +214,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<_i2.RecordWithActivitySettings> updateRecordSettings({
     required int? idRecord,
@@ -234,6 +242,7 @@ class MockActivityLocalDataSource extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.RecordWithActivitySettings>);
+
   @override
   _i4.Future<int> getLastRecordId() => (super.noSuchMethod(
         Invocation.method(
@@ -242,6 +251,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         ),
         returnValue: _i4.Future<int>.value(0),
       ) as _i4.Future<int>);
+
   @override
   _i4.Future<_i2.DriftActivityModel?> findActivitySettings(String? name) =>
       (super.noSuchMethod(
@@ -251,6 +261,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         ),
         returnValue: _i4.Future<_i2.DriftActivityModel?>.value(),
       ) as _i4.Future<_i2.DriftActivityModel?>);
+
   @override
   _i4.Future<_i2.DriftActivityModel> createActivity(
     String? name,
@@ -276,6 +287,7 @@ class MockActivityLocalDataSource extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.DriftActivityModel>);
+
   @override
   _i4.Future<void> updateRecordEmoji(
     int? idRecord,
@@ -292,6 +304,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
   @override
   _i4.Future<List<String>?> searchActivities(String? activityName) =>
       (super.noSuchMethod(
@@ -301,6 +314,7 @@ class MockActivityLocalDataSource extends _i1.Mock
         ),
         returnValue: _i4.Future<List<String>?>.value(),
       ) as _i4.Future<List<String>?>);
+
   @override
   _i4.Future<List<String>> searchTags(String? tag) => (super.noSuchMethod(
         Invocation.method(

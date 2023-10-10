@@ -32,9 +32,10 @@ class $ActivitiesTable extends Activities
   @override
   List<GeneratedColumn> get $columns => [name, color, tags, goal];
   @override
-  String get aliasedName => _alias ?? 'activities';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'activities';
+  String get actualTableName => $name;
+  static const String $name = 'activities';
   @override
   VerificationContext validateIntegrity(Insertable<DriftActivityModel> instance,
       {bool isInserting = false}) {
@@ -298,9 +299,10 @@ class $RecordsTable extends Records
   List<GeneratedColumn> get $columns =>
       [idRecord, activityName, startTime, emoji];
   @override
-  String get aliasedName => _alias ?? 'records';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'records';
+  String get actualTableName => $name;
+  static const String $name = 'records';
   @override
   VerificationContext validateIntegrity(Insertable<DriftRecordModel> instance,
       {bool isInserting = false}) {

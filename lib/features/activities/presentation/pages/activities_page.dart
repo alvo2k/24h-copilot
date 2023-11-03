@@ -75,7 +75,6 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
           IconButton(
             icon: SvgPicture.asset(
               'assets/icons/edit_mode.svg',
-              alignment: Alignment.bottomRight,
               colorFilter: ColorFilter.mode(
                 Theme.of(context).iconTheme.color!,
                 BlendMode.srcIn,

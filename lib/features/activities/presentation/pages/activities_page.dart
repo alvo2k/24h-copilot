@@ -13,6 +13,7 @@ import '../bloc/activities_bloc.dart';
 import '../bloc/edit_mode_cubit.dart';
 import '../widgets/activity_list_view.dart';
 import '../widgets/new_activity_field.dart';
+import '../widgets/recommended_activities.dart';
 
 class ActivitiesPage extends StatefulWidget {
   const ActivitiesPage({super.key});
@@ -42,7 +43,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     sl<NotificationController>().createNotification(context);
   }
 
@@ -93,7 +94,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       body: Column(
         children: [
           Expanded(child: ActivityListView(controller)),
-          NewActivityField(controller),
+          RecommendedActivities(child: NewActivityField(controller)),
         ],
       ),
     );

@@ -38,8 +38,7 @@ class _NewActivityFieldState extends State<NewActivityField> {
       return;
     }
 
-    BlocProvider.of<ActivitiesBloc>(context)
-        .add(SwitchActivity(name.trim()));
+    context.read<ActivitiesBloc>().add(SwitchActivity(name.trim()));
 
     _controller.clear();
     _focusNode.unfocus();
@@ -52,42 +51,31 @@ class _NewActivityFieldState extends State<NewActivityField> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 42, right: 8, bottom: 8),
-      child: SizedBox(
-        height: 48,
-        width: 450,
-        child: TextField(
-          strutStyle: const StrutStyle(
-            // centers cursor and text
-            height: 1.2,
-            leading: .7,
-          ),
-          cursorHeight: 20,
-          textCapitalization: TextCapitalization.sentences,
-          focusNode: _focusNode,
-          controller: _controller,
-          onSubmitted: (name) => _submitActivity(context, name),
-          onEditingComplete: () => _focusNode.unfocus(),
-          onChanged: (_) => setState(() {}),
-          decoration: InputDecoration(
-            fillColor: Theme.of(context).cardColor,
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(32.0)),
-              borderSide: BorderSide(style: BorderStyle.solid),
-            ),
-            hintText: AppLocalizations.of(context)!.newActivityPrompt,
-            suffixIcon: IconButton(
-              color: Theme.of(context).colorScheme.primary,
-              iconSize: 30,
-              tooltip: AppLocalizations.of(context)!.chooseActivity,
-              splashRadius: 20.0,
-              icon: const Icon(Icons.play_circle_outline),
-              onPressed: _controller.text.isEmpty
-                  ? null
-                  : () => _submitActivity(context, _controller.text),
-            ),
-          ),
+    return TextField(
+      strutStyle: const StrutStyle(
+        // centers cursor and text
+        height: 1.2,
+        leading: .7,
+      ),
+      cursorHeight: 20,
+      textCapitalization: TextCapitalization.sentences,
+      focusNode: _focusNode,
+      controller: _controller,
+      onSubmitted: (name) => _submitActivity(context, name),
+      onEditingComplete: () => _focusNode.unfocus(),
+      onChanged: (_) => setState(() {}),
+      decoration: InputDecoration(
+        fillColor: Theme.of(context).cardColor,
+        hintText: AppLocalizations.of(context)!.newActivityPrompt,
+        suffixIcon: IconButton(
+          color: Theme.of(context).colorScheme.primary,
+          iconSize: 30,
+          tooltip: AppLocalizations.of(context)!.chooseActivity,
+          splashRadius: 20.0,
+          icon: const Icon(Icons.play_circle_outline),
+          onPressed: _controller.text.isEmpty
+              ? null
+              : () => _submitActivity(context, _controller.text),
         ),
       ),
     );

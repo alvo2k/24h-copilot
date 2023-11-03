@@ -15,6 +15,7 @@ class ActivityListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<ActivitiesBloc>(context);
+    
     return BlocBuilder<ActivitiesBloc, ActivitiesState>(
       builder: (context, state) {
         return switch (state) {
@@ -64,7 +65,7 @@ class ActivityListView extends StatelessWidget {
                         ],
                       );
                     }
-                    if (index == state.days.length - 1 &&
+                    if (index == state.pageState.activityDays.length - 1 &&
                         day.activitiesInThisDay.isNotEmpty) {
                       return Column(children: [
                         // adds loading indicator at top of the list. Empty ActivitiesDay means all data was loaded and no indicator needed

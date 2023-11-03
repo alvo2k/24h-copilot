@@ -57,3 +57,13 @@ class EditRecords extends ActivitiesEvent {
   List<Object?> get props => [fixedTime, name, selectedTime, toChange];
 }
 
+class _RecomendedActivitiesChanged extends ActivitiesEvent {
+  final ActivitySettings activity;
+
+  _RecomendedActivitiesChanged({
+    required this.activity,
+  });
+
+  @override
+  List<Object?> get props => [activity];
+}

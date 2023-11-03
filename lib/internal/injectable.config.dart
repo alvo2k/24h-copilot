@@ -55,10 +55,10 @@ import 'package:injectable/injectable.dart' as _i2;
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
-  _i1.GetIt init({
+  Future<_i1.GetIt> init({
     String? environment,
     _i2.EnvironmentFilter? environmentFilter,
-  }) {
+  }) async {
     final gh = _i2.GetItHelper(
       this,
       environment,
@@ -76,8 +76,13 @@ extension GetItInjectableX on _i1.GetIt {
         _i11.PieChartDataRepositoryImpl(gh<_i3.ActivityLocalDataSource>()));
     gh.lazySingleton<_i12.PieChartDataUsecase>(
         () => _i12.PieChartDataUsecase(gh<_i10.PieChartDataRepository>()));
-    gh.lazySingleton<_i13.RecommendedActivitiesDataSource>(
-        () => _i13.RecommendedActivitiesDataSourceImpl());
+    await gh.lazySingletonAsync<_i13.RecommendedActivitiesDataSource>(
+      () {
+        final i = _i13.RecommendedActivitiesDataSourceImpl();
+        return i.init().then((_) => i);
+      },
+      preResolve: true,
+    );
     gh.lazySingleton<_i14.UpdateActivitySettingsUsecase>(() =>
         _i14.UpdateActivitySettingsUsecase(
             gh<_i5.ActivitySettingsRepository>()));
@@ -103,6 +108,7 @@ extension GetItInjectableX on _i1.GetIt {
           addEmojiUsecase: gh<_i24.AddEmojiUsecase>(),
           editNameUsecase: gh<_i24.EditNameUsecase>(),
           editRecordsUsecase: gh<_i24.EditRecordsUsecase>(),
+          recommendedActivitiesUsecase: gh<_i21.RecommendedActivitiesUsecase>(),
         ));
     return this;
   }

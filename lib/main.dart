@@ -12,9 +12,9 @@ import 'internal/injectable.dart';
 
 void main() {
   runZonedGuarded(() async {
-    initDependencyInjection();
     WidgetsFlutterBinding.ensureInitialized();
     await Hive.initFlutter(Constants.appFolderName);
+    await initDependencyInjection();
     
     FlutterError.onError = (FlutterErrorDetails details) async {
       FlutterError.presentError(details);

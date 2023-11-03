@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -8,28 +10,23 @@ class EmptyActivitiesIllustration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 450,
+    return SingleChildScrollView(
+      reverse: true,
       child: Column(
         children: [
           Image.asset(
             'assets/illustrations/empty_activities.png',
+            width: min(MediaQuery.of(context).size.width, 450),
           ),
-          Text(
-            AppLocalizations.of(context)!.tutorialPrompt,
-            style: Theme.of(context).textTheme.titleLarge,
+          Padding(
+            padding: const EdgeInsets.only(left: 42),
+            child: Text(
+              AppLocalizations.of(context)!.tutorialPrompt,
+              style: Theme.of(context).textTheme.titleLarge,
+              // textAlign: TextAlign.center,
+            ),
           ),
           const SizedBox(height: 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const SizedBox.shrink(),
-              Image.asset(
-                'assets/illustrations/arrow.png',
-                width: 200,
-              ),
-            ],
-          ),
         ],
       ),
     );

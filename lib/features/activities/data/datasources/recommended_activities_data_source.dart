@@ -6,6 +6,8 @@ import '../../../../core/utils/constants.dart';
 abstract class RecommendedActivitiesDataSource {
   List<String> mostCommonActivitiesNames(int amount);
 
+  Stream<({String activityMame, int amount})?> changes();
+
   Future<void> countActivity(String activityName);
 }
 
@@ -36,5 +38,19 @@ class RecommendedActivitiesDataSourceImpl
   @override
   Future<void> countActivity(String activityName) async {
     await _box.put(activityName, _box.get(activityName, defaultValue: 0) + 1);
+  }
+
+  @override
+  Stream<({String activityMame, int amount})?> changes() {
+    return _box.watch().map(
+      (event) {
+        if (event.value == null) return null;
+
+        return (
+          activityMame: event.key,
+          amount: event.value,
+        );
+      },
+    );
   }
 }

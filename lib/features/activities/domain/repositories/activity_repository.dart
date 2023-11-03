@@ -41,5 +41,7 @@ abstract class ActivityRepository {
     required int ammount,
   });
 
+  Stream<ActivitySettings?> listenToCommonActivities();
+
   Future<void> countActivity(String activityName);
 }

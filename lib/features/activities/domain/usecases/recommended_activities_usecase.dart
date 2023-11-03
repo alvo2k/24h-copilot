@@ -15,4 +15,8 @@ class RecommendedActivitiesUsecase {
       ammount: Constants.activitiesAmmountToRecommend,
     );
   }
+
+  Stream<ActivitySettings?> changes() {
+    return repository.listenToCommonActivities();
+  }
 }

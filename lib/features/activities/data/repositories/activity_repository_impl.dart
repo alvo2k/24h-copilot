@@ -226,6 +226,23 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
+  Stream<ActivitySettings?> listenToCommonActivities() {
+    return recomendedDataSource.changes().asyncMap(
+      (event) async {
+        if (event == null) return null;
+
+        final model =
+            await localDataSource.findActivitySettings(event.activityMame);
+
+        if (model != null) return ActivitySettings.fromDrift(model);
+
+        throw Exception(
+            'recomendedDataSource had an activity name that doesn\'t exist in localDataSource!');
+      },
+    );
+  }
+
+  @override
   Future<void> countActivity(String activityName) async =>
       recomendedDataSource.countActivity(activityName);
 }

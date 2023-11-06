@@ -10,13 +10,13 @@ class PieChartDataUsecase {
 
   final PieChartDataRepository repository;
 
-  Future<Stream<PieChartData>> call(PieChartDataParams params) async {
+  Future<Stream<PieChartData?>> call(PieChartDataParams params) async {
     assert(params.to == DateUtils.dateOnly(params.to));
 
     // add one day because DateTimePicker returns date only
     // example:
-    // from: 17.09.2023; to: 17.09.2023 
-    // and we want 
+    // from: 17.09.2023; to: 17.09.2023
+    // and we want
     // from: 17.09.2023; to: 18.09.2023, [to] not included
     final DateTime to = params.to.add(const Duration(days: 1));
 
@@ -28,7 +28,7 @@ class PieChartDataUsecase {
 
     return activitiesStream.map(
       (result) => result.fold(
-        (l) => throw l,
+        (l) => null,
         (activities) {
           List<Color> colorList = [];
           Map<String, Duration> activitiesDuration = {};
@@ -87,6 +87,23 @@ class PieChartDataUsecase {
 
   Future<DateTime?> firstRecordDate() {
     return repository.getFirstEverRecordStartTime();
+  }
+
+  Future<({DateTime from, DateTime to})> datesForInitialData() async {
+    final today = DateUtils.dateOnly(DateTime.now());
+    final firstRecord = await firstRecordDate();
+
+    if (firstRecord != null) {
+      if (firstRecord.isAfter(today.subtract(const Duration(days: 7)))) {
+        return (from: firstRecord, to: today);
+      }
+      return (
+        from: firstRecord.subtract(const Duration(days: 7)),
+        to: today,
+      );
+    } else {
+      return (from: today, to: today);
+    }
   }
 }
 

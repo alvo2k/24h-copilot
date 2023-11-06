@@ -4,13 +4,13 @@ sealed class ActivitiesState extends Equatable {
   final PageState pageState;
 
   const ActivitiesState(this.pageState);
+
+  @override
+  List<Object> get props => [pageState];
 }
 
 class Initial extends ActivitiesState {
   Initial() : super(PageState.initial());
-
-  @override
-  List<Object> get props => [];
 }
 
 class Failure extends ActivitiesState {
@@ -19,39 +19,40 @@ class Failure extends ActivitiesState {
   final String message;
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [pageState, message];
 }
 
 class Loading extends ActivitiesState {
   const Loading(super.pageState);
-
-  @override
-  List<Object?> get props => [];
 }
 
 class Loaded extends ActivitiesState {
   const Loaded(super.pageState);
-
-  @override
-  List<Object?> get props => [];
 }
 
-class PageState {
+class PageState extends Equatable {
   final List<ActivitySettings> recommendedActivities;
   final List<ActivityDay> activityDays;
 
-  PageState({required this.recommendedActivities, required this.activityDays});
+  const PageState({
+    required this.recommendedActivities,
+    required this.activityDays,
+  });
 
-  factory PageState.initial() => PageState(
+  factory PageState.initial() => const PageState(
         recommendedActivities: [],
         activityDays: [],
       );
   PageState copyWith({
     List<ActivitySettings>? recommendedActivities,
     List<ActivityDay>? activityDays,
-  }) => PageState(
-      recommendedActivities:
-          recommendedActivities ?? this.recommendedActivities,
-      activityDays: activityDays ?? this.activityDays,
-    );
+  }) =>
+      PageState(
+        recommendedActivities:
+            recommendedActivities ?? this.recommendedActivities,
+        activityDays: activityDays ?? this.activityDays,
+      );
+
+  @override
+  List<Object?> get props => [recommendedActivities, activityDays];
 }

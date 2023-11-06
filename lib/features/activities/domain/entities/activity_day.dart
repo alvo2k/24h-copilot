@@ -2,12 +2,15 @@ import 'package:equatable/equatable.dart';
 
 import 'activity.dart';
 
-class ActivityDay {
-  ActivityDay(
+class ActivityDay extends Equatable {
+  const ActivityDay(
     this.activitiesInThisDay,
     this.date,
   );
 
-  List<Activity> activitiesInThisDay;
+  final List<Activity> activitiesInThisDay;
   final DateTime date;
+
+  @override
+  List<Object?> get props => [activitiesInThisDay, date];
 }

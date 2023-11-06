@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/activity_settings.dart';
@@ -16,7 +15,6 @@ part 'activities_state.dart';
 
 @injectable
 class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
-  final loadedActivities = <ActivityDay>[].obs;
   final pageStorageBucket = PageStorageBucket();
 
   ActivitiesBloc({
@@ -33,15 +31,8 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         final stream = await loadActivitiesUsecase(
           LoadActivitiesParams(event.forTheDay),
         );
-        stream.listen((day) {
-          final index = loadedActivities
-              .indexWhere((element) => element.date == day.date);
-          if (index == -1) {
-            loadedActivities.add(day);
-          } else {
-            loadedActivities[index] = day;
-          }
-        });
+
+        stream.listen((day) => add(_NewActivityDayFromStream(day)));
 
         final recomendedActivities = await recommendedActivitiesUsecase();
 
@@ -54,7 +45,6 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         emit(
           Loaded(
             state.pageState.copyWith(
-              activityDays: loadedActivities,
               recommendedActivities: recomendedActivities,
             ),
           ),
@@ -123,8 +113,34 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
           emit(
             Loaded(
               state.pageState.copyWith(
-                recommendedActivities: recAct..add(event.activity),
+                recommendedActivities: [...recAct, event.activity],
               ),
+            ),
+          );
+        }
+      },
+    );
+
+    on<_NewActivityDayFromStream>(
+      (event, emit) {
+        final pageState = state.pageState;
+        final index = pageState.activityDays
+            .indexWhere((element) => element.date == event.activityDay.date);
+        if (index == -1) {
+          final updatedState = [...pageState.activityDays, event.activityDay];
+          emit(
+            Loaded(
+              pageState.copyWith(
+                activityDays: updatedState,
+              ),
+            ),
+          );
+        } else {
+          final updatedState = [...pageState.activityDays];
+          updatedState[index] = event.activityDay;
+          emit(
+            Loaded(
+              pageState.copyWith(activityDays: updatedState),
             ),
           );
         }

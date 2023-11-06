@@ -53,7 +53,8 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
         controller.position.outOfRange == false) {
       var activitiesBloc = BlocProvider.of<ActivitiesBloc>(context);
 
-      final lastLoadedActivityDay = activitiesBloc.loadedActivities.last;
+      final lastLoadedActivityDay =
+          activitiesBloc.state.pageState.activityDays.last;
       final dateToLoad =
           lastLoadedActivityDay.date.subtract(const Duration(days: 1));
 

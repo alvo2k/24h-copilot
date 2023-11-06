@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 
@@ -71,81 +70,58 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (context, state) {
-      if (state is DashboardLoading) {
-        return const Center(child: CircularProgressIndicator.adaptive());
-      }
-      if (state is DashboardFailure) {
-        return Center(child: Text(state.message));
-      }
-      if (state is DashboardLoaded) {
-        final bloc = BlocProvider.of<DashboardBloc>(context);
-        return Obx(() {
-          if (bloc.data.value != null) {
-            return Scaffold(
-              appBar: buildSearchAppbar(
-                context,
-                title: AppLocalizations.of(context)!.dashboard,
-                actionButtons: [
-                  IconButton(
-                    icon: const Icon(Icons.date_range_outlined),
-                    tooltip: AppLocalizations.of(context)!.dateRange,
-                    onPressed: () =>
-                        context.read<NavigationCubit>().rangePicker(context),
-                  ),
-                ],
-                onSuggestionTap: (search) => context
-                    .read<NavigationCubit>()
-                    .onSuggestionTap(context, search),
-              ),
-              drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
-                  ? const CommonDrawer()
-                  : null,
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: _buildDate(
-                        bloc.data.value!.from,
-                        bloc.data.value!.to,
-                        context,
-                      ),
-                    ),
-                    _buildPie(
-                      bloc.data.value!.dataMap,
-                      bloc.data.value!.colorList,
+      builder: (context, state) => switch (state) {
+        DashboardInitial() => () {
+            context.read<DashboardBloc>().add(LoadInitialData());
+
+            return const Center(child: CircularProgressIndicator.adaptive());
+          }(),
+        DashboardLoading() => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        DashboardFailure() => Center(child: Text(state.message)),
+        DashboardLoadedNoData() => const EmptyDashboardIllustration(),
+        DashboardLoaded() => Scaffold(
+            appBar: buildSearchAppbar(
+              context,
+              title: AppLocalizations.of(context)!.dashboard,
+              actionButtons: [
+                IconButton(
+                  icon: const Icon(Icons.date_range_outlined),
+                  tooltip: AppLocalizations.of(context)!.dateRange,
+                  onPressed: () =>
+                      context.read<NavigationCubit>().rangePicker(context),
+                ),
+              ],
+              onSuggestionTap: (search) => context
+                  .read<NavigationCubit>()
+                  .onSuggestionTap(context, search),
+            ),
+            drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
+                ? const CommonDrawer()
+                : null,
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: _buildDate(
+                      state.data.from,
+                      state.data.to,
                       context,
                     ),
-                    _buildActivities(bloc.data.value!),
-                  ],
-                ),
+                  ),
+                  _buildPie(
+                    state.data.dataMap,
+                    state.data.colorList,
+                    context,
+                  ),
+                  _buildActivities(state.data),
+                ],
               ),
-            );
-          } else {
-            return const EmptyDashboardIllustration();
-          }
-        });
-      }
-      if (state is DashboardInitial) {
-        state.firstRecordDate.then((date) {
-          final today = DateUtils.dateOnly(DateTime.now());
-          final from = () {
-            if (date != null) {
-              if (date.isAfter(today.subtract(const Duration(days: 7)))) {
-                return date;
-              }
-              return today.subtract(const Duration(days: 7));
-            }
-            return DateUtils.dateOnly(DateTime.now());
-          }();
-          // load last 7 days or load entire [today]
-          BlocProvider.of<DashboardBloc>(context)
-              .add(DashboardLoad(from, today));
-        });
-        return const Center(child: CircularProgressIndicator.adaptive());
-      }
-      return const Center(child: Text('Unknown state'));
-    });
+            ),
+          ),
+      },
+    );
   }
 }

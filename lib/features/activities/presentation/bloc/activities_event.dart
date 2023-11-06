@@ -67,3 +67,12 @@ class _RecomendedActivitiesChanged extends ActivitiesEvent {
   @override
   List<Object?> get props => [activity];
 }
+
+class _NewActivityDayFromStream extends ActivitiesEvent {
+  _NewActivityDayFromStream(this.activityDay);
+
+  final ActivityDay activityDay;
+
+  @override
+  List<Object> get props => [activityDay];
+}

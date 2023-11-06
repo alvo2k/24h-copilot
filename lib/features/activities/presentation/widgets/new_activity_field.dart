@@ -42,11 +42,13 @@ class _NewActivityFieldState extends State<NewActivityField> {
 
     _controller.clear();
     _focusNode.unfocus();
-    widget.listViewController.animateTo(
-      widget.listViewController.position.minScrollExtent,
-      duration: const Duration(milliseconds: 1000),
-      curve: Curves.easeOut,
-    );
+    if (widget.listViewController.hasClients) {
+      widget.listViewController.animateTo(
+        widget.listViewController.position.minScrollExtent,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override

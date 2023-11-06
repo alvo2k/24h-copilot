@@ -1,11 +1,16 @@
+import 'dart:ui';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 
+import '../features/activities/data/datasources/recommended_activities_data_source.dart';
 import '../features/activities/data/repositories/activity_repository_impl.dart';
 import '../features/activities/domain/usecases/switch_activities_usecase.dart';
 import 'common/data/datasources/activity_database.dart';
+import 'utils/constants.dart';
 
 @singleton
 class NotificationController {
@@ -33,10 +38,28 @@ class NotificationController {
   ) async {
     final nextActivity = receivedAction.buttonKeyInput;
 
-    if (nextActivity.isNotEmpty) {
+    if (nextActivity.trim().isEmpty) {
+      return;
+    }
+
+    final switchActivitySendPort = IsolateNameServer.lookupPortByName(
+      'switch_activity_from_notification',
+    );
+
+    if (switchActivitySendPort != null) {
+      //* App is in the background or foreground
+      switchActivitySendPort.send(nextActivity.trim());
+    } else {
+      //* App is terminated
+      await Hive.initFlutter(Constants.appFolderName);
+
+      final recommendedActivities = RecommendedActivitiesDataSourceImpl();
+      await recommendedActivities.init();
+
       final usecase = SwitchActivitiesUsecase(
         ActivityRepositoryImpl(
           ActivityDatabase(),
+          recommendedActivities,
         ),
       );
 

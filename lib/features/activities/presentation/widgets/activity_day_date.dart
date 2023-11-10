@@ -28,16 +28,19 @@ class ActivityDayDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Text(
-            formatDate(date, context),
-            style: Theme.of(context).textTheme.headlineMedium,
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Text(
+              formatDate(date, context),
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

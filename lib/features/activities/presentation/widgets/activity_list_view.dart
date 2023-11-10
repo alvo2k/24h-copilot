@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 import '../bloc/activities_bloc.dart';
 import 'activity_day_date.dart';
@@ -45,36 +46,39 @@ class ActivityListView extends StatelessWidget {
                       }
                     });
                     // if this is today, print icon at the end
-                    return Column(
-                      children: [
-                        ActivityDayDate(day.date),
-                        ActivityDayWidget(day),
-                        const Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 29.0, vertical: 16),
-                              child: Icon(Icons.access_time),
-                            ),
-                          ],
-                        ),
-                      ],
+                    return StickyHeader(
+                      header: ActivityDayDate(day.date),
+                      content: Column(
+                        children: [
+                          ActivityDayWidget(day),
+                          const Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 29.0, vertical: 16),
+                                child: Icon(Icons.access_time),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   }
                   if (index == state.pageState.activityDays.length - 1 &&
                       day.activitiesInThisDay.isNotEmpty) {
-                    return Column(children: [
-                      // adds loading indicator at top of the list. Empty ActivitiesDay means all data was loaded and no indicator needed
-                      const CircularProgressIndicator(),
-                      ActivityDayDate(day.date),
-                      ActivityDayWidget(day),
-                    ]);
+                    return StickyHeader(
+                      header: ActivityDayDate(day.date),
+                      content: Column(children: [
+                        // Adds loading indicator at top of the list. 
+                        // Empty ActivitiesDay means all data was loaded and no indicator needed
+                        const CircularProgressIndicator(),
+                        ActivityDayWidget(day),
+                      ]),
+                    );
                   }
-                  return Column(
-                    children: [
-                      ActivityDayDate(day.date),
-                      ActivityDayWidget(day),
-                    ],
+                  return StickyHeader(
+                    header: ActivityDayDate(day.date),
+                    content: ActivityDayWidget(day),
                   );
                 },
               );

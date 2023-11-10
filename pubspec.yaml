@@ -63,3 +63,7 @@ flutter:
     - assets/
     - assets/icons/edit_mode.svg
     - assets/illustrations/
+  fonts:
+    - family: NotoColorEmoji
+      fonts:
+        - asset: assets/fonts/NotoColorEmoji-Regular.ttf

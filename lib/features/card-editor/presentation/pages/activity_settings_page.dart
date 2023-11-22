@@ -56,7 +56,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
 
   void setColor(Color newColor) {
     setState(() {
-      activity = activity.changeColor(newColor);
+      activity = activity.copyWith(color: newColor);
       color = newColor;
     });
   }
@@ -221,7 +221,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                         TextField(
                           controller: nameController,
                           onChanged: (newName) => setState(() {
-                            activity = activity.changeName(newName);
+                            activity = activity.copyWith(name: newName);
                           }),
                           strutStyle: const StrutStyle(
                             height: .9,
@@ -333,19 +333,4 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
       ),
     );
   }
-}
-
-extension on ActivitySettings {
-  ActivitySettings changeColor(Color newColor) => ActivitySettings(
-        name: name,
-        color: newColor,
-        goal: goal,
-        tags: tags,
-      );
-  ActivitySettings changeName(String newName) => ActivitySettings(
-        name: newName,
-        color: color,
-        goal: goal,
-        tags: tags,
-      );
 }

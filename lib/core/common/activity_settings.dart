@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
@@ -36,4 +37,20 @@ class ActivitySettings extends Equatable {
         tags: model.tags?.split(';'),
         amount: model.amount,
       );
+
+  ActivitySettings copyWith({
+    Color? color,
+    int? goal,
+    String? name,
+    List<String>? tags,
+    int? amount,
+  }) {
+    return ActivitySettings(
+      color: color ?? this.color,
+      goal: goal ?? this.goal,
+      name: name ?? this.name,
+      tags: tags ?? this.tags,
+      amount: amount ?? this.amount,
+    );
+  }
 }

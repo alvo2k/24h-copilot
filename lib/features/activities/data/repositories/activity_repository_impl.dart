@@ -10,14 +10,12 @@ import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/entities/edit_record.dart';
 import '../../domain/repositories/activity_repository.dart';
-import '../datasources/recommended_activities_data_source.dart';
 
 @LazySingleton(as: ActivityRepository)
 class ActivityRepositoryImpl implements ActivityRepository {
-  ActivityRepositoryImpl(this.localDataSource, this.recomendedDataSource);
+  ActivityRepositoryImpl(this.localDataSource);
 
   final ActivityLocalDataSource localDataSource;
-  final RecommendedActivitiesDataSource recomendedDataSource;
 
   @override
   Future<Either<Failure, Success>> addEmoji(
@@ -209,40 +207,16 @@ class ActivityRepositoryImpl implements ActivityRepository {
   }
 
   @override
-  Future<List<ActivitySettings>> mostCommonActivities({
+  Stream<List<ActivitySettings>> mostCommonActivities({
     required int ammount,
-  }) async {
-    final names = recomendedDataSource.mostCommonActivitiesNames(ammount);
+  }) {
+    final activities = localDataSource.mostCommonActivities(ammount);
 
-    final out = <ActivitySettings>[];
-    for (final name in names) {
-      final model = await localDataSource.findActivitySettings(name);
-      if (model != null) {
-        out.add(ActivitySettings.fromDrift(model));
-      }
-    }
-
-    return out;
-  }
-
-  @override
-  Stream<ActivitySettings?> listenToCommonActivities() {
-    return recomendedDataSource.changes().asyncMap(
-      (event) async {
-        if (event == null) return null;
-
-        final model =
-            await localDataSource.findActivitySettings(event.activityMame);
-
-        if (model != null) return ActivitySettings.fromDrift(model);
-
-        throw Exception(
-            'recomendedDataSource had an activity name that doesn\'t exist in localDataSource!');
-      },
+    return activities.map(
+      (models) => List.generate(
+        models.length,
+        (i) => ActivitySettings.fromDrift(models[i]),
+      ),
     );
   }
-
-  @override
-  Future<void> countActivity(String activityName) async =>
-      recomendedDataSource.countActivity(activityName);
 }

@@ -8,6 +8,7 @@ class Activity extends ActivitySettings with EquatableMixin {
     required super.name,
     required super.color,
     required this.startTime,
+    required super.amount,
     super.tags,
     this.endTime,
     super.goal,
@@ -28,9 +29,11 @@ class Activity extends ActivitySettings with EquatableMixin {
 
   @override
   List<Object?> get props => [
+        recordId,
         name,
         color,
         startTime,
+        amount,
         tags,
         endTime,
         goal,

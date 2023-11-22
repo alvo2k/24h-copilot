@@ -55,11 +55,17 @@ mixin ActivityLocalDataSource {
   Future<DriftActivityModel?> findActivitySettings(String name);
 
   /// Creates new [Activity] (name, color)
-  Future<DriftActivityModel> createActivity(String name, int colorHex);
+  Future<DriftActivityModel> createActivity(
+    String name,
+    int colorHex, [
+    int amount,
+  ]);
 
   Future<void> updateRecordEmoji(int idRecord, String emoji);
 
   Future<List<String>?> searchActivities(String activityName);
 
   Future<List<String>> searchTags(String tag);
+
+  Stream<List<DriftActivityModel>> mostCommonActivities(int amount);
 }

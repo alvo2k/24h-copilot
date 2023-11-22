@@ -6,6 +6,7 @@
 import 'dart:async' as _i4;
 import 'dart:ui' as _i7;
 
+import 'package:copilot/core/common/activity_settings.dart' as _i9;
 import 'package:copilot/core/error/return_types.dart' as _i6;
 import 'package:copilot/features/activities/domain/entities/activity.dart'
     as _i5;
@@ -187,4 +188,16 @@ class MockActivityRepository extends _i1.Mock
           ),
         )),
       ) as _i4.Future<_i2.Either<_i6.Failure, bool>>);
+
+  @override
+  _i4.Stream<List<_i9.ActivitySettings>> mostCommonActivities(
+          {required int? ammount}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #mostCommonActivities,
+          [],
+          {#ammount: ammount},
+        ),
+        returnValue: _i4.Stream<List<_i9.ActivitySettings>>.empty(),
+      ) as _i4.Stream<List<_i9.ActivitySettings>>);
 }

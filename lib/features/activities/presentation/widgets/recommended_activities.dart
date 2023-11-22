@@ -23,6 +23,10 @@ class RecommendedActivities extends StatelessWidget {
         child: Column(
           children: [
             BlocBuilder<ActivitiesBloc, ActivitiesState>(
+              buildWhen: (previous, current) =>
+                  current is! Loaded ||
+                  previous.pageState.recommendedActivities !=
+                      current.pageState.recommendedActivities,
               builder: (BuildContext context, ActivitiesState state) {
                 if (state is! Loaded ||
                     state.pageState.recommendedActivities.isEmpty) {

@@ -35,6 +35,8 @@ class Activities extends Table {
   TextColumn get tags => text().nullable()();
 
   IntColumn get goal => integer().nullable()();
+
+  IntColumn get amount => integer()();
 }
 
 @LazySingleton(as: ActivityLocalDataSource)
@@ -42,17 +44,22 @@ class Activities extends Table {
 class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   ActivityDatabase() : super(_openConnection());
 
-  ActivityDatabase._(QueryExecutor e) : super(e);
+  ActivityDatabase._(super.e);
 
   factory ActivityDatabase.testConnection(QueryExecutor e) {
     return ActivityDatabase._(e);
   }
 
   @override
-  Future<DriftActivityModel> createActivity(String name, int colorHex) async {
+  Future<DriftActivityModel> createActivity(
+    String name,
+    int colorHex, [
+    int amount = 1,
+  ]) async {
     final activity = ActivitiesCompanion(
       name: Value(name),
       color: Value(colorHex),
+      amount: Value(amount),
     );
 
     await into(activities).insert(activity, mode: InsertMode.insertOrIgnore);
@@ -82,6 +89,15 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     );
 
     final recordId = await into(records).insert(record);
+
+    final activityToUpdate = await (select(activities)
+          ..where((activities) => activities.name.equals(activityName)))
+        .getSingle();
+
+    await update(activities).replace(
+      activityToUpdate.copyWith(amount: activityToUpdate.amount + 1),
+    );
+
     _removeDuplicatesRecords();
 
     return RecordWithActivitySettings(
@@ -222,12 +238,21 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
           ''');
           // await customStatement('DROP TABLE _records_old');
         }
+        if (from < 3) {
+          await customStatement(
+            'ALTER TABLE activities ADD COLUMN amount INTEGER NOT NULL DEFAULT 0',
+          );
+          await customStatement('''
+            UPDATE activities
+            SET amount = (SELECT COUNT(*) FROM records WHERE records.activity_name = activities.name)
+          ''');
+        }
       },
     );
   }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   Future<List<String>?> searchActivities(String activityName) async {
@@ -331,6 +356,20 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
 
     _removeDuplicatesRecords();
     return;
+  }
+
+  @override
+  Stream<List<DriftActivityModel>> mostCommonActivities(int amount) {
+    final query = select(activities)
+      ..orderBy([
+        (activities) => OrderingTerm(
+              expression: activities.amount,
+              mode: OrderingMode.desc,
+            ),
+      ])
+      ..limit(amount);
+
+    return query.watch();
   }
 
   Future<DriftRecordModel?> _findFirstRecord(int from) async {

@@ -265,14 +265,16 @@ class MockActivityLocalDataSource extends _i1.Mock
   @override
   _i4.Future<_i2.DriftActivityModel> createActivity(
     String? name,
-    int? colorHex,
-  ) =>
+    int? colorHex, [
+    int? amount,
+  ]) =>
       (super.noSuchMethod(
         Invocation.method(
           #createActivity,
           [
             name,
             colorHex,
+            amount,
           ],
         ),
         returnValue:
@@ -283,6 +285,7 @@ class MockActivityLocalDataSource extends _i1.Mock
             [
               name,
               colorHex,
+              amount,
             ],
           ),
         )),
@@ -323,4 +326,14 @@ class MockActivityLocalDataSource extends _i1.Mock
         ),
         returnValue: _i4.Future<List<String>>.value(<String>[]),
       ) as _i4.Future<List<String>>);
+
+  @override
+  _i4.Stream<List<_i2.DriftActivityModel>> mostCommonActivities(int? amount) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #mostCommonActivities,
+          [amount],
+        ),
+        returnValue: _i4.Stream<List<_i2.DriftActivityModel>>.empty(),
+      ) as _i4.Stream<List<_i2.DriftActivityModel>>);
 }

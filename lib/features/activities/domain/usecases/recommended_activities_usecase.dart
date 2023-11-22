@@ -10,13 +10,7 @@ class RecommendedActivitiesUsecase {
 
   final ActivityRepository repository;
 
-  Future<List<ActivitySettings>> call() async {
-    return await repository.mostCommonActivities(
-      ammount: Constants.activitiesAmmountToRecommend,
-    );
-  }
-
-  Stream<ActivitySettings?> changes() {
-    return repository.listenToCommonActivities();
-  }
+  Stream<List<ActivitySettings>> call() => repository.mostCommonActivities(
+        ammount: Constants.activitiesAmmountToRecommend,
+      );
 }

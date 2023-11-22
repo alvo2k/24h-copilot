@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/activity_settings.dart';
-import '../../../../core/utils/constants.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/entities/activity_day.dart';
 import '../../domain/usecases/activities_usecases.dart';
@@ -28,25 +27,17 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
     on<LoadActivities>(
       (event, emit) async {
         emit(Loading(state.pageState));
-        final stream = await loadActivitiesUsecase(
+
+        final activities = await loadActivitiesUsecase(
           LoadActivitiesParams(event.forTheDay),
         );
 
-        stream.listen((day) => add(_NewActivityDayFromStream(day)));
+        activities.listen((day) => add(_NewActivityDayFromStream(day)));
 
-        final recomendedActivities = await recommendedActivitiesUsecase();
-
-        recommendedActivitiesUsecase.changes().listen(
-              (event) => event != null
-                  ? add(_RecomendedActivitiesChanged(activity: event))
-                  : null,
-            );
-
-        emit(
-          Loaded(
-            state.pageState.copyWith(
-              recommendedActivities: recomendedActivities,
-            ),
+        final recomendedActivities = recommendedActivitiesUsecase();
+        recomendedActivities.listen(
+          (recomendedActivities) => add(
+            _NewRecomendedActivitiesFromStream(recomendedActivities),
           ),
         );
       },
@@ -104,21 +95,14 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
       },
     );
 
-    on<_RecomendedActivitiesChanged>(
-      (event, emit) {
-        final recAct = state.pageState.recommendedActivities;
-
-        if (!recAct.contains(event.activity) &&
-            recAct.length < Constants.activitiesAmmountToRecommend) {
-          emit(
-            Loaded(
-              state.pageState.copyWith(
-                recommendedActivities: [...recAct, event.activity],
-              ),
-            ),
-          );
-        }
-      },
+    on<_NewRecomendedActivitiesFromStream>(
+      (event, emit) => emit(
+        Loaded(
+          state.pageState.copyWith(
+            recommendedActivities: event.recomendedActivities,
+          ),
+        ),
+      ),
     );
 
     on<_NewActivityDayFromStream>(

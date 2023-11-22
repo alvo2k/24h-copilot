@@ -37,11 +37,7 @@ abstract class ActivityRepository {
 
   Future<Either<Failure, bool>> hasActivitySettings(String activityName);
 
-  Future<List<ActivitySettings>> mostCommonActivities({
+  Stream<List<ActivitySettings>> mostCommonActivities({
     required int ammount,
   });
-
-  Stream<ActivitySettings?> listenToCommonActivities();
-
-  Future<void> countActivity(String activityName);
 }

@@ -29,8 +29,13 @@ class $ActivitiesTable extends Activities
   late final GeneratedColumn<int> goal = GeneratedColumn<int>(
       'goal', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
-  List<GeneratedColumn> get $columns => [name, color, tags, goal];
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+      'amount', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [name, color, tags, goal, amount];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -61,6 +66,12 @@ class $ActivitiesTable extends Activities
       context.handle(
           _goalMeta, goal.isAcceptableOrUnknown(data['goal']!, _goalMeta));
     }
+    if (data.containsKey('amount')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
     return context;
   }
 
@@ -78,6 +89,8 @@ class $ActivitiesTable extends Activities
           .read(DriftSqlType.string, data['${effectivePrefix}tags']),
       goal: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}goal']),
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}amount'])!,
     );
   }
 
@@ -93,8 +106,13 @@ class DriftActivityModel extends DataClass
   final int color;
   final String? tags;
   final int? goal;
+  final int amount;
   const DriftActivityModel(
-      {required this.name, required this.color, this.tags, this.goal});
+      {required this.name,
+      required this.color,
+      this.tags,
+      this.goal,
+      required this.amount});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -106,6 +124,7 @@ class DriftActivityModel extends DataClass
     if (!nullToAbsent || goal != null) {
       map['goal'] = Variable<int>(goal);
     }
+    map['amount'] = Variable<int>(amount);
     return map;
   }
 
@@ -115,6 +134,7 @@ class DriftActivityModel extends DataClass
       color: Value(color),
       tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
       goal: goal == null && nullToAbsent ? const Value.absent() : Value(goal),
+      amount: Value(amount),
     );
   }
 
@@ -126,6 +146,7 @@ class DriftActivityModel extends DataClass
       color: serializer.fromJson<int>(json['color']),
       tags: serializer.fromJson<String?>(json['tags']),
       goal: serializer.fromJson<int?>(json['goal']),
+      amount: serializer.fromJson<int>(json['amount']),
     );
   }
   @override
@@ -136,6 +157,7 @@ class DriftActivityModel extends DataClass
       'color': serializer.toJson<int>(color),
       'tags': serializer.toJson<String?>(tags),
       'goal': serializer.toJson<int?>(goal),
+      'amount': serializer.toJson<int>(amount),
     };
   }
 
@@ -143,12 +165,14 @@ class DriftActivityModel extends DataClass
           {String? name,
           int? color,
           Value<String?> tags = const Value.absent(),
-          Value<int?> goal = const Value.absent()}) =>
+          Value<int?> goal = const Value.absent(),
+          int? amount}) =>
       DriftActivityModel(
         name: name ?? this.name,
         color: color ?? this.color,
         tags: tags.present ? tags.value : this.tags,
         goal: goal.present ? goal.value : this.goal,
+        amount: amount ?? this.amount,
       );
   @override
   String toString() {
@@ -156,13 +180,14 @@ class DriftActivityModel extends DataClass
           ..write('name: $name, ')
           ..write('color: $color, ')
           ..write('tags: $tags, ')
-          ..write('goal: $goal')
+          ..write('goal: $goal, ')
+          ..write('amount: $amount')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(name, color, tags, goal);
+  int get hashCode => Object.hash(name, color, tags, goal, amount);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -170,7 +195,8 @@ class DriftActivityModel extends DataClass
           other.name == this.name &&
           other.color == this.color &&
           other.tags == this.tags &&
-          other.goal == this.goal);
+          other.goal == this.goal &&
+          other.amount == this.amount);
 }
 
 class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
@@ -178,12 +204,14 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
   final Value<int> color;
   final Value<String?> tags;
   final Value<int?> goal;
+  final Value<int> amount;
   final Value<int> rowid;
   const ActivitiesCompanion({
     this.name = const Value.absent(),
     this.color = const Value.absent(),
     this.tags = const Value.absent(),
     this.goal = const Value.absent(),
+    this.amount = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ActivitiesCompanion.insert({
@@ -191,14 +219,17 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
     required int color,
     this.tags = const Value.absent(),
     this.goal = const Value.absent(),
+    required int amount,
     this.rowid = const Value.absent(),
   })  : name = Value(name),
-        color = Value(color);
+        color = Value(color),
+        amount = Value(amount);
   static Insertable<DriftActivityModel> custom({
     Expression<String>? name,
     Expression<int>? color,
     Expression<String>? tags,
     Expression<int>? goal,
+    Expression<int>? amount,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -206,6 +237,7 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
       if (color != null) 'color': color,
       if (tags != null) 'tags': tags,
       if (goal != null) 'goal': goal,
+      if (amount != null) 'amount': amount,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -215,12 +247,14 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
       Value<int>? color,
       Value<String?>? tags,
       Value<int?>? goal,
+      Value<int>? amount,
       Value<int>? rowid}) {
     return ActivitiesCompanion(
       name: name ?? this.name,
       color: color ?? this.color,
       tags: tags ?? this.tags,
       goal: goal ?? this.goal,
+      amount: amount ?? this.amount,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -240,6 +274,9 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
     if (goal.present) {
       map['goal'] = Variable<int>(goal.value);
     }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -253,6 +290,7 @@ class ActivitiesCompanion extends UpdateCompanion<DriftActivityModel> {
           ..write('color: $color, ')
           ..write('tags: $tags, ')
           ..write('goal: $goal, ')
+          ..write('amount: $amount, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();

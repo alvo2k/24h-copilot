@@ -14,6 +14,7 @@ class ActivityModel extends Activity {
     required super.name,
     required this.colorHex,
     required this.startTimeUnix,
+    required super.amount,
     this.inLineTags,
     this.endTimeUnix,
     super.goal,
@@ -42,6 +43,7 @@ class ActivityModel extends Activity {
         inLineTags: row.activity.tags,
         goal: row.activity.goal,
         emoji: row.record.emoji,
+        amount: row.activity.amount,
       );
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) =>
@@ -54,6 +56,7 @@ class ActivityModel extends Activity {
   static const colIdActivity = 'id_activity';
   static const colIdRecord = 'id_record';
   static const colName = 'name';
+  static const colAmountName = 'amount';
   static const colStartTime = 'start_time';
   static const colTags = 'tags';
   static const tblActivity = 'activity';
@@ -81,6 +84,7 @@ class ActivityModel extends Activity {
         name: name,
         colorHex: colorHex,
         startTimeUnix: startTimeUnix,
+        amount: amount,
         emoji: emoji,
         endTimeUnix: endTime.toUtc().millisecondsSinceEpoch,
         goal: goal,
@@ -92,6 +96,7 @@ class ActivityModel extends Activity {
         name: name,
         colorHex: colorHex,
         startTimeUnix: startTime.toUtc().millisecondsSinceEpoch,
+        amount: amount,
         emoji: emoji,
         endTimeUnix: endTimeUnix,
         goal: goal,
@@ -110,6 +115,7 @@ class ActivityModel extends Activity {
         color: colorHex,
         tags: inLineTags,
         goal: goal,
+        amount: amount
       );
 
   Duration durationBetween(DateTime since, DateTime before) {

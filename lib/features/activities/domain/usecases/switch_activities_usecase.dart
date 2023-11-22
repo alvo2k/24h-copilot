@@ -24,11 +24,7 @@ class SwitchActivitiesUsecase
     
     return switchResult.fold(
       (failure) async => Left(failure),
-      (activity) async {
-        await repository.countActivity(activity.name);
-
-        return Right(activity);
-      },
+      (activity) async => Right(activity),
     );
   }
 }

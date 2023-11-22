@@ -23,7 +23,7 @@ class NavigationCubit extends Cubit<NavigationState> {
   ];
 
   final _dashbordSearchFrom = DateTime.now().subtract(const Duration(days: 30));
-  final _dashbordSearchTo = DateTime.now();
+  final _dashbordSearchTo = DateUtils.dateOnly(DateTime.now());
   DateTime? _dateOfFirstActivity;
 
   void getFirstDate(BuildContext context) {

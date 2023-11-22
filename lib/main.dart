@@ -22,7 +22,7 @@ void main() {
 
       await Hive.initFlutter(Constants.appFolderName);
 
-      await initDependencyInjection();
+      initDependencyInjection();
 
       _setupSwitchActivitiesFromNotification();
 

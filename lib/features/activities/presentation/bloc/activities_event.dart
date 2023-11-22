@@ -57,15 +57,13 @@ class EditRecords extends ActivitiesEvent {
   List<Object?> get props => [fixedTime, name, selectedTime, toChange];
 }
 
-class _RecomendedActivitiesChanged extends ActivitiesEvent {
-  final ActivitySettings activity;
+class _NewRecomendedActivitiesFromStream extends ActivitiesEvent {
+  final List<ActivitySettings> recomendedActivities;
 
-  _RecomendedActivitiesChanged({
-    required this.activity,
-  });
+  _NewRecomendedActivitiesFromStream(this.recomendedActivities);
 
   @override
-  List<Object?> get props => [activity];
+  List<Object?> get props => [recomendedActivities];
 }
 
 class _NewActivityDayFromStream extends ActivitiesEvent {

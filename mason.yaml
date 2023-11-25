@@ -1,0 +1,4 @@
+bricks:
+  feature_clean_architecture:
+    git:
+      url: "https://github.com/alvo2k/mason_feature_clean_architecture"

@@ -35,10 +35,10 @@ class DashboardLoadedNoData extends DashboardState {
 }
 
 class DashboardFailure extends DashboardState {
-  const DashboardFailure(this.message);
+  const DashboardFailure(this.type);
 
-  final String message;
+  final FailureType type;
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [type];
 }

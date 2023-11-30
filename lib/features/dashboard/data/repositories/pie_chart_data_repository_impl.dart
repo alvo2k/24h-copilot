@@ -48,7 +48,7 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
         }
       }
       if (records.isEmpty) {
-        return const Left(CacheFailure({'message': 'No records found'}));
+        return Left(Failure(type: FailureType.localStorage));
       }
       return Right(records);
     });

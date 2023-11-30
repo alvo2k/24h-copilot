@@ -62,7 +62,7 @@ class _AuthPageState extends State<AuthPage> {
                 showTopSnackBar(
                   Overlay.of(context),
                   CustomSnackBar.error(
-                    message: state.message,
+                    message: state.type.localize(context),
                   ),
                 );
                 setState(() {

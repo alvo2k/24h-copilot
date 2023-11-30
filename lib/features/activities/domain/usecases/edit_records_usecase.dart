@@ -90,7 +90,13 @@ class EditRecordsUsecase extends UseCase<Activity, EditRecordsParams> {
         startTime: params.selectedTime!,
       ));
     }
-    return const Left(CacheFailure());
+    return Left(
+      Failure(
+        type: FailureType.unknown,
+        reportToSenty: true,
+        extra: 'EditRecordsUsecase.call error\n$params',
+      ),
+    );
   }
 }
 
@@ -106,4 +112,9 @@ class EditRecordsParams {
   final String name;
   final DateTime? selectedTime;
   final Activity toChange;
+
+  @override
+  String toString() {
+    return 'EditRecordsParams(fixedTime: $fixedTime, name: $name, selectedTime: $selectedTime, toChange: $toChange)';
+  }
 }

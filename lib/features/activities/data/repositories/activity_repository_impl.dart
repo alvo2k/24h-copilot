@@ -26,7 +26,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
       await localDataSource.updateRecordEmoji(recordId, emoji);
       return const Right(Success());
     } on CacheException {
-      return const Left(CacheFailure());
+      return Left(Failure(type: FailureType.localStorage));
     }
   }
 
@@ -47,7 +47,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
       );
       return Right(ActivityModel.fromDriftRow(row));
     } on CacheException {
-      return const Left(CacheFailure());
+      return Left(Failure(type: FailureType.localStorage));
     }
   }
 
@@ -113,11 +113,9 @@ class ActivityRepositoryImpl implements ActivityRepository {
             return Right(ActivityModel.fromDriftRow(row)
                 .changeEndTime(editData.toChange!.endTime!));
           }
-        default:
-          return const Left(CacheFailure({'message': 'unknown edit mode'}));
       }
     } on CacheException {
-      return const Left(CacheFailure());
+      return Left(Failure(type: FailureType.localStorage));
     }
   }
 
@@ -160,7 +158,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
         return const Right(true);
       }
     } on CacheException {
-      return const Left(CacheFailure());
+      return Left(Failure(type: FailureType.localStorage));
     }
   }
 
@@ -181,7 +179,7 @@ class ActivityRepositoryImpl implements ActivityRepository {
       );
       return Right(ActivityModel.fromDriftRow(row));
     } on CacheException {
-      return const Left(CacheFailure());
+      return Left(Failure(type: FailureType.localStorage));
     }
   }
 

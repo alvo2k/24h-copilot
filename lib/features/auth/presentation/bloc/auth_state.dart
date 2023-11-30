@@ -6,12 +6,12 @@ class Initial extends AuthState {
 }
 
 class Failure extends AuthState {
-  Failure(this.message);
+  Failure(this.type);
 
-  final String message;
+  final FailureType type;
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [type];
 }
 
 class Loading extends AuthState {

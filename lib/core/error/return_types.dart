@@ -1,38 +1,33 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
-abstract class Failure extends Equatable {
-  const Failure(
-      [this.prop = const {'id': 1, 'message': 'Something went wrong 😬'}]);
+final class Failure extends Equatable {
+  Failure({
+    this.type = FailureType.unknown,
+    this.reportToSenty = false,
+    this.extra,
+  }) {
+    if (reportToSenty) {
+      Sentry.captureMessage(toString(), params: [StackTrace.current]);
+    }
+  }
 
-  final Map<String, dynamic> prop;
+  final FailureType type;
+  final dynamic extra;
+  final bool reportToSenty;
 
   @override
-  List<Object> get props => [prop];
-}
+  String toString() => '''
+Failure(
+  type: $type,
+  extra: $extra,
+)
+''';
 
-class CacheFailure extends Failure {
-  const CacheFailure([super.properties]);
-}
-
-class UnsupportedPlatformFailure extends Failure {
-  const UnsupportedPlatformFailure();
-}
-
-class FirebaseAuthFailure extends Failure {
-  FirebaseAuthFailure(this.error) : super({'id': 2, 'message': error.name});
-
-  final FirebaseAuthError error;
-}
-
-enum FirebaseAuthError {
-  weakPassword,
-  emailInUse,
-  invalidEmail,
-  userNotFound,
-  wrongPassword,
-  userDisabled,
-  tooManyRequests,
-  unknown,
+  @override
+  List<Object> get props => [type, extra, reportToSenty];
 }
 
 class Success extends Equatable {
@@ -42,4 +37,16 @@ class Success extends Equatable {
 
   @override
   List<Object> get props => [properties];
+}
+
+enum FailureType {
+  unknown,
+  localStorage;
+
+  String localize(BuildContext context) => switch (this) {
+        FailureType.unknown =>
+          AppLocalizations.of(context)!.somethingWentWrong,
+        FailureType.localStorage =>
+          AppLocalizations.of(context)!.somethingWrongWithLocalStorage,
+      };
 }

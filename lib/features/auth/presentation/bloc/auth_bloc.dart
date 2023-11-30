@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/error/return_types.dart';
+
 part 'auth_event.dart';
 part 'auth_state.dart';
 

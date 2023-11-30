@@ -53,5 +53,7 @@
     "emptyDashboard": "Here you can keep track of your activities.",
     "nothingToEdit": "Nothing to edit yet.",
     "addActivityAtActivities": "Add a new activity to the Activities screen.",
-    "editActivitiesShort": "Edit"
+    "editActivitiesShort": "Edit",
+    "somethingWentWrong": "Something went wrong.",
+    "somethingWrongWithLocalStorage": "Something wrong with the local storage"
 }

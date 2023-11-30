@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/activity_settings.dart';
+import '../../../../core/error/return_types.dart';
 import '../../domain/entities/activity.dart';
 import '../../domain/entities/activity_day.dart';
 import '../../domain/usecases/activities_usecases.dart';
@@ -48,7 +49,7 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         final result = await switchActivityUsecase(
             SwitchActivitiesParams(event.nextActivityName));
         result.fold(
-          (l) => emit(Failure(state.pageState, message: l.prop['message'])),
+          (l) => emit(Failure(state.pageState, type: l.type)),
           // [loadActivities] handler sets up listeners, that updates
           // corresponding [day] and ActivityListView observes this change
           (r) => null,
@@ -61,7 +62,7 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         final result =
             await addEmojiUsecase(AddEmojiParams(event.recordId, event.emoji));
         result.fold(
-          (l) => emit(Failure(state.pageState, message: l.prop['message'])),
+          (l) => emit(Failure(state.pageState, type: l.type)),
           (r) => null,
         );
       },
@@ -72,7 +73,7 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         final result =
             await editNameUsecase(EditNameParams(event.recordId, event.name));
         result.fold(
-          (l) => emit(Failure(state.pageState, message: l.prop['message'])),
+          (l) => emit(Failure(state.pageState, type: l.type)),
           (r) {
             // TODO edit name functional
           },
@@ -89,7 +90,7 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
           toChange: event.toChange,
         ));
         edit.fold(
-          (l) => emit(Failure(state.pageState, message: l.prop['message'])),
+          (l) => emit(Failure(state.pageState, type: l.type)),
           (r) => null,
         );
       },

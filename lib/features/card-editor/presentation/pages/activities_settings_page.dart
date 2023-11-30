@@ -65,7 +65,7 @@ class ActivitiesSettingsPage extends StatelessWidget {
             },
           );
         } else if (state is CardEditorStateFailure) {
-          return Center(child: Text(state.message));
+          return Center(child: Text(state.type.localize(context)));
         }
         return const Center(child: Text('Unknown state'));
       }),

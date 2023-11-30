@@ -79,7 +79,7 @@ class DashboardPage extends StatelessWidget {
         DashboardLoading() => const Center(
             child: CircularProgressIndicator.adaptive(),
           ),
-        DashboardFailure() => Center(child: Text(state.message)),
+        DashboardFailure() => Center(child: Text(state.type.localize(context))),
         DashboardLoadedNoData() => const EmptyDashboardIllustration(),
         DashboardLoaded() => Scaffold(
             appBar: buildSearchAppbar(

@@ -83,7 +83,7 @@ class ActivityListView extends StatelessWidget {
                 },
               );
             }(),
-          Failure() => Center(child: Text(state.message)),
+          Failure() => Center(child: Text(state.type.localize(context))),
         };
       },
     );

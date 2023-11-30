@@ -26,7 +26,7 @@ class ActivitySettingsRepositoryImpl extends ActivitySettingsRepository {
 
       return Right(activities);
     } on CacheException catch (_) {
-      return const Left(CacheFailure());
+      return Left(Failure(type: FailureType.localStorage));
     }
   }
 
@@ -56,7 +56,7 @@ class ActivitySettingsRepositoryImpl extends ActivitySettingsRepository {
 
       return Right(ActivitySettingsModel.fromDriftRow(row));
     } on CacheException catch (_) {
-      return const Left(CacheFailure());
+      return Left(Failure(type: FailureType.localStorage));
     }
   }
 }

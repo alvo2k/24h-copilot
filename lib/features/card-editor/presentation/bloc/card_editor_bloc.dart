@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/common/activity_settings.dart';
+import '../../../../core/error/return_types.dart';
 import '../../domain/usecases/load_activities_settings_usecase.dart';
 import '../../domain/usecases/update_activity_settings_usecase.dart';
 
@@ -19,7 +20,7 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
         emit(CardEditorStateLoading());
         await loadUsecase(LoadActivitiesSettingsParams()).then(
           (result) => result.fold(
-            (l) => emit(CardEditorStateFailure(l.prop['message'])),
+            (l) => emit(CardEditorStateFailure(l.type)),
             (r) {
               currentActivities = r;
               emit(CardEditorStateLoaded(currentActivities));
@@ -38,13 +39,13 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
 
         await updateResult.fold(
           (l) {
-            emit(CardEditorStateFailure(l.prop['message']));
+            emit(CardEditorStateFailure(l.type));
             emit(CardEditorStateLoaded(currentActivities));
           },
           (r) async {
             await loadUsecase(LoadActivitiesSettingsParams()).then(
               (result) => result.fold(
-                (l) => emit(CardEditorStateFailure(l.prop['message'])),
+                (l) => emit(CardEditorStateFailure(l.type)),
                 (r) => emit(CardEditorStateLoaded(r)),
               ),
             );

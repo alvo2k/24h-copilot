@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../../../../core/error/return_types.dart';
 import '../../domain/entities/pie_chart_data.dart';
 import '../../domain/usecases/pie_chart_data_usecase.dart';
 

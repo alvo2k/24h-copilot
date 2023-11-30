@@ -21,7 +21,7 @@ class CardEditorStateLoaded extends CardEditorState {
 }
 
 class CardEditorStateFailure extends CardEditorState {
-  const CardEditorStateFailure(this.message);
+  const CardEditorStateFailure(this.type);
 
-  final String message;
+  final FailureType type;
 }

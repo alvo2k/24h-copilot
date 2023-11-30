@@ -160,7 +160,7 @@
     "description": "Название экрана с аналитикой"
   },
   "editMode": "Режим редактирования",
-  "@dashboard": {
+  "@editMode": {
     "description": "Подсказка к кнопке"
   },
   "dateRange": "Выбор даты",
@@ -168,19 +168,19 @@
     "description": "Подсказка к кнопке"
   },
   "loading": "Загрузка...",
-  "@dateRange": {
+  "@loading": {
     "description": "Индикация процесса загрузки"
   },
   "logout": "Выйти",
-  "@dateRange": {
+  "@logout": {
     "description": "Кнопка выхода из аккаунта"
   },
   "noInternet": "Нет соединения",
-  "@dateRange": {
+  "@noInternet": {
     "description": "Индикация отсутствия интернет соединения"
   },
   "checkConnection": "Проверьте подключение к интернету и попробуйте вновь",
-  "@dateRange": {
+  "@checkConnection": {
     "description": "Индикация отсутствия интернет соединения"
   },
   "goal": "Цель",
@@ -246,5 +246,7 @@
   "editActivitiesShort": "Редактор",
   "@editActivitiesShort": {
     "description": "Краткая форма кнопки редактирования активностей"
-  }
+  },
+  "somethingWentWrong": "Что-то пошло не так.",
+  "somethingWrongWithLocalStorage": "Что-то не так с локальным хранилищем"
 }

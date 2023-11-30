@@ -14,12 +14,12 @@ class Initial extends ActivitiesState {
 }
 
 class Failure extends ActivitiesState {
-  const Failure(super.pageState, {required this.message});
+  const Failure(super.pageState, {required this.type});
 
-  final String message;
+  final FailureType type;
 
   @override
-  List<Object> get props => [pageState, message];
+  List<Object> get props => [pageState, type];
 }
 
 class Loading extends ActivitiesState {

@@ -34,7 +34,7 @@ class MobileLayout extends StatelessWidget {
               currentIndex: state.bottomNavBarIndex,
               onTap: (int dest) => context
                   .read<NavigationCubit>()
-                  .onDestinationSelected(dest, context),
+                  .onDestinationSelected(dest),
             ),
           ),
           body: child,

@@ -95,7 +95,7 @@ class DashboardPage extends StatelessWidget {
               ],
               onSuggestionTap: (search) => context
                   .read<NavigationCubit>()
-                  .onSuggestionTap(context, search),
+                  .onSuggestionTap(search),
             ),
             drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
                 ? const CommonDrawer()

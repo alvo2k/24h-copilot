@@ -87,7 +87,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
           )
         ],
         onSuggestionTap: (search) =>
-            context.read<NavigationCubit>().onSuggestionTap(context, search),
+            context.read<NavigationCubit>().onSuggestionTap(search),
       ),
       drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
           ? const CommonDrawer()

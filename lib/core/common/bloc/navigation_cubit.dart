@@ -1,17 +1,18 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../features/activities/presentation/pages/activities_page.dart';
 import '../../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../../features/dashboard/presentation/pages/dashboard_page.dart';
-import '../../app_router.dart';
 import '../../utils/constants.dart';
 
 class NavigationCubit extends Cubit<NavigationState> {
-  final AppRouter _router;
+  final GoRouter _router;
 
   NavigationCubit(this._router)
-      : super(NavigationState(
+      : super(const NavigationState(
           bottomNavBarIndex: 0,
           hideDashboardDestination: false,
         ));
@@ -22,8 +23,6 @@ class NavigationCubit extends Cubit<NavigationState> {
     const CircularProgressIndicator.adaptive(),
   ];
 
-  final _dashbordSearchFrom = DateTime.now().subtract(const Duration(days: 30));
-  final _dashbordSearchTo = DateUtils.dateOnly(DateTime.now());
   DateTime? _dateOfFirstActivity;
 
   void getFirstDate(BuildContext context) {
@@ -35,7 +34,7 @@ class NavigationCubit extends Cubit<NavigationState> {
     }
   }
 
-  void onDestinationSelected(int dest, BuildContext context) {
+  void onDestinationSelected(int dest) {
     if (dest == 1 && state.hideDashboardDestination ||
         !state.hideDashboardDestination && dest == 2) {
       _router.go('/card_editor');
@@ -57,8 +56,7 @@ class NavigationCubit extends Cubit<NavigationState> {
   }
 
   int _mapUriToBottomNavBarIndex() {
-    final uri =
-        _router.router.routerDelegate.currentConfiguration.uri.toString();
+    final uri = _router.routerDelegate.currentConfiguration.uri.toString();
 
     if (uri.startsWith('/card_editor')) {
       return 0;
@@ -74,8 +72,7 @@ class NavigationCubit extends Cubit<NavigationState> {
   }
 
   int _mapUriToNavRailIndex({bool? hideDashboardDestination}) {
-    final uri =
-        _router.router.routerDelegate.currentConfiguration.uri.toString();
+    final uri = _router.routerDelegate.currentConfiguration.uri.toString();
 
     if (uri.startsWith('/card_editor')) {
       return hideDashboardDestination ?? state.hideDashboardDestination ? 1 : 2;
@@ -133,8 +130,8 @@ class NavigationCubit extends Cubit<NavigationState> {
   }
 }
 
-class NavigationState {
-  NavigationState({
+class NavigationState extends Equatable {
+  const NavigationState({
     this.bottomNavBarIndex = 0,
     this.navRailIndex = 0,
     required this.hideDashboardDestination,
@@ -155,4 +152,11 @@ class NavigationState {
             hideDashboardDestination ?? this.hideDashboardDestination,
         navRailIndex: navRailIndex ?? this.navRailIndex,
       );
+
+  @override
+  List<Object?> get props => [
+        hideDashboardDestination,
+        bottomNavBarIndex,
+        navRailIndex,
+      ];
 }

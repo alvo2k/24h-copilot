@@ -46,7 +46,7 @@ class CopilotApp extends StatelessWidget {
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, state) {
           return MaterialApp.router(
-            routerConfig: sl<AppRouter>().router,
+            routerConfig: sl<GoRouter>(),
             debugShowCheckedModeBanner: false,
             title: 'Copilot',
             theme: AppTheme.lightTheme,

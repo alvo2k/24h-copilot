@@ -74,7 +74,7 @@ class NavigatorRail extends StatelessWidget {
         selectedIndex: state.navRailIndex,
         onDestinationSelected: (int index) => context
             .read<NavigationCubit>()
-            .onDestinationSelected(index, context),
+            .onDestinationSelected(index),
       ),
     );
   }

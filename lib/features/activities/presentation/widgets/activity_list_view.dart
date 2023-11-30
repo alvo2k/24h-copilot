@@ -31,7 +31,7 @@ class ActivityListView extends StatelessWidget {
                 reverse: true,
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const BouncingScrollPhysics(),
+                physics: const RangeMaintainingScrollPhysics(),
                 itemCount: state.pageState.activityDays.length,
                 itemBuilder: (context, index) {
                   final day = state.pageState.activityDays[index];

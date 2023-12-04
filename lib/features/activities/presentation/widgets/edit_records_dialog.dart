@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
@@ -41,6 +43,7 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
         NewActivityCard(_controller),
         ActivityListTile(
           widget.toChange,
+          padding: 0,
           minimalVersion: true,
           hideEmojiPicker: true,
         ),
@@ -49,6 +52,7 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
     return [
       ActivityListTile(
         widget.toChange,
+        padding: 0,
         minimalVersion: true,
         hideEmojiPicker: true,
       ),
@@ -184,30 +188,35 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
   Widget build(BuildContext context) {
     return BasicDialogAlert(
       title: Text(AppLocalizations.of(context)!.editDay),
-      content: SingleChildScrollView(
-        child: Column(children: [
-          ...cards(),
-          Padding(
-            padding: const EdgeInsets.only(top: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(AppLocalizations.of(context)!.startTime),
-                buildStartTime(widget.toChange.startTime),
-              ],
-            ),
+      content: SizedBox(
+        width: min(MediaQuery.of(context).size.width, 400),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ...cards(),
+              Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(AppLocalizations.of(context)!.startTime),
+                    buildStartTime(widget.toChange.startTime),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(AppLocalizations.of(context)!.endTime),
+                    buildEndTime(widget.toChange.endTime),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(AppLocalizations.of(context)!.endTime),
-                buildEndTime(widget.toChange.endTime),
-              ],
-            ),
-          ),
-        ]),
+        ),
       ),
       actions: <Widget>[
         BasicDialogAction(
@@ -305,58 +314,60 @@ class _NewActivityCardState extends State<NewActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: ActivityListTile.determineWidth(context, true),
-      height: ActivityListTile.cardHeight,
-      child: Card(
-        shape: ActivityListTile.shape,
-        color: ActivityListTile.cardColor(context),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ActivityListTile.buildCircle(Colors.white54),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: TextField(
-                      textCapitalization: TextCapitalization.sentences,
-                      focusNode: focusNode,
-                      onEditingComplete: () => focusNode.unfocus(),
-                      onSubmitted: (_) => focusNode.unfocus(),
-                      onTapOutside: (_) => focusNode.unfocus(),
-                      controller: widget.controller,
-                      decoration: InputDecoration(
-                        constraints: const BoxConstraints.expand(height: 38),
-                        labelText:
-                            AppLocalizations.of(context)!.newActivityPrompt,
-                        border: const OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(24.0))),
+    return LayoutBuilder(
+      builder: (context, constraints) => SizedBox(
+        width: ActivityListTile.determineWidth(constraints.maxWidth, true, 0),
+        height: ActivityListTile.cardHeight,
+        child: Card(
+          shape: ActivityListTile.shape,
+          color: ActivityListTile.cardColor(context),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ActivityListTile.buildCircle(Colors.white54),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: TextField(
+                        textCapitalization: TextCapitalization.sentences,
+                        focusNode: focusNode,
+                        onEditingComplete: () => focusNode.unfocus(),
+                        onSubmitted: (_) => focusNode.unfocus(),
+                        onTapOutside: (_) => focusNode.unfocus(),
+                        controller: widget.controller,
+                        decoration: InputDecoration(
+                          constraints: const BoxConstraints.expand(height: 38),
+                          labelText:
+                              AppLocalizations.of(context)!.newActivityPrompt,
+                          border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(24.0))),
+                        ),
                       ),
                     ),
-                  ),
-                )
-              ],
-            ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.end,
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.only(bottom: 8.0),
-            //       child: ActivityTime(
-            // TODO calculate time based on selectedTime & fixedTime
-            // todo send request to DB to get activity settings and paint the card
-            //         startTime:
-            //             DateTime.now().subtract(const Duration(minutes: 10)),
-            //         endTime: null,
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ],
+                  )
+                ],
+              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.only(bottom: 8.0),
+              //       child: ActivityTime(
+              // TODO calculate time based on selectedTime & fixedTime
+              // todo send request to DB to get activity settings and paint the card
+              //         startTime:
+              //             DateTime.now().subtract(const Duration(minutes: 10)),
+              //         endTime: null,
+              //       ),
+              //     ),
+              //   ],
+              // ),
+            ],
+          ),
         ),
       ),
     );

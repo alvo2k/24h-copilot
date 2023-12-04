@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:scaled_app/scaled_app.dart';
 
 import '../../domain/entities/activity.dart';
 import 'activity_emoji.dart';
@@ -41,21 +42,20 @@ class ActivityListTile extends StatelessWidget {
     );
   }
 
-  static double determineWidth(BuildContext context, bool minimalVersion,
-      [double padding = 76]) {
+  static double determineWidth(
+    double maxWidth,
+    bool minimalVersion, [
+    double padding = 76,
+  ]) {
     var preferredWidth = 500.0;
     if (minimalVersion) {
-      preferredWidth =
-          MediaQuery.of(context).size.width - padding > preferredWidth
-              ? preferredWidth
-              : MediaQuery.of(context).size.width - padding;
+      preferredWidth = maxWidth - padding > preferredWidth
+          ? preferredWidth
+          : maxWidth - padding;
     }
-    return MediaQuery.of(context).size.width > preferredWidth
+    return maxWidth > preferredWidth
         ? preferredWidth - _leftPadding - _leftBarWidth - _rightPadding
-        : MediaQuery.of(context).size.width -
-            _leftPadding -
-            _leftBarWidth -
-            _rightPadding;
+        : maxWidth - _leftPadding - _leftBarWidth - _rightPadding;
   }
 
   static Color cardColor(BuildContext context, [Activity? activity]) {
@@ -137,9 +137,11 @@ class ActivityListTile extends StatelessWidget {
   }
 
   double _determineLeftBarHeight(Duration duration, BuildContext context) {
-    const hourValue = 28.0;
+    final hourValue = 28.0 / ScaledWidgetsFlutterBinding.instance.scale;
     // todo: make this dynamic (maxHeight - appBarHeight - bottomBarHeight)
-    final maxHeight = MediaQuery.of(context).size.height - 200;
+    final maxHeight = (MediaQuery.of(context).size.height /
+            ScaledWidgetsFlutterBinding.instance.scale) -
+        200;
     final height = cardHeight + (hourValue * duration.inHours);
 
     return height > maxHeight ? maxHeight : height;
@@ -147,89 +149,95 @@ class ActivityListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment:
-          minimalVersion ? MainAxisAlignment.center : MainAxisAlignment.start,
-      children: [
-        if (!minimalVersion) _buildLeftBar(context),
-        // card
-        SizedBox(
-          width: determineWidth(context, minimalVersion, padding),
-          height: cardHeight,
-          child: Card(
-            shape: shape,
-            color: cardColor(context, activity),
-            child: Column(
-              children: [
-                // color, name, tags
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // color, name
-                    Row(
-                      children: [
-                        buildCircle(activity.color),
-                        Text(
-                          activity.name,
-                          style: Theme.of(context).textTheme.titleLarge,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                    // tags
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: max(constraints.maxWidth, 150),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children:
-                                    buildTags(activity.tags ?? [], context),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                // emoji, goal, time
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ActivityEmoji(
-                      activity,
-                      hideEmojiPicker: hideEmojiPicker,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+    return LayoutBuilder(
+      builder: (context, constraints) => Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment:
+            minimalVersion ? MainAxisAlignment.center : MainAxisAlignment.start,
+        children: [
+          if (!minimalVersion) _buildLeftBar(context),
+          // card
+          SizedBox(
+            width: determineWidth(
+              constraints.maxWidth,
+              minimalVersion,
+              padding,
+            ),
+            height: cardHeight,
+            child: Card(
+              shape: shape,
+              color: cardColor(context, activity),
+              child: Column(
+                children: [
+                  // color, name, tags
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // color, name
+                      Row(
                         children: [
-                          activity.goal == null
-                              ? const SizedBox.shrink()
-                              : buildGoal(activity.goal!, context),
-                          ActivityTime(
-                            startTime: activity.startTime,
-                            endTime: activity.endTime,
+                          buildCircle(activity.color),
+                          Text(
+                            activity.name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      // tags
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: max(constraints.maxWidth, 150),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children:
+                                      buildTags(activity.tags ?? [], context),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  // emoji, goal, time
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ActivityEmoji(
+                        activity,
+                        hideEmojiPicker: hideEmojiPicker,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            activity.goal == null
+                                ? const SizedBox.shrink()
+                                : buildGoal(activity.goal!, context),
+                            ActivityTime(
+                              startTime: activity.startTime,
+                              endTime: activity.endTime,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

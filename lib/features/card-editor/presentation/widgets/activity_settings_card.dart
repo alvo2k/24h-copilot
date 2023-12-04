@@ -17,66 +17,68 @@ class ActivitySettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: ActivityListTile.determineWidth(context, false),
-      height: ActivityListTile.cardHeight,
-      child: GestureDetector(
-        onTap: onPressed,
-        child: Card(
-          shape: ActivityListTile.shape,
-          color: ActivityListTile.cardColor(context),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // color, name
-                  Row(
-                    children: [
-                      ActivityListTile.buildCircle(activity.color),
-                      Text(
-                        activity.name,
-                        style: Theme.of(context).textTheme.titleLarge,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                  // tags
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minWidth: max(constraints.maxWidth, 150),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: ActivityListTile.buildTags(
-                                  activity.tags ?? [], context),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+    return LayoutBuilder(
+      builder: (context, constraints) => SizedBox(
+        width: ActivityListTile.determineWidth(constraints.maxWidth, false),
+        height: ActivityListTile.cardHeight,
+        child: GestureDetector(
+          onTap: onPressed,
+          child: Card(
+            shape: ActivityListTile.shape,
+            color: ActivityListTile.cardColor(context),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    activity.goal == null
-                        ? const SizedBox.shrink()
-                        : ActivityListTile.buildGoal(activity.goal!, context),
+                    // color, name
+                    Row(
+                      children: [
+                        ActivityListTile.buildCircle(activity.color),
+                        Text(
+                          activity.name,
+                          style: Theme.of(context).textTheme.titleLarge,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                    // tags
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: max(constraints.maxWidth, 150),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: ActivityListTile.buildTags(
+                                    activity.tags ?? [], context),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      activity.goal == null
+                          ? const SizedBox.shrink()
+                          : ActivityListTile.buildGoal(activity.goal!, context),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

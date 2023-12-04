@@ -7,6 +7,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../core/error/exceptions.dart';
+import '../../../../features/activity_analytics/data/datasources/activity_analytics_data_source.dart';
 import '../../../utils/constants.dart';
 import 'activity_local_data_source.dart';
 
@@ -39,9 +40,10 @@ class Activities extends Table {
   IntColumn get amount => integer()();
 }
 
-@LazySingleton(as: ActivityLocalDataSource)
+@LazySingleton()
 @DriftDatabase(tables: [Records, Activities])
-class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
+class ActivityDatabase extends _$ActivityDatabase
+    implements ActivityLocalDataSource, ActivityAnalyticsDataSource {
   ActivityDatabase() : super(_openConnection());
 
   ActivityDatabase._(super.e);
@@ -163,8 +165,9 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
   Future<Stream<List<RecordWithActivitySettings>>> getRecordsRange({
     required int from,
     required int to,
+    String? name,
   }) async {
-    var firstRecord = await _findFirstRecord(from);
+    var firstRecord = await _findFirstRecord(from, name);
 
     // get all records between firstRecord.startTime and [to]
     final query = select(records).join([
@@ -179,6 +182,8 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         )
       ]);
 
+    if (name != null) query.where(records.activityName.equals(name));
+    
     return query.watch().map((rows) => rows
         .map((row) => RecordWithActivitySettings(
             row.readTable(records), row.readTable(activities)))
@@ -372,7 +377,7 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
     return query.watch();
   }
 
-  Future<DriftRecordModel?> _findFirstRecord(int from) async {
+  Future<DriftRecordModel?> _findFirstRecord(int from, [String? name]) async {
     // find record with startTime closest to [from],
     // this would be the first record because endTime of it would be in range
     final query = select(records).join([
@@ -386,6 +391,8 @@ class ActivityDatabase extends _$ActivityDatabase with ActivityLocalDataSource {
         )
       ])
       ..limit(1);
+      
+    if (name != null) query.where(records.activityName.equals(name));
 
     return await query.map((r) => r.readTable(records)).getSingleOrNull();
   }

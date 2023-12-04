@@ -45,14 +45,11 @@ class NavigationCubit extends Cubit<NavigationState> {
     }
   }
 
-  void onSuggestionTap(BuildContext context, String search) {
-    onDestinationSelected(1, context);
-
-    BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(
-      _dashbordSearchFrom,
-      _dashbordSearchTo,
-      search,
-    ));
+  void onSuggestionTap(String search) {
+    _router.pushNamed(
+      'activity_analytics',
+      extra: search,
+    );
   }
 
   int _mapUriToBottomNavBarIndex() {
@@ -76,6 +73,8 @@ class NavigationCubit extends Cubit<NavigationState> {
 
     if (uri.startsWith('/card_editor')) {
       return hideDashboardDestination ?? state.hideDashboardDestination ? 1 : 2;
+    } else if (uri.startsWith('/activity_analytics')) {
+      return hideDashboardDestination ?? state.hideDashboardDestination ? 0 : 1;
     }
 
     return switch (uri) {

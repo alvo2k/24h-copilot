@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/common/activity_settings.dart';
@@ -26,6 +28,22 @@ class Activity extends ActivitySettings with EquatableMixin {
   final DateTime? endTime;
   final int recordId;
   final DateTime startTime;
+
+  bool get goalMet {
+    final duration =
+        (endTime ?? DateTime.now()).difference(startTime).inMinutes;
+    if (goal != null && duration >= goal!) {
+      return true;
+    }
+    return false;
+  }
+
+  double get goalCompletion {
+    if (goal == null) return 0.0;
+    final duration =
+        (endTime ?? DateTime.now()).difference(startTime).inMinutes;
+    return min(duration / goal!, 1.0);
+  }
 
   @override
   List<Object?> get props => [

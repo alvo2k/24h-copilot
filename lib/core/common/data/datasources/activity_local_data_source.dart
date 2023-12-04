@@ -1,6 +1,6 @@
 import 'activity_database.dart';
 
-mixin ActivityLocalDataSource {
+abstract interface class ActivityLocalDataSource {
   /// Gets list with all model fields.
   /// amount - ammount of records; skip - ammount of skiped records
   Future<List<RecordWithActivitySettings>> getRecords({

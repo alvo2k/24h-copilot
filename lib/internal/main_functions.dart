@@ -2,13 +2,14 @@ part of '../main.dart';
 
 void _flutterError(FlutterErrorDetails details) async {
   FlutterError.presentError(details);
+  if (kDebugMode) {
+    print(details);
+    return;
+  }
   await Sentry.captureException(
     details,
     stackTrace: details.stack,
   );
-  if (kDebugMode) {
-    print(details);
-  }
 }
 
 void _sentryOptionsConfiguration(SentryFlutterOptions options) {
@@ -19,15 +20,15 @@ void _sentryOptionsConfiguration(SentryFlutterOptions options) {
 }
 
 Future<void> _zoneError(Object error, StackTrace st) async {
+  if (kDebugMode) {
+    print(st);
+    print(error);
+    return;
+  }
   await Sentry.captureException(
     error,
     stackTrace: st,
   );
-
-  if (kDebugMode) {
-    print(st);
-    print(error);
-  }
 }
 
 void _setupSwitchActivitiesFromNotification() {

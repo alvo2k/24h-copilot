@@ -12,7 +12,7 @@ import '../common/widgets/paddingless_vertical_divider.dart';
 class DesktopLayout extends StatelessWidget {
   const DesktopLayout({super.key, required this.child});
 
-  final StatefulNavigationShell child;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

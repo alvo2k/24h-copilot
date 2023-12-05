@@ -7,52 +7,49 @@ import '../features/card-editor/presentation/pages/activities_settings_page.dart
 import '../features/card-editor/presentation/pages/activity_settings_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import 'common/activity_settings.dart';
+import 'common/widgets/fade_transition_page.dart';
 import 'layout/layout_wrapper.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
   routes: [
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, child) {
-        return LayoutWrapper(child: child);
-      },
-      branches: [
-        StatefulShellBranch(
+    ShellRoute(
+      builder: (context, state, child) => LayoutWrapper(child: child),
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const ActivitiesPage(),
           routes: [
             GoRoute(
-              path: '/',
-              builder: (context, state) => const ActivitiesPage(),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/dashboard',
-              builder: (context, state) => const DashboardPage(),
+              path: 'dashboard',
+              pageBuilder: (context, state) => FadeTransitionPage(
+                child: const DashboardPage(),
+              ),
               routes: [
                 GoRoute(
                   path: 'activity_analytics',
                   name: 'activity_analytics',
-                  builder: (context, state) => ActivityAnalyticsPage(
-                    state.extra as String,
+                  pageBuilder: (context, state) => FadeTransitionPage(
+                    child: ActivityAnalyticsPage(
+                      state.extra as String,
+                    ),
                   ),
                 )
               ],
             ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
             GoRoute(
-              path: '/card_editor',
-              builder: (context, state) => const ActivitiesSettingsPage(),
+              path: 'card_editor',
+              pageBuilder: (context, state) => FadeTransitionPage(
+                child: const ActivitiesSettingsPage(),
+              ),
               routes: [
                 GoRoute(
                   path: ':name',
-                  builder: (context, state) => ActivitySettingsPage(
-                    key: ValueKey(state.extra as ActivitySettings),
-                    activity: state.extra as ActivitySettings,
+                  pageBuilder: (context, state) => FadeTransitionPage(
+                    child: ActivitySettingsPage(
+                      key: ValueKey(state.extra as ActivitySettings),
+                      activity: state.extra as ActivitySettings,
+                    ),
                   ),
                 ),
               ],

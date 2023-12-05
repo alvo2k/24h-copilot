@@ -9,7 +9,7 @@ import '../common/widgets/paddingless_vertical_divider.dart';
 class TabletLayout extends StatelessWidget {
   const TabletLayout({super.key, required this.child});
 
-  final StatefulNavigationShell child;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

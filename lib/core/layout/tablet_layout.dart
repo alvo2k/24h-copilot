@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../common/bloc/navigation_cubit.dart';
 import '../common/widgets/navigation_rail.dart';
+import '../common/widgets/paddingless_vertical_divider.dart';
 
 class TabletLayout extends StatelessWidget {
   const TabletLayout({super.key, required this.child});
@@ -17,7 +18,7 @@ class TabletLayout extends StatelessWidget {
         body: Row(
           children: [
             const NavigatorRail(),
-            const VerticalDivider(),
+            const PaddinglessVerticalDivider(),
             Expanded(
               child: child,
             ),

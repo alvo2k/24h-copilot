@@ -7,6 +7,7 @@ import '../../features/card-editor/presentation/pages/activities_settings_page.d
 import '../../features/card-editor/presentation/pages/activity_settings_page.dart';
 import '../common/activity_settings.dart';
 import '../common/widgets/navigation_rail.dart';
+import '../common/widgets/paddingless_vertical_divider.dart';
 
 class DesktopLayout extends StatelessWidget {
   const DesktopLayout({super.key, required this.child});
@@ -20,19 +21,19 @@ class DesktopLayout extends StatelessWidget {
       body: Row(
         children: [
           const NavigatorRail(),
-          const VerticalDivider(),
+          const PaddinglessVerticalDivider(),
           if (currentPath == '/') ...[
             Expanded(child: child),
-            const VerticalDivider(),
+            const PaddinglessVerticalDivider(),
             const Expanded(child: DashboardPage()),
           ] else if (currentPath == '/dashboard') ...[
             const Expanded(child: ActivitiesPage()),
-            const VerticalDivider(),
+            const PaddinglessVerticalDivider(),
             Expanded(child: child),
           ] else if (currentPath.startsWith('/card_editor')) ...[
             const Expanded(child: ActivitiesSettingsPage()),
             if (GoRouterState.of(context).extra is ActivitySettings) ...[
-              const VerticalDivider(),
+              const PaddinglessVerticalDivider(),
               Expanded(
                 child: ActivitySettingsPage(
                   key: ValueKey(

@@ -32,7 +32,7 @@ class ActivityHeatMap extends StatelessWidget {
                             .FIRSTDAYOFWEEK +
                         1,
               ),
-              if (data.dataset?.isEmpty ?? false)
+              if (data.dataset.isEmpty)
                 Positioned.fill(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),

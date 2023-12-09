@@ -7,7 +7,7 @@ class HeatMapData extends Equatable {
 
   final ActivitySettings activity;
 
-  final Map<DateTime, int>? dataset;
+  final Map<DateTime, int> dataset;
 
   @override
   List<Object?> get props => [activity, dataset];

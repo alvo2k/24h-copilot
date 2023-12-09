@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -24,11 +26,20 @@ class ActivityAnalyticsUseCase {
       return left(Failure(type: FailureType.localStorage));
     }
 
+    if (!data.first.goalSet) {
+      return right(HeatMapData(data[0], const {}));
+    }
+
     Map<DateTime, int> dataset = {};
-    for (final activity in data) {
-      if (activity.goalSet) {
-        dataset[DateUtils.dateOnly(activity.endTime ?? DateTime.now())] =
-            (activity.goalCompletion * 100).toInt();
+    for (final record in data) {
+      if (record.goalSet) {
+        final date = DateUtils.dateOnly(record.endTime ?? DateTime.now());
+        dataset.containsKey(date)
+            ? dataset.update(
+                date,
+                (v) => min(100, v += (record.goalCompletion * 100).toInt()),
+              )
+            : dataset[date] = (record.goalCompletion * 100).toInt();
       }
     }
 

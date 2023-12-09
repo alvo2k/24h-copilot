@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../activities/presentation/widgets/activity_list_tile.dart';
 import '../bloc/activity_analytics_bloc.dart';
 import '../widgets/view.dart';
 
@@ -29,7 +30,15 @@ class _ActivityAnalyticsPageState extends State<ActivityAnalyticsPage> {
         ActivityAnalyticsStatus.initial =>
           const Center(child: CircularProgressIndicator.adaptive()),
         ActivityAnalyticsStatus.loaded => Scaffold(
-            appBar: AppBar(title: Text(widget.activityName)),
+            appBar: AppBar(
+              titleSpacing: 0,
+              title: Row(
+                children: [
+                  ActivityListTile.buildCircle(state.data!.activity.color),
+                  Text(widget.activityName),
+                ],
+              ),
+            ),
             body: ActivityHeatMap(state.data!),
           ),
         ActivityAnalyticsStatus.failure =>

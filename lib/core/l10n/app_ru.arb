@@ -251,5 +251,8 @@
   "somethingWrongWithLocalStorage": "Что-то не так с локальным хранилищем",
   "searchActivitiesAndTags": "Поиск по активностям и тегам",
   "searchActivitiesAndTagsPrompt": "Aктивность или #тег",
-  "searchNotFound": "Ничего не найдено"
+  "searchNotFound": "Ничего не найдено",
+  "heatMapSetGoal": "Для использовании тепловой карты поставьте цель",
+  "neverStarted": "не начиналась",
+  "reached": "достигнута"
 }

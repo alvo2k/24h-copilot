@@ -55,8 +55,11 @@
     "addActivityAtActivities": "Add a new activity to the Activities screen.",
     "editActivitiesShort": "Edit",
     "somethingWentWrong": "Something went wrong.",
-    "somethingWrongWithLocalStorage": "Something wrong with the local storage",
+    "somethingWrongWithLocalStorage": "Something wrong with the local storage.",
     "searchActivitiesAndTags": "Search activities and tags",
     "searchActivitiesAndTagsPrompt": "Activity name or #tag",
-    "searchNotFound": "No results found"
+    "searchNotFound": "No results found",
+    "heatMapSetGoal": "To use the heat map, set a goal",
+    "neverStarted": "never started",
+    "reached": "reached"
 }

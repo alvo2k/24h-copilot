@@ -7,7 +7,7 @@ class SearchSuggestionsCubit extends Cubit<List<String>> {
 
   PieChartDataUsecase usecase;
 
-  Future search(String prompt) async {
+  Future<void> search(String prompt) async {
     emit(await usecase.getSuggestions(prompt));
   }
 }

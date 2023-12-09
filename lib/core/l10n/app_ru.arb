@@ -248,5 +248,8 @@
     "description": "Краткая форма кнопки редактирования активностей"
   },
   "somethingWentWrong": "Что-то пошло не так.",
-  "somethingWrongWithLocalStorage": "Что-то не так с локальным хранилищем"
+  "somethingWrongWithLocalStorage": "Что-то не так с локальным хранилищем",
+  "searchActivitiesAndTags": "Поиск по активностям и тегам",
+  "searchActivitiesAndTagsPrompt": "Aктивность или #тег",
+  "searchNotFound": "Ничего не найдено"
 }

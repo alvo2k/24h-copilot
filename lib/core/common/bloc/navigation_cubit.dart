@@ -48,7 +48,7 @@ class NavigationCubit extends Cubit<NavigationState> {
   void onSuggestionTap(String search) {
     _router.pushNamed(
       'activity_analytics',
-      extra: search,
+      pathParameters: {'activity_name': search},
     );
   }
 

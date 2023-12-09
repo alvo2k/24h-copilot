@@ -29,6 +29,7 @@ dependencies:
     git:
       url: https://github.com/Eimji/flutter_heatmap_calendar.git
       ref: 4bf4b96
+  flutter_keyboard_visibility: ^5.4.1
   flutter_launcher_icons: ^0.13.1
   flutter_localizations:
     sdk: flutter

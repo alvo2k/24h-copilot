@@ -27,11 +27,11 @@ final GoRouter router = GoRouter(
               ),
               routes: [
                 GoRoute(
-                  path: 'activity_analytics',
+                  path: 'activity_analytics/:activity_name',
                   name: 'activity_analytics',
                   pageBuilder: (context, state) => FadeTransitionPage(
                     child: ActivityAnalyticsPage(
-                      state.extra as String,
+                      state.pathParameters['activity_name']!,
                     ),
                   ),
                 )

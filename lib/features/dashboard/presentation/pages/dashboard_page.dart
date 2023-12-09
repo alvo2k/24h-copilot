@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-import '../../../../core/common/bloc/navigation_cubit.dart';
 import '../../../../core/common/widgets/activity_search_bar.dart';
 import '../../../../core/common/widgets/common_drawer.dart';
 import '../../../../core/utils/constants.dart';
@@ -82,20 +81,10 @@ class DashboardPage extends StatelessWidget {
         DashboardFailure() => Center(child: Text(state.type.localize(context))),
         DashboardLoadedNoData() => const EmptyDashboardIllustration(),
         DashboardLoaded() => Scaffold(
-            appBar: buildSearchAppbar(
-              context,
+            appBar: ActivitySearchBar(
+              showDatePicker: true,
+              dropShadow: true,
               title: AppLocalizations.of(context)!.dashboard,
-              actionButtons: [
-                IconButton(
-                  icon: const Icon(Icons.date_range_outlined),
-                  tooltip: AppLocalizations.of(context)!.dateRange,
-                  onPressed: () =>
-                      context.read<NavigationCubit>().rangePicker(context),
-                ),
-              ],
-              onSuggestionTap: (search) => context
-                  .read<NavigationCubit>()
-                  .onSuggestionTap(search),
             ),
             drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
                 ? const CommonDrawer()

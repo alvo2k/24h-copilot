@@ -9,7 +9,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../features/activities/presentation/bloc/edit_mode_cubit.dart';
 import '../../../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
-import '../../utils/constants.dart';
 import '../bloc/navigation_cubit.dart';
 
 class ActivitySearchBar extends StatefulWidget implements PreferredSizeWidget {
@@ -35,7 +34,7 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
     with TickerProviderStateMixin {
   final _controller = TextEditingController();
   final _textFieldFocusNode = FocusNode();
-  double _textFieldWidth = 0;
+  final _textFieldKey = GlobalKey();
   OverlayEntry? _overlayEntry;
 
   late final AnimationController _textFieldAnimationController,
@@ -67,6 +66,8 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
         _overlayAnimationController.reverse().whenCompleteOrCancel(() {
           _textFieldFocusNode.unfocus();
         });
+        // requestFocus so that the text field has a focused border
+        // until the end of the overlay animation
         _textFieldFocusNode.requestFocus();
       }
     });
@@ -79,13 +80,24 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
   }
 
   void _showOverlay(BuildContext context) async {
-    final OverlayState overlayState = Overlay.of(context);
+    final OverlayState overlayState = Overlay.of(context, rootOverlay: true);
+    _disposeOverlay();
+
+    final renderBox =
+        _textFieldKey.currentContext!.findRenderObject() as RenderBox;
+
+    final offset = renderBox.localToGlobal(Offset.zero);
 
     _overlayEntry = OverlayEntry(
       builder: (context) {
         return AnimatedSearchResults(
+          leftPadding: offset.dx,
           animationController: _overlayAnimationController,
-          width: _textFieldWidth,
+          width: renderBox.size.width,
+          onTap: (search) {
+            _hideSearchField();
+            context.read<NavigationCubit>().onSuggestionTap(search);
+          },
         );
       },
     );
@@ -145,14 +157,15 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
           if (!_searchFiledHidden)
             LayoutBuilder(
               builder: (context, constraints) {
-                _textFieldWidth = constraints.maxWidth;
                 Future(() {
+                  // notify the overlay of a size change
                   if (_overlayEntry?.mounted ?? false) {
                     _overlayEntry!.markNeedsBuild();
                   }
                 });
 
                 return AnimatedSearchField(
+                  textFieldKey: _textFieldKey,
                   constraints: constraints,
                   controller: _controller,
                   animationController: _textFieldAnimationController,
@@ -223,15 +236,19 @@ class AnimatedSearchResults extends StatelessWidget {
     super.key,
     required this.animationController,
     required this.width,
+    this.onTap,
+    this.leftPadding,
   });
 
   final AnimationController animationController;
   final double width;
+  final void Function(String search)? onTap;
+  final double? leftPadding;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: MediaQuery.of(context).size.width < Constants.mobileWidth ? 73 : 17,
+      left: leftPadding,
       top: kToolbarHeight + MediaQuery.of(context).viewPadding.top,
       child: ClipRRect(
         borderRadius: const BorderRadius.only(
@@ -249,24 +266,24 @@ class AnimatedSearchResults extends StatelessWidget {
                 child: ListView.separated(
                   itemCount: max(searchSuggestions.length, 1),
                   itemBuilder: (context, index) => InkWell(
-                    onTap: () =>
-                        searchSuggestions.elementAtOrNull(index) != null
-                            ? context
-                                .read<NavigationCubit>()
-                                .onSuggestionTap(searchSuggestions[index])
-                            : null,
+                    onTap: searchSuggestions.elementAtOrNull(index) != null
+                        ? () => onTap?.call(searchSuggestions[index])
+                        : null,
                     child: Container(
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 2,
                       ),
-                      color: Theme.of(context).cardColor,
                       width: width,
                       height: 30,
+                      color: index == 0
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : Theme.of(context).cardColor,
                       child: Text(
                         searchSuggestions.elementAtOrNull(index) ??
                             AppLocalizations.of(context)!.searchNotFound,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                   ),
@@ -296,6 +313,7 @@ class AnimatedSearchField extends StatelessWidget {
     this.onArrowPress,
     this.onClearPress,
     this.onSubmitted,
+    this.textFieldKey,
   });
 
   final BoxConstraints constraints;
@@ -305,6 +323,7 @@ class AnimatedSearchField extends StatelessWidget {
   final VoidCallback? onArrowPress;
   final VoidCallback? onClearPress;
   final void Function(String search)? onSubmitted;
+  final Key? textFieldKey;
 
   @override
   Widget build(BuildContext context) {
@@ -317,6 +336,7 @@ class AnimatedSearchField extends StatelessWidget {
           height: kToolbarHeight,
           width: animationController.value * constraints.maxWidth,
           child: TextField(
+            key: textFieldKey,
             focusNode: focusNode,
             controller: controller,
             onChanged: (search) =>

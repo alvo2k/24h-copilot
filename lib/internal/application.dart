@@ -16,15 +16,15 @@ import '../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
 import 'injectable.dart';
 
 class CopilotApp extends StatelessWidget {
-  const CopilotApp({super.key});
+  const CopilotApp({super.key, required this.themeCubit});
+
+  final ThemeCubit themeCubit;
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ThemeCubit>(
-          create: (_) => ThemeCubit()..loadSavedTheme(),
-        ),
+        BlocProvider<ThemeCubit>.value(value: themeCubit),
         BlocProvider(create: (_) => EditModeCubit()),
         BlocProvider(
           create: (context) => ActivitiesBloc(

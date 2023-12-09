@@ -10,6 +10,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scaled_app/scaled_app.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import 'core/common/bloc/theame_cubit.dart';
 import 'core/utils/constants.dart';
 import 'internal/application.dart';
 import 'internal/injectable.dart';
@@ -37,7 +38,11 @@ void main() {
 
       await SentryFlutter.init(
         _sentryOptionsConfiguration,
-        appRunner: () => runApp(const CopilotApp()),
+        appRunner: () async {
+          final themeCubit = ThemeCubit();
+          await themeCubit.loadSavedTheme();
+          runApp(CopilotApp(themeCubit: themeCubit));
+        },
       );
     },
     _zoneError,

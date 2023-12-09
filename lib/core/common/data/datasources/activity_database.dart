@@ -183,7 +183,7 @@ class ActivityDatabase extends _$ActivityDatabase
       ]);
 
     if (name != null) query.where(records.activityName.equals(name));
-    
+
     return query.watch().map((rows) => rows
         .map((row) => RecordWithActivitySettings(
             row.readTable(records), row.readTable(activities)))
@@ -391,7 +391,7 @@ class ActivityDatabase extends _$ActivityDatabase
         )
       ])
       ..limit(1);
-      
+
     if (name != null) query.where(records.activityName.equals(name));
 
     return await query.map((r) => r.readTable(records)).getSingleOrNull();
@@ -429,6 +429,19 @@ class ActivityDatabase extends _$ActivityDatabase
 
   Future<DriftActivityModel> _getActivityModel(String name) {
     return (select(activities)..where((a) => a.name.equals(name))).getSingle();
+  }
+
+  @override
+  Future<int?> findEndTimeFor(int startTime) async {
+    final nextRecord = await (select(records)
+          ..where((r) => r.startTime.isBiggerThanValue(startTime))
+          ..limit(1)
+          ..orderBy([
+            (r) => OrderingTerm(expression: r.idRecord, mode: OrderingMode.asc)
+          ]))
+        .getSingleOrNull();
+
+    return nextRecord?.startTime;
   }
 }
 

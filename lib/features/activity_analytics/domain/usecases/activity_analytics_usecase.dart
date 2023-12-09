@@ -26,7 +26,7 @@ class ActivityAnalyticsUseCase {
 
     Map<DateTime, int> dataset = {};
     for (final activity in data) {
-      if (activity.goalMet) {
+      if (activity.goalSet) {
         dataset[DateUtils.dateOnly(activity.endTime ?? DateTime.now())] =
             (activity.goalCompletion * 100).toInt();
       }

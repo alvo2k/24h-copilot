@@ -16,17 +16,24 @@ class ActivityAnalyticsRepositoryImpl implements ActivityAnalyticsRepository {
     required DateTime from,
     required DateTime to,
     String? name,
-  }) async =>
-      (await _dataSource.getRecordsRange(
-        from: from.toUtc().millisecondsSinceEpoch,
-        to: to.toUtc().millisecondsSinceEpoch,
-        name: name,
-      ))
-          .map(
-        (event) => event
-            .map(
-              (e) => ActivityModel.fromDriftRow(e),
-            )
-            .toList(),
-      );
+  }) async {
+    final recordsStream = await _dataSource.getRecordsRange(
+      from: from.toUtc().millisecondsSinceEpoch,
+      to: to.toUtc().millisecondsSinceEpoch,
+      name: name,
+    );
+
+    return recordsStream.asyncMap((rows) async {
+      List<ActivityModel> records = [];
+      for (int i = 0; i < rows.length; i++) {
+        final activityRow = rows[i];
+        final activity = ActivityModel.fromDriftRow(
+          activityRow,
+          await _dataSource.findEndTimeFor(activityRow.record.startTime),
+        );
+        records.add(activity);
+      }
+      return records;
+    });
+  }
 }

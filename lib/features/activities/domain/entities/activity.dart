@@ -37,6 +37,7 @@ class Activity extends ActivitySettings with EquatableMixin {
     }
     return false;
   }
+  bool get goalSet => goal != null;
 
   double get goalCompletion {
     if (goal == null) return 0.0;

@@ -69,3 +69,7 @@ abstract interface class ActivityLocalDataSource {
 
   Stream<List<DriftActivityModel>> mostCommonActivities(int amount);
 }
+
+mixin ActivityFindEndTime {
+  Future<int?> findEndTimeFor(int startTime);
+}

@@ -48,7 +48,7 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     // load next day
     if (controller.position.extentAfter < 20 &&
         controller.position.outOfRange == false) {
-      var activitiesBloc = BlocProvider.of<ActivitiesBloc>(context);
+      final activitiesBloc = BlocProvider.of<ActivitiesBloc>(context);
 
       final lastLoadedActivityDay =
           activitiesBloc.state.pageState.activityDays.last;
@@ -74,12 +74,42 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
       drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
           ? const CommonDrawer()
           : null,
-      body: Column(
-        children: [
-          Expanded(child: ActivityListView(controller)),
-          RecommendedActivities(child: NewActivityField(controller)),
-        ],
+      body: ActivityScrollController(
+        controller: controller,
+        child: Column(
+          children: [
+            const Expanded(child: ActivityListView()),
+            RecommendedActivities(child: const NewActivityField()),
+          ],
+        ),
       ),
     );
+  }
+}
+
+class ActivityScrollController extends InheritedWidget {
+  const ActivityScrollController({
+    super.key,
+    required super.child,
+    required this.controller,
+  });
+
+  final ScrollController controller;
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
+
+  static ActivityScrollController of(BuildContext context) {
+    return context.findAncestorWidgetOfExactType<ActivityScrollController>()!;
+  }
+
+  void animateToNewActivity() {
+    if (controller.hasClients) {
+      controller.animateTo(
+        controller.position.minScrollExtent,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeOut,
+      );
+    }
   }
 }

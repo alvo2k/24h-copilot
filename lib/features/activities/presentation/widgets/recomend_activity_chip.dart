@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/activities_bloc.dart';
+import '../pages/activities_page.dart';
 
 class RecomendActivityChip extends StatelessWidget {
   const RecomendActivityChip({
@@ -27,12 +28,16 @@ class RecomendActivityChip extends StatelessWidget {
       child: TextButton.icon(
         label: Text(
           name,
-          style:
-              TextStyle(color: Theme.of(context).textTheme.titleLarge?.color),
+          style: TextStyle(
+            color: Theme.of(context).textTheme.titleLarge?.color,
+          ),
         ),
-        onPressed: () => context.read<ActivitiesBloc>().add(
-              SwitchActivity(name),
-            ),
+        onPressed: () {
+          context.read<ActivitiesBloc>().add(
+                SwitchActivity(name),
+              );
+          ActivityScrollController.of(context).animateToNewActivity();
+        },
         icon: CircleAvatar(
           radius: 9,
           backgroundColor: color,

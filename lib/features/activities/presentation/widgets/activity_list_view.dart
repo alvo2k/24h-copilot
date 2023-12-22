@@ -3,17 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 import '../bloc/activities_bloc.dart';
+import '../pages/activities_page.dart';
 import 'activity_day_date.dart';
 import 'activity_day_widget.dart';
 import 'empty_activities_illustration.dart';
 
 class ActivityListView extends StatelessWidget {
-  const ActivityListView(this.controller, {super.key});
-
-  final ScrollController controller;
+  const ActivityListView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = ActivityScrollController.of(context).controller;
     return BlocBuilder<ActivitiesBloc, ActivitiesState>(
       builder: (context, state) {
         return switch (state) {
@@ -69,7 +69,7 @@ class ActivityListView extends StatelessWidget {
                     return StickyHeader(
                       header: ActivityDayDate(day.date),
                       content: Column(children: [
-                        // Adds loading indicator at top of the list. 
+                        // Adds loading indicator at top of the list.
                         // Empty ActivitiesDay means all data was loaded and no indicator needed
                         const CircularProgressIndicator(),
                         ActivityDayWidget(day),

@@ -6,11 +6,10 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../bloc/activities_bloc.dart';
+import '../pages/activities_page.dart';
 
 class NewActivityField extends StatefulWidget {
-  const NewActivityField(this.listViewController, {super.key});
-
-  final ScrollController listViewController;
+  const NewActivityField({super.key});
 
   @override
   State<NewActivityField> createState() => _NewActivityFieldState();
@@ -19,10 +18,18 @@ class NewActivityField extends StatefulWidget {
 class _NewActivityFieldState extends State<NewActivityField> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
+  late final ScrollController listViewController;
+
+  @override
+  void initState() {
+    super.initState();
+    listViewController = ActivityScrollController.of(context).controller;
+  }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -42,24 +49,13 @@ class _NewActivityFieldState extends State<NewActivityField> {
 
     _controller.clear();
     _focusNode.unfocus();
-    if (widget.listViewController.hasClients) {
-      widget.listViewController.animateTo(
-        widget.listViewController.position.minScrollExtent,
-        duration: const Duration(milliseconds: 1000),
-        curve: Curves.easeOut,
-      );
-    }
+    ActivityScrollController.of(context).animateToNewActivity();
   }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      strutStyle: const StrutStyle(
-        // centers cursor and text
-        height: 1.2,
-        leading: .7,
-      ),
-      cursorHeight: 20,
+      cursorHeight: 25,
       textCapitalization: TextCapitalization.sentences,
       focusNode: _focusNode,
       controller: _controller,
@@ -67,6 +63,10 @@ class _NewActivityFieldState extends State<NewActivityField> {
       onEditingComplete: () => _focusNode.unfocus(),
       onChanged: (_) => setState(() {}),
       decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 16,
+        ),
         fillColor: Theme.of(context).cardColor,
         hintText: AppLocalizations.of(context)!.newActivityPrompt,
         suffixIcon: IconButton(

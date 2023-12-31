@@ -12,6 +12,20 @@ void _flutterError(FlutterErrorDetails details) async {
   );
 }
 
+Future<void> _scaleFactor() async {
+  if (!Platform.isAndroid && !Platform.isIOS) {
+    final display = await screenRetriever.getPrimaryDisplay();
+    ScaledWidgetsFlutterBinding.instance.scaleFactor = (_) {
+      final shortestSide = min(display.size.height, display.size.width);
+      // TODO add to settings
+      if (shortestSide <= 1080) return 1;
+      if (shortestSide <= 1440) return 1.25;
+      if (shortestSide <= 2160) return 1.5;
+      return 2;
+    };
+  }
+}
+
 void _sentryOptionsConfiguration(SentryFlutterOptions options) {
   options.dsn = const String.fromEnvironment('SENTRY_DSN');
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.

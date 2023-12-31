@@ -40,7 +40,10 @@ class CommonDrawer extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.edit_note),
               title: Text(AppLocalizations.of(context)!.editActivities),
-              onTap: () => context.go('/card_editor'),
+              onTap: () {
+                context.pop();
+                context.go('/card_editor');
+              },
             ),
             ListTile(
               leading: const Icon(Icons.feedback),

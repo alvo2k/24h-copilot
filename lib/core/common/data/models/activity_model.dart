@@ -115,13 +115,13 @@ class ActivityModel extends Activity {
         color: colorHex,
         tags: inLineTags,
         goal: goal,
-        amount: amount
+        amount: amount,
       );
 
-  Duration durationBetween(DateTime since, DateTime before) {
+  Duration durationBetween(DateTime since, DateTime until) {
     late Duration totalDuration;
     if (endTime == null) {
-      totalDuration = before.difference(startTime);
+      totalDuration = until.difference(startTime);
     } else {
       totalDuration = endTime!.difference(startTime);
     }
@@ -130,4 +130,17 @@ class ActivityModel extends Activity {
     }
     return totalDuration;
   }
+
+  @override
+  List<Object?> get props => [
+        idRecord,
+        name,
+        colorHex,
+        startTimeUnix,
+        amount,
+        inLineTags,
+        endTimeUnix,
+        goal,
+        emoji,
+      ];
 }

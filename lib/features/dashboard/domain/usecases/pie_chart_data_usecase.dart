@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/common/data/models/activity_model.dart';
 import '../entities/pie_chart_data.dart';
 import '../repositories/pie_chart_data_repositoty.dart';
 
@@ -30,12 +31,9 @@ class PieChartDataUsecase {
       (result) => result.fold(
         (l) => null,
         (activities) {
-          List<Color> colorList = [];
-          Map<String, Duration> activitiesDuration = {};
+          final List<ActivityModel> duplicates = [];
+          final Map<String, Duration> activitiesDuration = {};
           for (int i = 0; i < activities.length; i++) {
-            if (!colorList.contains(activities[i].color)) {
-              colorList.add(activities[i].color);
-            }
             if (activities[i].startTime.isBefore(params.from)) {
               // dont count time before [from]
               activities[i] = activities[i].changeStartTime(params.from);
@@ -43,8 +41,7 @@ class PieChartDataUsecase {
             if (activities[i].endTime != null &&
                 activities[i].endTime!.isAfter(to)) {
               // dont count time after [to]
-              final endTime = to;
-              activities[i] = activities[i].changeEndTime(endTime);
+              activities[i] = activities[i].changeEndTime(to);
             } else if (activities[i].endTime == null) {
               // so that view can correctly calculate Activity duration
               activities[i] = activities[i].changeEndTime(
@@ -53,15 +50,20 @@ class PieChartDataUsecase {
             if (activitiesDuration.containsKey(activities[i].name)) {
               activitiesDuration[activities[i].name] =
                   activitiesDuration[activities[i].name]! +
-                      activities[i].durationBetween(params.from,
-                          to.isAfter(DateTime.now()) ? DateTime.now() : to);
-              activities.removeAt(i);
-              i--;
+                      activities[i]
+                          .durationBetween(params.from, activities[i].endTime!);
+              duplicates.add(activities[i]);
             } else {
               activitiesDuration[activities[i].name] = activities[i]
-                  .durationBetween(params.from,
-                      to.isAfter(DateTime.now()) ? DateTime.now() : to);
+                  .durationBetween(params.from, activities[i].endTime!);
             }
+          }
+          for (final duplicate in duplicates) {
+            activities.remove(duplicate);
+          }
+          final List<Color> colorList = [];
+          for (final activity in activities) {
+            colorList.add(activity.color);
           }
           final data = PieChartData(
             activities: activities,

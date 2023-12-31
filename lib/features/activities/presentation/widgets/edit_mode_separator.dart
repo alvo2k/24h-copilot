@@ -6,8 +6,14 @@ import '../../domain/entities/activity.dart';
 import 'edit_records_dialog.dart';
 
 class EditModeSeparator extends StatelessWidget {
-  const EditModeSeparator(this.toChange, this.activityDayDate,
-      {super.key, required this.addBefore});
+  const EditModeSeparator(
+    this.toChange,
+    this.activityDayDate, {
+    required this.addBefore,
+    required this.sizeAnimation,
+    required this.opacityAnimation,
+    super.key,
+  });
 
   /// The date on which the [toChange] activity card is in
   final DateTime activityDayDate;
@@ -16,6 +22,10 @@ class EditModeSeparator extends StatelessWidget {
   final bool addBefore;
 
   final Activity toChange;
+
+  final Animation<double> sizeAnimation;
+
+  final Animation<double> opacityAnimation;
 
   showEditRecordsDialog(BuildContext context) => showPlatformDialog(
         context: context,
@@ -27,9 +37,9 @@ class EditModeSeparator extends StatelessWidget {
         ),
       );
 
-  buildIcon(Color color) => Container(
+  buildIcon(Color color, double sizePercentage) => Container(
         width: 24.0,
-        height: 24.0,
+        height: 24.0 * sizePercentage,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
@@ -39,7 +49,7 @@ class EditModeSeparator extends StatelessWidget {
         ),
         child: Icon(
           Icons.add,
-          size: 15,
+          size: 15 * sizePercentage,
           color: color,
         ),
       );
@@ -47,26 +57,32 @@ class EditModeSeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).iconTheme.color ?? Colors.black87;
-    return TextButton(
+    return AnimatedBuilder(
       key: const PageStorageKey('activityListView'),
-      onPressed: () => showEditRecordsDialog(context),
-      child: Row(
-        children: [
-          buildIcon(color),
-          SizedBox.fromSize(
-            // just gap
-            size: const Size(4, 1),
-          ),
-          Expanded(
-            child: DottedLine(
-              dashColor: color,
-              lineThickness: 3,
-              dashGapLength: 15,
-              dashLength: 15,
-              dashRadius: 5,
+      animation: sizeAnimation,
+      builder: (context, _) => FadeTransition(
+        opacity: opacityAnimation,
+        child: SizedBox(
+          height: 28 * sizeAnimation.value,
+          child: TextButton(
+            onPressed: () => showEditRecordsDialog(context),
+            child: Row(
+              children: [
+                buildIcon(color, sizeAnimation.value),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: DottedLine(
+                    dashColor: color,
+                    lineThickness: 3,
+                    dashGapLength: 15,
+                    dashLength: 15,
+                    dashRadius: 5,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

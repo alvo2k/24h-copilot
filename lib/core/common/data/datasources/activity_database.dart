@@ -167,7 +167,7 @@ class ActivityDatabase extends _$ActivityDatabase
     required int to,
     String? name,
   }) async {
-    var firstRecord = await _findFirstRecord(from, name);
+    final firstRecord = await _findFirstRecord(from, name);
 
     // get all records between firstRecord.startTime and [to]
     final query = select(records).join([
@@ -437,7 +437,7 @@ class ActivityDatabase extends _$ActivityDatabase
           ..where((r) => r.startTime.isBiggerThanValue(startTime))
           ..limit(1)
           ..orderBy([
-            (r) => OrderingTerm(expression: r.idRecord, mode: OrderingMode.asc)
+            (r) => OrderingTerm(expression: r.startTime, mode: OrderingMode.asc)
           ]))
         .getSingleOrNull();
 

@@ -89,6 +89,9 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
           }
           return time.isBetween(startTime, fixedTime!);
         } else {
+          if (widget.toChange.startTime.isBefore(widget.activityDayDate)) {
+            return true;
+          }
           return time.hour < fixedTime!.hour ||
               time.hour == fixedTime!.hour && time.minute < fixedTime!.minute;
         }

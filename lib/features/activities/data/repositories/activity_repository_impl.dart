@@ -130,22 +130,22 @@ class ActivityRepositoryImpl implements ActivityRepository {
     );
 
     // add endTime (startTime of the next row)
-    return rowsStream.map<List<ActivityModel>>((rows) {
-      List<ActivityModel> records = [];
-      for (int i = 0; i < rows.length; i++) {
-        final activityRow = rows[i];
-        try {
+    return rowsStream.asyncMap<List<ActivityModel>>(
+      (rows) async {
+        List<ActivityModel> records = [];
+        for (int i = 0; i < rows.length; i++) {
+          final activityRow = rows[i];
+          final endTime = await localDataSource
+              .findEndTimeFor(activityRow.record.startTime);
           final activity = ActivityModel.fromDriftRow(
-              activityRow, rows[i + 1].record.startTime);
-          records.add(activity);
-        } on RangeError catch (_) {
-          // last activity, endTime = null
-          final activity = ActivityModel.fromDriftRow(activityRow);
-          records.add(activity);
+            activityRow,
+            endTime,
+          );
+          if (endTime != from) records.add(activity);
         }
-      }
-      return records;
-    });
+        return records;
+      },
+    );
   }
 
   @override

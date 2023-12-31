@@ -121,6 +121,8 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
             ),
           );
         } else {
+          if (pageState.activityDays[index] == event.activityDay) return;
+          
           final updatedState = [...pageState.activityDays];
           updatedState[index] = event.activityDay;
           emit(

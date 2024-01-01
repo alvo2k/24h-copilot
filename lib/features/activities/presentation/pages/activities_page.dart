@@ -21,6 +21,7 @@ class ActivitiesPage extends StatefulWidget {
 
 class _ActivitiesPageState extends State<ActivitiesPage> {
   final controller = ScrollController();
+  bool canPop = false;
 
   @override
   void initState() {
@@ -64,23 +65,45 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     }
   }
 
+  void confirmPop() {
+    canPop = true;
+    setState(() {});
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.confirmExit),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+    Future.delayed(const Duration(seconds: 2), () {
+      canPop = false;
+      if (mounted) setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: ActivitySearchBar(
-        showEditMode: true,
-        title: AppLocalizations.of(context)!.activities,
-      ),
-      drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
-          ? const CommonDrawer()
-          : null,
-      body: ActivityScrollController(
-        controller: controller,
-        child: Column(
-          children: [
-            const Expanded(child: ActivityListView()),
-            RecommendedActivities(child: const NewActivityField()),
-          ],
+    return PopScope(
+      canPop: canPop,
+      onPopInvoked: (didPop) => didPop ? null : confirmPop(),
+      child: Scaffold(
+        appBar: ActivitySearchBar(
+          showEditMode: true,
+          title: AppLocalizations.of(context)!.activities,
+        ),
+        drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
+            ? const CommonDrawer()
+            : null,
+        body: ActivityScrollController(
+          controller: controller,
+          child: Column(
+            children: [
+              const Expanded(child: ActivityListView()),
+              RecommendedActivities(child: const NewActivityField()),
+            ],
+          ),
         ),
       ),
     );

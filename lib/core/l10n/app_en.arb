@@ -61,5 +61,6 @@
     "searchNotFound": "No results found",
     "heatMapSetGoal": "To use the heat map, set a goal",
     "neverStarted": "never started",
-    "reached": "reached"
+    "reached": "reached",
+    "confirmExit": "Press again to exit"
 }

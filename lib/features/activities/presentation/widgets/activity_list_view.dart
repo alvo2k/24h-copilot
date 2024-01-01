@@ -1,3 +1,4 @@
+import 'package:copilot/features/activities/presentation/bloc/edit_mode_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sticky_headers/sticky_headers.dart';
@@ -8,8 +9,38 @@ import 'activity_day_date.dart';
 import 'activity_day_widget.dart';
 import 'empty_activities_illustration.dart';
 
-class ActivityListView extends StatelessWidget {
+class ActivityListView extends StatefulWidget {
   const ActivityListView({super.key});
+
+  @override
+  State<ActivityListView> createState() => _ActivityListViewState();
+}
+
+class _ActivityListViewState extends State<ActivityListView>
+    with TickerProviderStateMixin {
+  late final AnimationController separatorController;
+  late final Animation<double> opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    separatorController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    opacity = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: separatorController,
+        curve: Curves.easeInCubic,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    separatorController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,63 +55,80 @@ class ActivityListView extends StatelessWidget {
                   state.pageState.activityDays[0].activitiesInThisDay.isEmpty) {
                 return const EmptyActivitiesIllustration();
               }
-              return ListView.builder(
-                key: const PageStorageKey('activityListView'),
-                controller: controller,
-                shrinkWrap: true,
-                reverse: true,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const RangeMaintainingScrollPhysics(),
-                itemCount: state.pageState.activityDays.length,
-                itemBuilder: (context, index) {
-                  final day = state.pageState.activityDays[index];
-                  if (day.activitiesInThisDay.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-                  if (index == 0) {
-                    Future(() {
-                      // calls loadMoreDays() witch loads prev. day
-                      if (controller.hasClients) {
-                        controller.position.notifyListeners();
-                      }
-                    });
-                    // if this is today, print icon at the end
+              return BlocListener<EditModeCubit, bool>(
+                listener: (context, state) => state
+                    ? separatorController.forward()
+                    : separatorController.reverse(),
+                child: ListView.builder(
+                  key: const PageStorageKey('activityListView'),
+                  controller: controller,
+                  shrinkWrap: true,
+                  reverse: true,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  physics: const RangeMaintainingScrollPhysics(),
+                  itemCount: state.pageState.activityDays.length,
+                  itemBuilder: (context, index) {
+                    final day = state.pageState.activityDays[index];
+                    if (day.activitiesInThisDay.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+                    if (index == 0) {
+                      Future(() {
+                        // calls loadMoreDays() witch loads prev. day
+                        if (controller.hasClients) {
+                          controller.position.notifyListeners();
+                        }
+                      });
+                      // if this is today, print icon at the end
+                      return StickyHeader(
+                        header: ActivityDayDate(day.date),
+                        content: Column(
+                          children: [
+                            ActivityDayWidget(
+                              day,
+                              sizeAnimation: separatorController,
+                              opacityAnimation: opacity,
+                            ),
+                            const Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 29.0, vertical: 16),
+                                  child: Icon(Icons.access_time),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    if (index == state.pageState.activityDays.length - 1 &&
+                        day.activitiesInThisDay.isNotEmpty) {
+                      return StickyHeader(
+                        header: ActivityDayDate(day.date),
+                        content: Column(children: [
+                          // Adds loading indicator at top of the list.
+                          // Empty ActivitiesDay means all data was loaded and no indicator needed
+                          const CircularProgressIndicator(),
+                          ActivityDayWidget(
+                            day,
+                            sizeAnimation: separatorController,
+                            opacityAnimation: opacity,
+                          ),
+                        ]),
+                      );
+                    }
                     return StickyHeader(
                       header: ActivityDayDate(day.date),
-                      content: Column(
-                        children: [
-                          ActivityDayWidget(day),
-                          const Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 29.0, vertical: 16),
-                                child: Icon(Icons.access_time),
-                              ),
-                            ],
-                          ),
-                        ],
+                      content: ActivityDayWidget(
+                        day,
+                        sizeAnimation: separatorController,
+                        opacityAnimation: opacity,
                       ),
                     );
-                  }
-                  if (index == state.pageState.activityDays.length - 1 &&
-                      day.activitiesInThisDay.isNotEmpty) {
-                    return StickyHeader(
-                      header: ActivityDayDate(day.date),
-                      content: Column(children: [
-                        // Adds loading indicator at top of the list.
-                        // Empty ActivitiesDay means all data was loaded and no indicator needed
-                        const CircularProgressIndicator(),
-                        ActivityDayWidget(day),
-                      ]),
-                    );
-                  }
-                  return StickyHeader(
-                    header: ActivityDayDate(day.date),
-                    content: ActivityDayWidget(day),
-                  );
-                },
+                  },
+                ),
               );
             }(),
           Failure() => Center(child: Text(state.type.localize(context))),

@@ -63,7 +63,7 @@ class EditModeSeparator extends StatelessWidget {
       builder: (context, _) => FadeTransition(
         opacity: opacityAnimation,
         child: SizedBox(
-          height: 28 * sizeAnimation.value,
+          height: 38 * sizeAnimation.value,
           child: TextButton(
             onPressed: () => showEditRecordsDialog(context),
             child: Row(

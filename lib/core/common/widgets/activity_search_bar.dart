@@ -60,7 +60,7 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
     _textFieldFocusNode.addListener(() {
       if (_textFieldFocusNode.hasFocus &&
           _overlayAnimationController.status == AnimationStatus.dismissed) {
-        _showOverlay(context);
+        Future(() => _showOverlay(context));
       }
       if (!_textFieldFocusNode.hasFocus && _overlayEntry!.mounted) {
         _overlayAnimationController.reverse().whenCompleteOrCancel(() {
@@ -69,6 +69,7 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
         // requestFocus so that the text field has a focused border
         // until the end of the overlay animation
         _textFieldFocusNode.requestFocus();
+        _textFieldFocusNode.consumeKeyboardToken();
       }
     });
 
@@ -79,8 +80,8 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
     });
   }
 
-  void _showOverlay(BuildContext context) async {
-    final OverlayState overlayState = Overlay.of(context, rootOverlay: true);
+  void _showOverlay(BuildContext context) {
+    final overlayState = Overlay.of(context, rootOverlay: true);
     _disposeOverlay();
 
     final renderBox =
@@ -223,7 +224,7 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
 
               _textFieldAnimationController
                   .forward()
-                  .then((_) => _textFieldFocusNode.requestFocus());
+                  .whenComplete(() => _textFieldFocusNode.requestFocus());
             }),
           ),
       ],

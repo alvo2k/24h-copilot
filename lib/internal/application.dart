@@ -10,6 +10,7 @@ import '../features/activities/presentation/bloc/activities_bloc.dart';
 import '../features/activities/presentation/bloc/edit_mode_cubit.dart';
 import '../features/activity_analytics/presentation/bloc/activity_analytics_bloc.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
+import '../features/backup/presentation/cubit/backup_cubit.dart';
 import '../features/card-editor/presentation/bloc/card_editor_bloc.dart';
 import '../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
@@ -44,6 +45,7 @@ class CopilotApp extends StatelessWidget {
         BlocProvider(
           create: (context) => NavigationCubit(sl())..getFirstDate(context),
         ),
+        BlocProvider(create: (context) => BackupCubit(sl(), sl())),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, state) {

@@ -62,5 +62,25 @@
     "heatMapSetGoal": "To use the heat map, set a goal",
     "neverStarted": "never started",
     "reached": "reached",
-    "confirmExit": "Press again to exit"
+    "confirmExit": "Press again to exit",
+    "backup": "Backup",
+    "unreachableFolder": "Couldn't find the folder for uploading",
+    "export": "Export",
+    "import": "Import",
+    "downloadedTo": "Downloaded to {path}",
+    "@downloadedTo": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        }
+    },
+    "exporting": "Exporting...",
+    "importing": "Importing...",
+    "imported": "Successful! Restart to apply changes.",
+    "manageData": "Manage data",
+    "confirmUpload": "Confirm upload",
+    "dataWillBeLost": "All current data will be lost!",
+    "areYouSure": "Are you sure?",
+    "confirmOverride": "Override"
 }

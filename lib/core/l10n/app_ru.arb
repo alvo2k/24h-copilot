@@ -255,5 +255,25 @@
   "heatMapSetGoal": "Для использовании тепловой карты поставьте цель",
   "neverStarted": "не начиналась",
   "reached": "достигнута",
-  "confirmExit": "Нажмите еще раз для выхода"
+  "confirmExit": "Нажмите еще раз для выхода",
+  "backup": "Резервное копирование",
+  "unreachableFolder": "Не удалось найти папку для загрузки",
+  "export": "Экспорт",
+  "import": "Импорт",
+  "downloadedTo": "Скачано в {path}",
+  "@downloadedTo": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "exporting": "Экспортируем...",
+  "importing": "Импортируем...",
+  "imported": "Успешно! Перезапустите для применения изменений.",
+  "manageData": "Управление данными",
+  "confirmUpload": "Подтвердите импорт",
+  "dataWillBeLost": "Все текущие данные будут потеряны!",
+  "areYouSure": "Вы уверены?",
+  "confirmOverride": "Перезаписать"
 }

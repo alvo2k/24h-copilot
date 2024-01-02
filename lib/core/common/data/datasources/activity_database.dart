@@ -445,6 +445,29 @@ class ActivityDatabase extends _$ActivityDatabase
   }
 }
 
+Future<File> dbFile() async {
+  try {
+    final documentsFolder = await getApplicationDocumentsDirectory();
+    final file = File(
+      path.join(
+        documentsFolder.path,
+        Constants.appFolderName,
+        'activities.sqlite',
+      ),
+    );
+
+    return file;
+  } on MissingPlatformDirectoryException {
+    return File(
+      path.join(
+        Directory.current.path,
+        Constants.appFolderName,
+        'activities.sqlite',
+      ),
+    );
+  }
+}
+
 class RecordWithActivitySettings {
   RecordWithActivitySettings(this.record, this.activity);
 
@@ -452,24 +475,4 @@ class RecordWithActivitySettings {
   final DriftRecordModel record;
 }
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    try {
-      final documentsFolder = await getApplicationDocumentsDirectory();
-      final file = File(path.join(
-        documentsFolder.path,
-        Constants.appFolderName,
-        'activities.sqlite',
-      ));
-      return NativeDatabase(file);
-    } on MissingPlatformDirectoryException {
-      return NativeDatabase(
-        File(path.join(
-          Directory.current.path,
-          Constants.appFolderName,
-          'activities.sqlite',
-        )),
-      );
-    }
-  });
-}
+LazyDatabase _openConnection() => LazyDatabase(() async => NativeDatabase(await dbFile()));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 import '../bloc/navigation_cubit.dart';
 import '../bloc/theame_cubit.dart';
@@ -53,6 +54,11 @@ class NavigatorRail extends StatelessWidget {
                   tooltip: AppLocalizations.of(context)!.feedback,
                 ),
                 IconButton(
+                  onPressed: () => context.pushNamed('backup'),
+                  icon: const Icon(Icons.import_export),
+                  tooltip: AppLocalizations.of(context)!.backup,
+                ),
+                IconButton(
                   onPressed: () {
                     if (Theme.of(context).brightness == Brightness.dark) {
                       BlocProvider.of<ThemeCubit>(context)
@@ -72,9 +78,8 @@ class NavigatorRail extends StatelessWidget {
           ),
         ),
         selectedIndex: state.navRailIndex,
-        onDestinationSelected: (int index) => context
-            .read<NavigationCubit>()
-            .onDestinationSelected(index),
+        onDestinationSelected: (int index) =>
+            context.read<NavigationCubit>().onDestinationSelected(index),
       ),
     );
   }

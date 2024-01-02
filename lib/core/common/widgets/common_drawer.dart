@@ -88,6 +88,14 @@ class CommonDrawer extends StatelessWidget {
                 );
               },
             ),
+            ListTile(
+              onTap: () {
+                context.pop();
+                context.pushNamed('backup');
+              },
+              leading: const Icon(Icons.import_export),
+              title: Text(AppLocalizations.of(context)!.backup),
+            ),
           ],
         ),
       ),

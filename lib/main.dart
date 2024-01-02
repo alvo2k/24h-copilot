@@ -22,7 +22,12 @@ part 'internal/main_functions.dart';
 void main() {
   runZonedGuarded(
     () async {
-      ScaledWidgetsFlutterBinding.ensureInitialized();
+      ScaledWidgetsFlutterBinding.ensureInitialized(
+        scaleFactor: (deviceSize) {
+          const double widthOfDesign = 360;
+          return deviceSize.width / widthOfDesign;
+        },
+      );
 
       _scaleFactor();
 

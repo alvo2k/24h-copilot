@@ -42,9 +42,7 @@ class CopilotApp extends StatelessWidget {
         BlocProvider(create: (context) => CardEditorBloc(sl(), sl())),
         BlocProvider(create: (context) => SearchSuggestionsCubit(sl())),
         BlocProvider(create: (context) => ActivityAnalyticsBloc(sl())),
-        BlocProvider(
-          create: (context) => NavigationCubit(sl())..getFirstDate(context),
-        ),
+        BlocProvider(create: (context) => NavigationCubit(sl())),
         BlocProvider(create: (context) => BackupCubit(sl(), sl())),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(

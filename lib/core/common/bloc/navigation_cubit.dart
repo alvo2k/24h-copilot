@@ -23,17 +23,6 @@ class NavigationCubit extends Cubit<NavigationState> {
     const CircularProgressIndicator.adaptive(),
   ];
 
-  DateTime? _dateOfFirstActivity;
-
-  void getFirstDate(BuildContext context) {
-    final dashboardBloc = BlocProvider.of<DashboardBloc>(context);
-    if (dashboardBloc.state is DashboardInitial) {
-      (dashboardBloc.state as DashboardInitial)
-          .firstRecordDate
-          .then((date) => _dateOfFirstActivity = date);
-    }
-  }
-
   void onDestinationSelected(int dest) {
     if (dest == 1 && state.hideDashboardDestination ||
         !state.hideDashboardDestination && dest == 2) {
@@ -111,21 +100,6 @@ class NavigationCubit extends Cubit<NavigationState> {
         ),
       );
     }
-  }
-
-  void rangePicker(BuildContext context) {
-    showDateRangePicker(
-      context: context,
-      firstDate: _dateOfFirstActivity ?? DateTime.now(),
-      lastDate: DateTime.now(),
-    ).then((range) {
-      if (range != null) {
-        BlocProvider.of<DashboardBloc>(context).add(DashboardLoad(
-          range.start,
-          range.end,
-        ));
-      }
-    });
   }
 }
 

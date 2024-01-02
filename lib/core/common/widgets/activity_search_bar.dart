@@ -8,6 +8,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../features/activities/presentation/bloc/edit_mode_cubit.dart';
+import '../../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
 import '../bloc/navigation_cubit.dart';
 
@@ -142,6 +143,24 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
     super.dispose();
   }
 
+  void _rangePicker(BuildContext context) async {
+    final range = await showDateRangePicker(
+      context: context,
+      firstDate:
+          context.read<DashboardBloc>().firstActivityDate ?? DateTime.now(),
+      lastDate: DateTime.now(),
+    );
+
+    if (range != null && mounted) {
+      context.read<DashboardBloc>().add(
+        DashboardLoad(
+          range.start,
+          range.end,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -212,8 +231,7 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
           IconButton(
             icon: const Icon(Icons.date_range_outlined),
             tooltip: AppLocalizations.of(context)!.dateRange,
-            onPressed: () =>
-                context.read<NavigationCubit>().rangePicker(context),
+            onPressed: () => _rangePicker(context),
           ),
         if (_searchFiledHidden)
           IconButton(

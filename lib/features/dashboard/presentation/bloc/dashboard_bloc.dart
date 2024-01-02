@@ -12,11 +12,14 @@ part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  DashboardBloc(this.usecase)
-      : super(DashboardInitial(usecase.firstRecordDate())) {
+  late final DateTime? firstActivityDate;
+
+  DashboardBloc(this._usecase)
+      : super(const DashboardInitial()) {
+        _usecase.firstRecordDate().then((value) => firstActivityDate = value);
     on<DashboardLoad>((event, emit) async {
       emit(DashboardLoading());
-      final stream = await usecase(PieChartDataParams(
+      final stream = await _usecase(PieChartDataParams(
         from: event.from,
         to: event.to,
         search: event.search,
@@ -42,7 +45,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
     on<LoadInitialData>(
       (event, emit) async {
-        final initialDates = await usecase.datesForInitialData();
+        final initialDates = await _usecase.datesForInitialData();
 
         add(DashboardLoad(initialDates.from, initialDates.to));
       },
@@ -63,5 +66,5 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     super.onError(error, stackTrace);
   }
 
-  PieChartDataUsecase usecase;
+  final PieChartDataUsecase _usecase;
 }

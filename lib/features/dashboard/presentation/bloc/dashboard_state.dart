@@ -5,12 +5,10 @@ sealed class DashboardState extends Equatable {
 }
 
 class DashboardInitial extends DashboardState {
-  const DashboardInitial(this.firstRecordDate);
-
-  final Future<DateTime?> firstRecordDate;
+  const DashboardInitial();
 
   @override
-  List<Object> get props => [firstRecordDate];
+  List<Object> get props => [];
 }
 
 class DashboardLoading extends DashboardState {

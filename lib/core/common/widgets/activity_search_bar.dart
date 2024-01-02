@@ -8,8 +8,8 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../features/activities/presentation/bloc/edit_mode_cubit.dart';
-import '../../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
+import '../../../features/history/presentation/bloc/history_bloc.dart';
+import '../../../features/history/presentation/bloc/search_suggestions_cubit.dart';
 import '../bloc/navigation_cubit.dart';
 
 class ActivitySearchBar extends StatefulWidget implements PreferredSizeWidget {
@@ -147,17 +147,17 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
     final range = await showDateRangePicker(
       context: context,
       firstDate:
-          context.read<DashboardBloc>().firstActivityDate ?? DateTime.now(),
+          context.read<HistoryBloc>().firstActivityDate ?? DateTime.now(),
       lastDate: DateTime.now(),
     );
 
     if (range != null && mounted) {
-      context.read<DashboardBloc>().add(
-        DashboardLoad(
-          range.start,
-          range.end,
-        ),
-      );
+      context.read<HistoryBloc>().add(
+            HistoryLoad(
+              range.start,
+              range.end,
+            ),
+          );
     }
   }
 

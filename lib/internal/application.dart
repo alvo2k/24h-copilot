@@ -12,8 +12,8 @@ import '../features/activity_analytics/presentation/bloc/activity_analytics_bloc
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/backup/presentation/cubit/backup_cubit.dart';
 import '../features/card-editor/presentation/bloc/card_editor_bloc.dart';
-import '../features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../features/dashboard/presentation/bloc/search_suggestions_cubit.dart';
+import '../features/history/presentation/bloc/history_bloc.dart';
+import '../features/history/presentation/bloc/search_suggestions_cubit.dart';
 import 'injectable.dart';
 
 class CopilotApp extends StatelessWidget {
@@ -38,7 +38,7 @@ class CopilotApp extends StatelessWidget {
           )..add(LoadActivities(DateUtils.dateOnly(DateTime.now()))),
         ),
         BlocProvider(create: (context) => AuthBloc()),
-        BlocProvider(create: (context) => DashboardBloc(sl())),
+        BlocProvider(create: (context) => HistoryBloc(sl())),
         BlocProvider(create: (context) => CardEditorBloc(sl(), sl())),
         BlocProvider(create: (context) => SearchSuggestionsCubit(sl())),
         BlocProvider(create: (context) => ActivityAnalyticsBloc(sl())),

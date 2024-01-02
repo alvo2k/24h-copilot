@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../features/activities/presentation/pages/activities_page.dart';
-import '../../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../../features/history/presentation/pages/history_page.dart';
 import '../../features/card-editor/presentation/pages/activities_settings_page.dart';
 import '../../features/card-editor/presentation/pages/activity_settings_page.dart';
 import '../common/activity_settings.dart';
@@ -25,8 +25,8 @@ class DesktopLayout extends StatelessWidget {
           if (currentPath == '/') ...[
             Expanded(child: child),
             const PaddinglessVerticalDivider(),
-            const Expanded(child: DashboardPage()),
-          ] else if (currentPath == '/dashboard') ...[
+            const Expanded(child: HistoryPage()),
+          ] else if (currentPath == '/history') ...[
             const Expanded(child: ActivitiesPage()),
             const PaddinglessVerticalDivider(),
             Expanded(child: child),

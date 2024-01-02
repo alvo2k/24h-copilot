@@ -17,18 +17,18 @@ class NavigatorRail extends StatelessWidget {
         destinations: [
           NavigationRailDestination(
             icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home),
+            selectedIcon: const Icon(Icons.home_rounded),
             label: Text(AppLocalizations.of(context)!.activities),
           ),
-          if (!state.hideDashboardDestination)
+          if (!state.hideHistoryestination)
             NavigationRailDestination(
-              icon: const Icon(Icons.dashboard_outlined),
-              selectedIcon: const Icon(Icons.dashboard),
-              label: Text(AppLocalizations.of(context)!.dashboard),
+              icon: const Icon(Icons.history_outlined),
+              selectedIcon: const Icon(Icons.history_rounded),
+              label: Text(AppLocalizations.of(context)!.history),
             ),
           NavigationRailDestination(
             icon: const Icon(Icons.edit_outlined),
-            selectedIcon: const Icon(Icons.edit),
+            selectedIcon: const Icon(Icons.edit_rounded),
             label: Text(AppLocalizations.of(context)!.editActivitiesShort),
           ),
         ],

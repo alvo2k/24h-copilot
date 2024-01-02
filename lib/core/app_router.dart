@@ -6,7 +6,7 @@ import '../features/activity_analytics/presentation/pages/activity_analytics_pag
 import '../features/backup/presentation/pages/backup_page.dart';
 import '../features/card-editor/presentation/pages/activities_settings_page.dart';
 import '../features/card-editor/presentation/pages/activity_settings_page.dart';
-import '../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../features/history/presentation/pages/history_page.dart';
 import 'common/activity_settings.dart';
 import 'common/widgets/fade_transition_page.dart';
 import 'layout/layout_wrapper.dart';
@@ -34,9 +34,9 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const ActivitiesPage(),
           routes: [
             GoRoute(
-              path: 'dashboard',
+              path: 'history',
               pageBuilder: (context, state) => FadeTransitionPage(
-                child: const DashboardPage(),
+                child: const HistoryPage(),
               ),
               routes: [
                 GoRoute(

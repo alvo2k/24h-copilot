@@ -8,17 +8,16 @@ import '../../../../core/error/return_types.dart';
 import '../../domain/entities/pie_chart_data.dart';
 import '../../domain/usecases/pie_chart_data_usecase.dart';
 
-part 'dashboard_event.dart';
-part 'dashboard_state.dart';
+part 'history_event.dart';
+part 'history_state.dart';
 
-class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
+class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   late final DateTime? firstActivityDate;
 
-  DashboardBloc(this._usecase)
-      : super(const DashboardInitial()) {
-        _usecase.firstRecordDate().then((value) => firstActivityDate = value);
-    on<DashboardLoad>((event, emit) async {
-      emit(DashboardLoading());
+  HistoryBloc(this._usecase) : super(const HistoryInitial()) {
+    _usecase.firstRecordDate().then((value) => firstActivityDate = value);
+    on<HistoryLoad>((event, emit) async {
+      emit(HistoryLoading());
       final stream = await _usecase(PieChartDataParams(
         from: event.from,
         to: event.to,
@@ -30,16 +29,16 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         Sentry.captureException(error);
       }).listen(
         (pieData) => add(
-          _NewDashboardDataFromStream(pieData),
+          _NewHistoryDataFromStream(pieData),
         ),
       );
     });
 
-    on<_NewDashboardDataFromStream>(
+    on<_NewHistoryDataFromStream>(
       (event, emit) => emit(
         event.pieData != null
-            ? DashboardLoaded(event.pieData!)
-            : const DashboardLoadedNoData(),
+            ? HistoryLoaded(event.pieData!)
+            : const HistoryLoadedNoData(),
       ),
     );
 
@@ -47,13 +46,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       (event, emit) async {
         final initialDates = await _usecase.datesForInitialData();
 
-        add(DashboardLoad(initialDates.from, initialDates.to));
+        add(HistoryLoad(initialDates.from, initialDates.to));
       },
     );
 
     on<_Exception>(
       (event, emit) => emit(
-        const DashboardFailure(FailureType.unknown),
+        const HistoryFailure(FailureType.unknown),
       ),
     );
 

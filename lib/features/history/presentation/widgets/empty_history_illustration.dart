@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class EmptyDashboardIllustration extends StatelessWidget {
-  const EmptyDashboardIllustration({super.key});
+class EmptyHistoryIllustration extends StatelessWidget {
+  const EmptyHistoryIllustration({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class EmptyDashboardIllustration extends StatelessWidget {
               'assets/illustrations/empty_dashboard.png',
             ),
             Text(
-              AppLocalizations.of(context)!.emptyDashboard,
+              AppLocalizations.of(context)!.emptyHistory,
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),

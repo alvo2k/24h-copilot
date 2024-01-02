@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../features/activities/presentation/pages/activities_page.dart';
-import '../../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../../features/history/presentation/pages/history_page.dart';
 import '../../utils/constants.dart';
 
 class NavigationCubit extends Cubit<NavigationState> {
@@ -14,21 +13,21 @@ class NavigationCubit extends Cubit<NavigationState> {
   NavigationCubit(this._router)
       : super(const NavigationState(
           bottomNavBarIndex: 0,
-          hideDashboardDestination: false,
+          hideHistoryestination: false,
         ));
 
   final List<Widget> pages = [
     const ActivitiesPage(),
-    const DashboardPage(),
+    const HistoryPage(),
     const CircularProgressIndicator.adaptive(),
   ];
 
   void onDestinationSelected(int dest) {
-    if (dest == 1 && state.hideDashboardDestination ||
-        !state.hideDashboardDestination && dest == 2) {
+    if (dest == 1 && state.hideHistoryestination ||
+        !state.hideHistoryestination && dest == 2) {
       _router.go('/card_editor');
     } else if (dest == 1) {
-      _router.go('/dashboard');
+      _router.go('/history');
     } else {
       _router.go('/');
     }
@@ -50,26 +49,26 @@ class NavigationCubit extends Cubit<NavigationState> {
 
     return switch (uri) {
       '/' => 0,
-      '/dashboard' => 1,
+      '/history' => 1,
       _ => throw Exception(
           'Unknown URI: $uri',
         ),
     };
   }
 
-  int _mapUriToNavRailIndex({bool? hideDashboardDestination}) {
+  int _mapUriToNavRailIndex({bool? hideHistoryDestination}) {
     final uri = _router.routerDelegate.currentConfiguration.uri.toString();
 
     if (uri.startsWith('/card_editor')) {
-      return hideDashboardDestination ?? state.hideDashboardDestination ? 1 : 2;
+      return hideHistoryDestination ?? state.hideHistoryestination ? 1 : 2;
     } else if (uri.startsWith('/activity_analytics')) {
-      return hideDashboardDestination ?? state.hideDashboardDestination ? 0 : 1;
+      return hideHistoryDestination ?? state.hideHistoryestination ? 0 : 1;
     }
 
     return switch (uri) {
       '/' => 0,
-      '/dashboard' =>
-        hideDashboardDestination ?? state.hideDashboardDestination ? 0 : 1,
+      '/history' =>
+        hideHistoryDestination ?? state.hideHistoryestination ? 0 : 1,
       _ => throw Exception(
           'Unknown URI: $uri',
         ),
@@ -80,23 +79,23 @@ class NavigationCubit extends Cubit<NavigationState> {
     if (constraints.maxWidth >= Constants.tabletWidth) {
       emit(
         state.copyWith(
-          hideDashboardDestination: true,
-          navRailIndex: _mapUriToNavRailIndex(hideDashboardDestination: true),
+          hideHistoryDestination: true,
+          navRailIndex: _mapUriToNavRailIndex(hideHistoryDestination: true),
         ),
       );
     } else if (constraints.maxWidth >= Constants.mobileWidth) {
       emit(
         state.copyWith(
-          hideDashboardDestination: false,
-          navRailIndex: _mapUriToNavRailIndex(hideDashboardDestination: false),
+          hideHistoryDestination: false,
+          navRailIndex: _mapUriToNavRailIndex(hideHistoryDestination: false),
         ),
       );
     } else {
       emit(
         state.copyWith(
-          hideDashboardDestination: false,
+          hideHistoryDestination: false,
           bottomNavBarIndex: _mapUriToBottomNavBarIndex(),
-          navRailIndex: _mapUriToNavRailIndex(hideDashboardDestination: false),
+          navRailIndex: _mapUriToNavRailIndex(hideHistoryDestination: false),
         ),
       );
     }
@@ -107,28 +106,28 @@ class NavigationState extends Equatable {
   const NavigationState({
     this.bottomNavBarIndex = 0,
     this.navRailIndex = 0,
-    required this.hideDashboardDestination,
+    required this.hideHistoryestination,
   });
 
-  final bool hideDashboardDestination;
+  final bool hideHistoryestination;
   final int bottomNavBarIndex;
   final int navRailIndex;
 
   NavigationState copyWith({
     int? bottomNavBarIndex,
     int? navRailIndex,
-    bool? hideDashboardDestination,
+    bool? hideHistoryDestination,
   }) =>
       NavigationState(
         bottomNavBarIndex: bottomNavBarIndex ?? this.bottomNavBarIndex,
-        hideDashboardDestination:
-            hideDashboardDestination ?? this.hideDashboardDestination,
+        hideHistoryestination:
+            hideHistoryDestination ?? this.hideHistoryestination,
         navRailIndex: navRailIndex ?? this.navRailIndex,
       );
 
   @override
   List<Object?> get props => [
-        hideDashboardDestination,
+        hideHistoryestination,
         bottomNavBarIndex,
         navRailIndex,
       ];

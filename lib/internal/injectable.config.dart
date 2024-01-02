@@ -59,11 +59,11 @@ import 'package:copilot/features/card-editor/domain/usecases/load_activities_set
     as _i21;
 import 'package:copilot/features/card-editor/domain/usecases/update_activity_settings_usecase.dart'
     as _i29;
-import 'package:copilot/features/dashboard/data/repositories/pie_chart_data_repository_impl.dart'
+import 'package:copilot/features/history/data/repositories/pie_chart_data_repository_impl.dart'
     as _i25;
-import 'package:copilot/features/dashboard/domain/repositories/pie_chart_data_repositoty.dart'
+import 'package:copilot/features/history/domain/repositories/pie_chart_data_repositoty.dart'
     as _i24;
-import 'package:copilot/features/dashboard/domain/usecases/pie_chart_data_usecase.dart'
+import 'package:copilot/features/history/domain/usecases/pie_chart_data_usecase.dart'
     as _i26;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;

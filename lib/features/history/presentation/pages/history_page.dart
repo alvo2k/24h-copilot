@@ -14,11 +14,11 @@ import '../../../../core/utils/constants.dart';
 import '../../../activities/presentation/widgets/activity_day_date.dart';
 import '../../../activities/presentation/widgets/activity_list_tile.dart';
 import '../../domain/entities/pie_chart_data.dart';
-import '../bloc/dashboard_bloc.dart';
-import '../widgets/empty_dashboard_illustration.dart';
+import '../bloc/history_bloc.dart';
+import '../widgets/empty_history_illustration.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class HistoryPage extends StatelessWidget {
+  const HistoryPage({super.key});
 
   Widget _buildDate(DateTime from, DateTime to, BuildContext context) =>
       DateUtils.dateOnly(to).isAtSameMomentAs(from)
@@ -68,8 +68,8 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  void _listener(BuildContext context, DashboardState state) {
-    if (state is DashboardFailure) {
+  void _listener(BuildContext context, HistoryState state) {
+    if (state is HistoryFailure) {
       showTopSnackBar(
         Overlay.of(context),
         CustomSnackBar.error(
@@ -81,15 +81,15 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<DashboardBloc, DashboardState>(
+    return BlocConsumer<HistoryBloc, HistoryState>(
       listener: _listener,
       builder: (context, state) => switch (state) {
-        DashboardLoadedNoData() => const EmptyDashboardIllustration(),
-        DashboardLoaded() => Scaffold(
+        HistoryLoadedNoData() => const EmptyHistoryIllustration(),
+        HistoryLoaded() => Scaffold(
             appBar: ActivitySearchBar(
               showDatePicker: true,
               dropShadow: true,
-              title: AppLocalizations.of(context)!.dashboard,
+              title: AppLocalizations.of(context)!.history,
             ),
             drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
                 ? const CommonDrawer()

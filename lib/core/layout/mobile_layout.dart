@@ -19,22 +19,21 @@ class MobileLayout extends StatelessWidget {
           drawer: const CommonDrawer(),
           bottomNavigationBar: Visibility(
             visible: GoRouterState.of(context).fullPath! == '/' ||
-                GoRouterState.of(context).fullPath! == '/dashboard',
+                GoRouterState.of(context).fullPath! == '/history',
             child: BottomNavigationBar(
               items: [
                 BottomNavigationBarItem(
-                  icon: const Icon(Icons.home),
+                  icon: const Icon(Icons.home_rounded),
                   label: AppLocalizations.of(context)!.activities,
                 ),
                 BottomNavigationBarItem(
-                  icon: const Icon(Icons.dashboard),
-                  label: AppLocalizations.of(context)!.dashboard,
+                  icon: const Icon(Icons.history_rounded),
+                  label: AppLocalizations.of(context)!.history,
                 ),
               ],
               currentIndex: state.bottomNavBarIndex,
-              onTap: (int dest) => context
-                  .read<NavigationCubit>()
-                  .onDestinationSelected(dest),
+              onTap: (dest) =>
+                  context.read<NavigationCubit>().onDestinationSelected(dest),
             ),
           ),
           body: child,

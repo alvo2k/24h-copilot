@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../core/common/widgets/activity_search_bar.dart';
 import '../../../../core/common/widgets/common_drawer.dart';
@@ -66,19 +68,22 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+  void _listener(BuildContext context, DashboardState state) {
+    if (state is DashboardFailure) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: state.type.localize(context),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DashboardBloc, DashboardState>(
+    return BlocConsumer<DashboardBloc, DashboardState>(
+      listener: _listener,
       builder: (context, state) => switch (state) {
-        DashboardInitial() => () {
-            context.read<DashboardBloc>().add(LoadInitialData());
-
-            return const Center(child: CircularProgressIndicator.adaptive());
-          }(),
-        DashboardLoading() => const Center(
-            child: CircularProgressIndicator.adaptive(),
-          ),
-        DashboardFailure() => Center(child: Text(state.type.localize(context))),
         DashboardLoadedNoData() => const EmptyDashboardIllustration(),
         DashboardLoaded() => Scaffold(
             appBar: ActivitySearchBar(
@@ -110,6 +115,7 @@ class DashboardPage extends StatelessWidget {
               ),
             ),
           ),
+        _ => const Center(child: CircularProgressIndicator.adaptive()),
       },
     );
   }

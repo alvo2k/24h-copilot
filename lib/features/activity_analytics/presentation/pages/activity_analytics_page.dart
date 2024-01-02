@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../activities/presentation/widgets/activity_list_tile.dart';
 import '../bloc/activity_analytics_bloc.dart';
@@ -23,28 +25,40 @@ class _ActivityAnalyticsPageState extends State<ActivityAnalyticsPage> {
         .add(LoadActivityAnalytics(widget.activityName));
   }
 
+  void _listener(BuildContext context, ActivityAnalyticsState state) {
+    if (state.status == ActivityAnalyticsStatus.failure) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: state.failure!.localize(context),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ActivityAnalyticsBloc, ActivityAnalyticsState>(
+    return BlocConsumer<ActivityAnalyticsBloc, ActivityAnalyticsState>(
+      listener: _listener,
       builder: (context, state) => switch (state.status) {
         ActivityAnalyticsStatus.initial =>
           const Center(child: CircularProgressIndicator.adaptive()),
-        ActivityAnalyticsStatus.loaded => Scaffold(
-            appBar: AppBar(
-              titleSpacing: 0,
-              title: Row(
-                children: [
-                  ActivityListTile.buildCircle(state.data!.activity.color),
-                  Text(widget.activityName),
-                ],
-              ),
-            ),
-            body: ActivityHeatMap(state.data!),
-          ),
-        ActivityAnalyticsStatus.failure =>
-          Center(child: Text(state.failure!.localize(context))),
         ActivityAnalyticsStatus.loading =>
           const Center(child: CircularProgressIndicator.adaptive()),
+        _ => state.data != null
+            ? Scaffold(
+                appBar: AppBar(
+                  titleSpacing: 0,
+                  title: Row(
+                    children: [
+                      ActivityListTile.buildCircle(state.data!.activity.color),
+                      Text(widget.activityName),
+                    ],
+                  ),
+                ),
+                body: ActivityHeatMap(state.data!),
+              )
+            : Center(child: Text(state.failure!.localize(context))),
       },
     );
   }

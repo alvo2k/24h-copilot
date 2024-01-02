@@ -133,5 +133,14 @@ class ActivitiesBloc extends Bloc<ActivitiesEvent, ActivitiesState> {
         }
       },
     );
+    on<_Failure>(
+      (event, emit) =>
+          emit(Failure(state.pageState, type: FailureType.unknown)),
+    );
+  }
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    add(_Failure());
+    super.onError(error, stackTrace);
   }
 }

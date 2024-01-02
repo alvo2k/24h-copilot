@@ -2,6 +2,11 @@ part of 'activities_bloc.dart';
 
 abstract class ActivitiesEvent extends Equatable {}
 
+class _Failure extends ActivitiesEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class LoadActivities extends ActivitiesEvent {
   LoadActivities(this.forTheDay);
 

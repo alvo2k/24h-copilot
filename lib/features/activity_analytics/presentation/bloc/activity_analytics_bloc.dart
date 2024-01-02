@@ -14,6 +14,7 @@ class ActivityAnalyticsBloc
   ActivityAnalyticsBloc(this._usecase)
       : super(const ActivityAnalyticsState.initial()) {
     on<LoadActivityAnalytics>(_loadActivityAnalytics);
+    on<_Exception>(_exception);
   }
 
   void _loadActivityAnalytics(
@@ -38,5 +39,22 @@ class ActivityAnalyticsBloc
         ),
       ),
     );
+  }
+
+  void _exception(
+    _Exception event,
+    Emitter<ActivityAnalyticsState> emit,
+  ) =>
+      emit(
+        state.copyWith(
+          status: ActivityAnalyticsStatus.failure,
+          failure: FailureType.unknown,
+        ),
+      );
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    add(_Exception());
+    super.onError(error, stackTrace);
   }
 }

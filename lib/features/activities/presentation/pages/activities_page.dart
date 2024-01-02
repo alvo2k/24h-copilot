@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../core/common/widgets/activity_search_bar.dart';
 import '../../../../core/common/widgets/common_drawer.dart';
@@ -83,26 +85,40 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
     });
   }
 
+  void _blocListener(BuildContext context, ActivitiesState state) {
+    if (state is Failure) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: state.type.localize(context),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: canPop,
       onPopInvoked: (didPop) => didPop ? null : confirmPop(),
-      child: Scaffold(
-        appBar: ActivitySearchBar(
-          showEditMode: true,
-          title: AppLocalizations.of(context)!.activities,
-        ),
-        drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
-            ? const CommonDrawer()
-            : null,
-        body: ActivityScrollController(
-          controller: controller,
-          child: Column(
-            children: [
-              const Expanded(child: ActivityListView()),
-              RecommendedActivities(child: const NewActivityField()),
-            ],
+      child: BlocListener<ActivitiesBloc, ActivitiesState>(
+        listener: _blocListener,
+        child: Scaffold(
+          appBar: ActivitySearchBar(
+            showEditMode: true,
+            title: AppLocalizations.of(context)!.activities,
+          ),
+          drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
+              ? const CommonDrawer()
+              : null,
+          body: ActivityScrollController(
+            controller: controller,
+            child: Column(
+              children: [
+                const Expanded(child: ActivityListView()),
+                RecommendedActivities(child: const NewActivityField()),
+              ],
+            ),
           ),
         ),
       ),

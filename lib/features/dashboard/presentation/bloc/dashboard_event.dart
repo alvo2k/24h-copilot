@@ -4,6 +4,11 @@ abstract class DashboardEvent extends Equatable {
   const DashboardEvent();
 }
 
+class _Exception extends DashboardEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class DashboardLoad extends DashboardEvent {
   const DashboardLoad(this.from, this.to, [this.search]);
 

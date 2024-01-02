@@ -47,6 +47,20 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         add(DashboardLoad(initialDates.from, initialDates.to));
       },
     );
+
+    on<_Exception>(
+      (event, emit) => emit(
+        const DashboardFailure(FailureType.unknown),
+      ),
+    );
+
+    add(LoadInitialData());
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    add(_Exception());
+    super.onError(error, stackTrace);
   }
 
   PieChartDataUsecase usecase;

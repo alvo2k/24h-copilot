@@ -22,6 +22,7 @@ class FadeTransitionPage extends CustomTransitionPage {
         );
 }
 
+// TODO change to [StatefulShellRoute] with 2 branches and [StatefulNavigationShell]
 class FadeTransitionLayoutPage extends FadeTransitionPage {
   FadeTransitionLayoutPage._({required super.child});
 
@@ -43,7 +44,7 @@ class FadeTransitionLayoutPage extends FadeTransitionPage {
         child: Row(
           children: [
             Expanded(child: leftPane),
-            const PaddinglessVerticalDivider(),
+            const AnimatedPaddinglessVerticalDivider(),
             Expanded(child: rightPane ?? const Scaffold()),
           ],
         ),

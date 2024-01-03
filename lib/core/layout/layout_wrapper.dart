@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scaled_app/scaled_app.dart';
 
 import '../common/bloc/navigation_cubit.dart';
@@ -16,8 +15,6 @@ class LayoutWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(GoRouterState.of(context).uri.toString());
-
     return MediaQuery(
       data: MediaQuery.of(context).scale(),
       child: LayoutBuilder(

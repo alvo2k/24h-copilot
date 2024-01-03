@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../features/activities/presentation/pages/activities_page.dart';
@@ -10,11 +11,7 @@ import '../../utils/constants.dart';
 class NavigationCubit extends Cubit<NavigationState> {
   final GoRouter _router;
 
-  NavigationCubit(this._router)
-      : super(const NavigationState(
-          bottomNavBarIndex: 0,
-          hideHistoryestination: false,
-        ));
+  NavigationCubit(this._router) : super(const NavigationState());
 
   final List<Widget> pages = [
     const ActivitiesPage(),
@@ -23,79 +20,26 @@ class NavigationCubit extends Cubit<NavigationState> {
   ];
 
   void onDestinationSelected(int dest) {
-    if (dest == 1 && state.hideHistoryestination ||
-        !state.hideHistoryestination && dest == 2) {
-      _router.go('/card_editor');
-    } else if (dest == 1) {
-      _router.go('/history');
-    } else {
-      _router.go('/');
-    }
-  }
-
-  void onSuggestionTap(String search) {
-    _router.pushNamed(
-      'activity_analytics',
-      pathParameters: {'activity_name': search},
-    );
-  }
-
-  int _mapUriToBottomNavBarIndex() {
-    final uri = _router.routerDelegate.currentConfiguration.uri.toString();
-
-    if (uri.startsWith('/card_editor')) {
-      return 0;
-    }
-
-    return switch (uri) {
-      '/' => 0,
-      '/history' => 1,
-      _ => throw Exception(
-          'Unknown URI: $uri',
-        ),
-    };
-  }
-
-  int _mapUriToNavRailIndex({bool? hideHistoryDestination}) {
-    final uri = _router.routerDelegate.currentConfiguration.uri.toString();
-
-    if (uri.startsWith('/card_editor')) {
-      return hideHistoryDestination ?? state.hideHistoryestination ? 1 : 2;
-    } else if (uri.startsWith('/activity_analytics')) {
-      return hideHistoryDestination ?? state.hideHistoryestination ? 0 : 1;
-    }
-
-    return switch (uri) {
-      '/' => 0,
-      '/history' =>
-        hideHistoryDestination ?? state.hideHistoryestination ? 0 : 1,
-      _ => throw Exception(
-          'Unknown URI: $uri',
-        ),
-    };
+    final destonation = AppNavigationDestination.values[dest];
+    _router.goNamed(destonation.routeName);
+    emit(state.copyWith(destination: destonation));
   }
 
   void onResize(BoxConstraints constraints) {
     if (constraints.maxWidth >= Constants.tabletWidth) {
+      if (state.destination == AppNavigationDestination.history) {
+        Future(() =>
+            onDestinationSelected(AppNavigationDestination.activities.index));
+      }
       emit(
         state.copyWith(
-          hideHistoryDestination: true,
-          navRailIndex: _mapUriToNavRailIndex(hideHistoryDestination: true),
-        ),
-      );
-    } else if (constraints.maxWidth >= Constants.mobileWidth) {
-      emit(
-        state.copyWith(
-          hideHistoryDestination: false,
-          navRailIndex: _mapUriToNavRailIndex(hideHistoryDestination: false),
+          disableHistoryDestination: true,
         ),
       );
     } else {
       emit(
         state.copyWith(
-          hideHistoryDestination: false,
-          bottomNavBarIndex: _mapUriToBottomNavBarIndex(),
-          navRailIndex: _mapUriToNavRailIndex(hideHistoryDestination: false),
+          disableHistoryDestination: false,
         ),
       );
     }
@@ -104,31 +48,60 @@ class NavigationCubit extends Cubit<NavigationState> {
 
 class NavigationState extends Equatable {
   const NavigationState({
-    this.bottomNavBarIndex = 0,
-    this.navRailIndex = 0,
-    required this.hideHistoryestination,
+    this.destination = AppNavigationDestination.activities,
+    this.disableHistoryDestination = false,
   });
 
-  final bool hideHistoryestination;
-  final int bottomNavBarIndex;
-  final int navRailIndex;
+  final AppNavigationDestination destination;
+  final bool disableHistoryDestination;
 
   NavigationState copyWith({
-    int? bottomNavBarIndex,
-    int? navRailIndex,
-    bool? hideHistoryDestination,
+    AppNavigationDestination? destination,
+    bool? disableHistoryDestination,
   }) =>
       NavigationState(
-        bottomNavBarIndex: bottomNavBarIndex ?? this.bottomNavBarIndex,
-        hideHistoryestination:
-            hideHistoryDestination ?? this.hideHistoryestination,
-        navRailIndex: navRailIndex ?? this.navRailIndex,
+        destination: destination ?? this.destination,
+        disableHistoryDestination:
+            disableHistoryDestination ?? this.disableHistoryDestination,
       );
 
   @override
   List<Object?> get props => [
-        hideHistoryestination,
-        bottomNavBarIndex,
-        navRailIndex,
+        disableHistoryDestination,
+        destination,
       ];
+}
+
+enum AppNavigationDestination {
+  activities(
+    icon: Icon(Icons.home_outlined),
+    selectedIcon: Icon(Icons.home_rounded),
+    routeName: '/',
+  ),
+  history(
+    icon: Icon(Icons.history_outlined),
+    selectedIcon: Icon(Icons.history_rounded),
+    routeName: 'history',
+  ),
+  editActivities(
+    icon: Icon(Icons.edit_note_outlined),
+    selectedIcon: Icon(Icons.edit_note_rounded),
+    routeName: 'card_editor',
+  );
+
+  final Icon icon;
+  final Icon selectedIcon;
+  final String routeName;
+
+  String label(BuildContext context) => switch (this) {
+        activities => AppLocalizations.of(context)!.activities,
+        history => AppLocalizations.of(context)!.history,
+        editActivities => AppLocalizations.of(context)!.editActivitiesShort,
+      };
+
+  const AppNavigationDestination({
+    required this.icon,
+    required this.selectedIcon,
+    required this.routeName,
+  });
 }

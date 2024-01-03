@@ -31,6 +31,7 @@ final GoRouter router = GoRouter(
       routes: [
         GoRoute(
           path: '/',
+          name: '/',
           pageBuilder: (context, state) => FadeTransitionLayoutPage(
             context,
             leftPane: const ActivitiesPage(),
@@ -39,6 +40,7 @@ final GoRouter router = GoRouter(
           routes: [
             GoRoute(
               path: 'history',
+              name: 'history',
               pageBuilder: (context, state) => FadeTransitionLayoutPage(
                 context,
                 leftPane: const ActivitiesPage(),
@@ -59,6 +61,7 @@ final GoRouter router = GoRouter(
             ),
             GoRoute(
               path: 'card_editor',
+              name: 'card_editor',
               pageBuilder: (context, state) => FadeTransitionLayoutPage(
                 context,
                 leftPane: const ActivitiesSettingsPage(),

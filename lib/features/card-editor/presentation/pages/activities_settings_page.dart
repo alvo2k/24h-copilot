@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/common/activity_settings.dart';
+import '../../../../core/common/widgets/common_drawer.dart';
 import '../../../../core/utils/constants.dart';
 import '../bloc/card_editor_bloc.dart';
 import '../widgets/activity_settings_card.dart';
@@ -27,13 +28,10 @@ class ActivitiesSettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.editActivities),
-        leading: MediaQuery.of(context).size.width <= Constants.mobileWidth
-            ? IconButton(
-                onPressed: () => context.go('/'),
-                icon: const Icon(Icons.arrow_back),
-              )
-            : null,
       ),
+      drawer: MediaQuery.of(context).size.width <= Constants.mobileWidth
+          ? const CommonDrawer()
+          : null,
       body: BlocBuilder<CardEditorBloc, CardEditorState>(
           builder: (context, state) {
         if (state is CardEditorStateInitial) {

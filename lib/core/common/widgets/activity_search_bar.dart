@@ -6,11 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../features/activities/presentation/bloc/edit_mode_cubit.dart';
 import '../../../features/history/presentation/bloc/history_bloc.dart';
 import '../../../features/history/presentation/bloc/search_suggestions_cubit.dart';
-import '../bloc/navigation_cubit.dart';
 
 class ActivitySearchBar extends StatefulWidget implements PreferredSizeWidget {
   const ActivitySearchBar({
@@ -96,10 +96,7 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
           leftPadding: offset.dx,
           animationController: _overlayAnimationController,
           width: renderBox.size.width,
-          onTap: (search) {
-            _hideSearchField();
-            context.read<NavigationCubit>().onSuggestionTap(search);
-          },
+          onTap: (activityName) => _onSuggestionTap(activityName),
         );
       },
     );
@@ -115,6 +112,14 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
       _overlayEntry!.remove();
       _overlayEntry!.dispose();
     }
+  }
+
+  void _onSuggestionTap(String activityName) {
+    _hideSearchField();
+    context.pushNamed(
+      'activity_analytics',
+      pathParameters: {'activity_name': activityName},
+    );
   }
 
   void _hideSearchField() {
@@ -199,10 +204,7 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
                     final suggestions =
                         context.read<SearchSuggestionsCubit>().state;
                     if (suggestions.isNotEmpty) {
-                      context
-                          .read<NavigationCubit>()
-                          .onSuggestionTap(suggestions.first);
-                      _hideSearchField();
+                      _onSuggestionTap(suggestions.first);
                     } else {
                       _textFieldFocusNode.requestFocus();
                     }

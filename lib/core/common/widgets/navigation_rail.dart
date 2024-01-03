@@ -14,24 +14,17 @@ class NavigatorRail extends StatelessWidget {
     return BlocBuilder<NavigationCubit, NavigationState>(
       builder: (context, state) => NavigationRail(
         labelType: NavigationRailLabelType.all,
-        destinations: [
-          NavigationRailDestination(
-            icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home_rounded),
-            label: Text(AppLocalizations.of(context)!.activities),
-          ),
-          if (!state.hideHistoryestination)
-            NavigationRailDestination(
-              icon: const Icon(Icons.history_outlined),
-              selectedIcon: const Icon(Icons.history_rounded),
-              label: Text(AppLocalizations.of(context)!.history),
-            ),
-          NavigationRailDestination(
-            icon: const Icon(Icons.edit_outlined),
-            selectedIcon: const Icon(Icons.edit_rounded),
-            label: Text(AppLocalizations.of(context)!.editActivitiesShort),
-          ),
-        ],
+        destinations: AppNavigationDestination.values
+            .map(
+              (destination) => NavigationRailDestination(
+                icon: destination.icon,
+                selectedIcon: destination.selectedIcon,
+                label: Text(destination.label(context)),
+                disabled: destination == AppNavigationDestination.history &&
+                    state.disableHistoryDestination,
+              ),
+            )
+            .toList(),
         trailing: Expanded(
           child: Padding(
             padding: const EdgeInsets.only(bottom: 12),
@@ -77,8 +70,8 @@ class NavigatorRail extends StatelessWidget {
             ),
           ),
         ),
-        selectedIndex: state.navRailIndex,
-        onDestinationSelected: (int index) =>
+        selectedIndex: state.destination.index,
+        onDestinationSelected: (index) =>
             context.read<NavigationCubit>().onDestinationSelected(index),
       ),
     );

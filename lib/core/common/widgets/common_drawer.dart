@@ -41,7 +41,7 @@ class CommonDrawer extends StatelessWidget {
               leading: const Icon(Icons.edit_note),
               title: Text(AppLocalizations.of(context)!.editActivities),
               onTap: () {
-                context.pop();
+                Scaffold.of(context).closeDrawer();
                 context.go('/card_editor');
               },
             ),
@@ -90,7 +90,7 @@ class CommonDrawer extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                context.pop();
+                Scaffold.of(context).closeDrawer();
                 context.pushNamed('backup');
               },
               leading: const Icon(Icons.import_export),

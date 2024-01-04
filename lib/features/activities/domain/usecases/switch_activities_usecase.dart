@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/return_types.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../../core/utils/random_color.dart';
+import '../../../../core/utils/extensions.dart';
 import '../entities/activity.dart';
 import '../repositories/activity_repository.dart';
 

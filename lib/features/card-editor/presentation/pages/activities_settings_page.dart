@@ -3,25 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/common/activity_settings.dart';
+import '../../../../core/common/widgets/activity_settings_card.dart';
 import '../../../../core/common/widgets/common_drawer.dart';
 import '../../../../core/utils/constants.dart';
 import '../bloc/card_editor_bloc.dart';
-import '../widgets/activity_settings_card.dart';
 import '../widgets/empty_card_editor_illustration.dart';
 
 class ActivitiesSettingsPage extends StatelessWidget {
   const ActivitiesSettingsPage({
-    this.onActivitySelected = _defaultHandler,
     super.key,
   });
-
-  final void Function(BuildContext context, ActivitySettings activity)
-      onActivitySelected;
-
-  static void _defaultHandler(
-          BuildContext context, ActivitySettings activity) =>
-      context.go('/card_editor/:${activity.name}', extra: activity);
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +40,19 @@ class ActivitiesSettingsPage extends StatelessWidget {
             itemCount: state.activitiesSettings.length,
             itemBuilder: (context, index) {
               final activity = state.activitiesSettings[index];
-              return Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: ActivitySettingsCard(
-                      activity: activity,
-                      onPressed: () => onActivitySelected(context, activity),
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    ActivitySettingsCard.fromActivitySettings(
+                      activity,
+                      onPressed: () => context.go(
+                        '/card_editor/:${activity.name}',
+                        extra: activity,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           );

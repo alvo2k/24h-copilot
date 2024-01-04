@@ -8,11 +8,12 @@ import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+import '../../../../core/common/widgets/activity_color.dart';
+import '../../../../core/common/widgets/activity_settings_card.dart';
 import '../../../../core/utils/constants.dart';
 import '../../domain/entities/activity.dart';
 import '../bloc/activities_bloc.dart';
 import '../bloc/edit_mode_cubit.dart';
-import 'activity_list_tile.dart';
 
 class EditRecordsDialog extends StatefulWidget {
   const EditRecordsDialog(this.toChange, this.activityDayDate,
@@ -41,20 +42,14 @@ class _EditRecordsDialogState extends State<EditRecordsDialog> {
     if (widget.addBefore) {
       return [
         NewActivityCard(_controller),
-        ActivityListTile(
+        ActivitySettingsCard.fromActivitySettings(
           widget.toChange,
-          padding: 0,
-          minimalVersion: true,
-          hideEmojiPicker: true,
         ),
       ];
     }
     return [
-      ActivityListTile(
+      ActivitySettingsCard.fromActivitySettings(
         widget.toChange,
-        padding: 0,
-        minimalVersion: true,
-        hideEmojiPicker: true,
       ),
       NewActivityCard(_controller),
     ];
@@ -317,60 +312,55 @@ class _NewActivityCardState extends State<NewActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => SizedBox(
-        width: ActivityListTile.determineWidth(constraints.maxWidth, true, 0),
-        height: ActivityListTile.cardHeight,
-        child: Card(
-          shape: ActivityListTile.shape,
-          color: ActivityListTile.cardColor(context),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ActivityListTile.buildCircle(Colors.white54),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: TextField(
-                        textCapitalization: TextCapitalization.sentences,
-                        focusNode: focusNode,
-                        onEditingComplete: () => focusNode.unfocus(),
-                        onSubmitted: (_) => focusNode.unfocus(),
-                        onTapOutside: (_) => focusNode.unfocus(),
-                        controller: widget.controller,
-                        decoration: InputDecoration(
-                          constraints: const BoxConstraints.expand(height: 38),
-                          labelText:
-                              AppLocalizations.of(context)!.newActivityPrompt,
-                          border: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(24.0))),
-                        ),
+    return ConstrainedBox(
+      constraints: BoxConstraints.loose(const Size(500, 125)),
+      child: Card(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const ActivityColor(color: Colors.white54),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: TextField(
+                      textCapitalization: TextCapitalization.sentences,
+                      focusNode: focusNode,
+                      onEditingComplete: () => focusNode.unfocus(),
+                      onSubmitted: (_) => focusNode.unfocus(),
+                      onTapOutside: (_) => focusNode.unfocus(),
+                      controller: widget.controller,
+                      decoration: InputDecoration(
+                        constraints: const BoxConstraints.expand(height: 38),
+                        labelText:
+                            AppLocalizations.of(context)!.newActivityPrompt,
+                        border: const OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(24.0))),
                       ),
                     ),
-                  )
-                ],
-              ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     Padding(
-              //       padding: const EdgeInsets.only(bottom: 8.0),
-              //       child: ActivityTime(
-              // TODO calculate time based on selectedTime & fixedTime
-              // todo send request to DB to get activity settings and paint the card
-              //         startTime:
-              //             DateTime.now().subtract(const Duration(minutes: 10)),
-              //         endTime: null,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-            ],
-          ),
+                  ),
+                )
+              ],
+            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     Padding(
+            //       padding: const EdgeInsets.only(bottom: 8.0),
+            //       child: ActivityTime(
+            // TODO calculate time based on selectedTime & fixedTime
+            // todo send request to DB to get activity settings and paint the card
+            //         startTime:
+            //             DateTime.now().subtract(const Duration(minutes: 10)),
+            //         endTime: null,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+          ],
         ),
       ),
     );

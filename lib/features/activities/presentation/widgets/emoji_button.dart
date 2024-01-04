@@ -26,7 +26,7 @@ class EmojiButton extends StatelessWidget {
       ),
       onPressed: () {
         onEmojiSelected(emoji);
-        context.pop(context);
+        context.pop();
       },
     );
   }

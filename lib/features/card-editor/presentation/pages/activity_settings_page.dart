@@ -10,10 +10,10 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../core/common/activity_settings.dart';
+import '../../../../core/common/widgets/activity_color.dart';
+import '../../../../core/common/widgets/activity_settings_card.dart';
 import '../../../../core/utils/constants.dart';
-import '../../../activities/presentation/widgets/activity_list_tile.dart';
 import '../bloc/card_editor_bloc.dart';
-import '../widgets/activity_settings_card.dart';
 import '../widgets/setting_row.dart';
 
 class ActivitySettingsPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class ActivitySettingsPage extends StatefulWidget {
 class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
   late ActivitySettings activity;
   late Color color;
-  late int? goal;
+  late Duration? goal;
   late TextEditingController nameController;
   late List<String>? tags;
 
@@ -49,7 +49,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
         TextEditingController(text: widget.initialActivitySettings.name);
     color = widget.initialActivitySettings.color;
     activity = widget.initialActivitySettings;
-    goal = activity.goal;
+    goal = activity.goal != null ? Duration(minutes: activity.goal!) : null;
     tags = activity.tags == null ? null : List.from(activity.tags!); // copy
     super.initState();
   }
@@ -97,8 +97,8 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
         builder: (context) {
           return CupertinoTimerPicker(
             mode: CupertinoTimerPickerMode.hm,
-            onTimerDurationChanged: (Duration newGoal) {
-              setState(() => goal = newGoal.inMinutes);
+            onTimerDurationChanged: (newGoal) {
+              setState(() => goal = newGoal);
             },
           );
         });
@@ -187,7 +187,7 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
       activityName: widget.initialActivitySettings.name,
       newActivityName: nameController.text.trim(),
       newColor: color,
-      newGoal: goal,
+      newGoal: goal?.inMinutes,
       tags: tags,
     ));
     context.go('/card_editor');
@@ -214,7 +214,14 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
               width: min(MediaQuery.of(context).size.width, 400),
               child: Column(
                 children: [
-                  ActivitySettingsCard(activity: activity, onPressed: () {}),
+                  ActivitySettingsCard(
+                    name: activity.name,
+                    color: activity.color,
+                    goal: activity.goal != null
+                        ? Duration(minutes: activity.goal!)
+                        : null,
+                    tags: activity.tags,
+                  ),
                   SettingRow(
                       settingName: AppLocalizations.of(context)!.activityName,
                       children: [
@@ -244,11 +251,12 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                     children: [
                       Row(
                         children: [
-                          ActivityListTile.buildCircle(color),
+                          ActivityColor(color: color),
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  ActivityListTile.cardColor(context)),
+                                Theme.of(context).cardColor,
+                              ),
                             ),
                             onPressed: () => selectColor(context),
                             child:
@@ -264,13 +272,29 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
                       if (goal != null)
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: ActivityListTile.buildGoal(goal!, context),
+                          child: Text(
+                            goal!.inHours > 0
+                                ? AppLocalizations.of(context)!.timeFormat(
+                                    AppLocalizations.of(context)!.goal,
+                                    goal!.inHours,
+                                    AppLocalizations.of(context)!.hourLetter,
+                                    goal!.inMinutes - goal!.inHours * 60,
+                                    AppLocalizations.of(context)!.minuteLetter,
+                                  )
+                                : AppLocalizations.of(context)!
+                                    .timeFormatMinutes(
+                                    AppLocalizations.of(context)!.goal,
+                                    goal!.inMinutes,
+                                    AppLocalizations.of(context)!.minuteLetter,
+                                  ),
+                          ),
                         ),
                       ElevatedButton(
                         onPressed: pickGoal,
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              ActivityListTile.cardColor(context)),
+                            Theme.of(context).cardColor,
+                          ),
                         ),
                         child: Text(AppLocalizations.of(context)!.selectGoal),
                       ),

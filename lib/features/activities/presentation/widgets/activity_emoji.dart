@@ -1,83 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../domain/entities/activity.dart';
-import '../bloc/activities_bloc.dart';
 import 'emoji_dialog_picker.dart';
 
-class ActivityEmoji extends StatefulWidget {
-  const ActivityEmoji(
-    this.activity, {
-    required this.hideEmojiPicker,
+class ActivityEmoji extends StatelessWidget {
+  const ActivityEmoji({
+    required this.emoji,
+    required this.onEmojiSelected,
     super.key,
   });
 
-  final Activity activity;
-  final bool hideEmojiPicker;
+  final String? emoji;
+  final void Function(String newEmoji)? onEmojiSelected;
 
-  @override
-  State<ActivityEmoji> createState() => _ActivityEmojiState();
-}
-
-class _ActivityEmojiState extends State<ActivityEmoji> {
-  String? emoji;
-
-  Future<void> showDialogPicker(
-      BuildContext context, ActivitiesBloc activityBloc) {
-    return showPlatformDialog(
-      androidBarrierDismissible: true,
-      context: context,
-      builder: (context) {
-        return EmojiDialogPicker(
-          onEmojiSelected: (selectedEmoji) {
-            activityBloc.add(AddEmoji(
-                widget.activity.recordId, selectedEmoji));
-            setState(() {
-              emoji = selectedEmoji;
-            });
-          },
-        );
-      },
-    );
-  }
-
-  bool _shouldBuild() {
-    if (widget.activity.endTime == null) return false;
-
-    final bool tooOld = widget.activity.endTime!
-        .isBefore(DateTime.now().subtract(const Duration(hours: 1)));
-    return !tooOld;
-  }
+  void showDialogPicker(BuildContext context) => showPlatformDialog(
+        androidBarrierDismissible: true,
+        context: context,
+        builder: (context) => EmojiDialogPicker(
+          onEmojiSelected: onEmojiSelected!,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
-    final bool hasEmoji = widget.activity.emoji != null;
-    if (!_shouldBuild() && !hasEmoji) return Container();
-    if (hasEmoji) {
-      emoji = widget.activity.emoji;
-    }
-    final activityBloc = BlocProvider.of<ActivitiesBloc>(context);
     return emoji == null
-        ? widget.hideEmojiPicker
-            ? const SizedBox.shrink()
-            : TextButton(
-                child: Text(AppLocalizations.of(context)!.emojiSelectPrompt),
-                onPressed: () => showDialogPicker(context, activityBloc))
-        : Padding(
-            padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
-            child: GestureDetector(
-              onTap: () => showDialogPicker(context, activityBloc),
-              child: Text(
-                emoji!,
-                style: TextStyle(fontSize: 24, shadows: [
+        ? Visibility(
+            visible: onEmojiSelected != null,
+            child: TextButton(
+              child: Text(AppLocalizations.of(context)!.emojiSelectPrompt),
+              onPressed: () => showDialogPicker(context),
+            ),
+          )
+        : TextButton(
+            onPressed: onEmojiSelected != null
+                ? () => showDialogPicker(context)
+                : null,
+            child: Text(
+              emoji!,
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: 'NotoColorEmoji',
+                shadows: [
                   Shadow(
                     blurRadius: 8,
                     offset: const Offset(4, 4),
                     color: Colors.black38.withAlpha(60),
                   )
-                ]),
+                ],
               ),
             ),
           );

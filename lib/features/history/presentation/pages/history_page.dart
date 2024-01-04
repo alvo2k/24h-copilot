@@ -9,11 +9,10 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../../core/common/widgets/activity_search_bar.dart';
+import '../../../../core/common/widgets/activity_settings_card.dart';
 import '../../../../core/common/widgets/common_drawer.dart';
 import '../../../../core/utils/constants.dart';
 import '../../../activities/presentation/widgets/activity_day_date.dart';
-import '../../../activities/presentation/widgets/activity_list_tile.dart';
-import '../../domain/entities/pie_chart_data.dart';
 import '../bloc/history_bloc.dart';
 import '../widgets/empty_history_illustration.dart';
 
@@ -53,20 +52,6 @@ class HistoryPage extends StatelessWidget {
           dataMap: dataMap,
         ),
       );
-
-  Widget _buildActivities(PieChartData data) {
-    return Column(
-      children: [
-        for (final activity in data.activities)
-          ActivityListTile(
-            activity,
-            minimalVersion: true,
-            padding: 0,
-            hideEmojiPicker: true,
-          ),
-      ],
-    );
-  }
 
   void _listener(BuildContext context, HistoryState state) {
     if (state is HistoryFailure) {
@@ -110,7 +95,8 @@ class HistoryPage extends StatelessWidget {
                     state.data.colorList,
                     context,
                   ),
-                  _buildActivities(state.data),
+                  for (final activity in state.data.activities)
+                    ActivitySettingsCard.fromActivitySettings(activity),
                 ],
               ),
             ),

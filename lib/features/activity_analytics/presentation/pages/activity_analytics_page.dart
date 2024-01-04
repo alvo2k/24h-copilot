@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-import '../../../activities/presentation/widgets/activity_list_tile.dart';
+import '../../../../core/common/widgets/activity_color.dart';
 import '../bloc/activity_analytics_bloc.dart';
 import '../widgets/view.dart';
 
@@ -51,7 +51,7 @@ class _ActivityAnalyticsPageState extends State<ActivityAnalyticsPage> {
                   titleSpacing: 0,
                   title: Row(
                     children: [
-                      ActivityListTile.buildCircle(state.data!.activity.color),
+                      ActivityColor(color: state.data!.activity.color),
                       Text(widget.activityName),
                     ],
                   ),

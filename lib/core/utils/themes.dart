@@ -88,5 +88,10 @@ class AppTheme {
     // fontFamily: GoogleFonts.notoSans().fontFamily,
   ).copyWith(
     cardColor: const Color.fromRGBO(226, 226, 226, 1),
+    cardTheme: CardTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    ),
   );
 }

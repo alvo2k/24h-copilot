@@ -37,6 +37,7 @@ class Activity extends ActivitySettings with EquatableMixin {
     }
     return false;
   }
+
   bool get goalSet => goal != null;
 
   double get goalCompletion {
@@ -44,6 +45,14 @@ class Activity extends ActivitySettings with EquatableMixin {
     final duration =
         (endTime ?? DateTime.now()).difference(startTime).inMinutes;
     return min(duration / goal!, 1.0);
+  }
+
+  bool get canChangeEmoji {
+    if (endTime == null) return false;
+
+    final tooOld =
+        endTime!.isBefore(DateTime.now().subtract(const Duration(hours: 1)));
+    return !tooOld;
   }
 
   @override

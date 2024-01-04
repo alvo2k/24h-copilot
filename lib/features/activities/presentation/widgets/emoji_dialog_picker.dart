@@ -67,7 +67,7 @@ class EmojiDialogPicker extends StatelessWidget {
       actions: <Widget>[
         BasicDialogAction(
           title: Text(AppLocalizations.of(context)!.cancel),
-          onPressed: () => context.pop(context),
+          onPressed: () => context.pop(),
         ),
       ],
     );

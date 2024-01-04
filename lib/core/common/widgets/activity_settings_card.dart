@@ -63,11 +63,8 @@ class ActivitySettingsCard extends StatelessWidget {
       constraints: BoxConstraints.loose(const Size(450, 125)),
       child: InkWell(
         onTap: onPressed,
-        customBorder:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        customBorder: Theme.of(context).cardTheme.shape,
         child: Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           color: goalReached ?? false
               ? Theme.of(context).cardColorGoalReached
               : Theme.of(context).cardColor,
@@ -91,44 +88,39 @@ class ActivitySettingsCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 12, bottom: 8),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ActivityEmoji(
                       emoji: emoji,
                       onEmojiSelected: onEmojiSelected,
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (goal != null)
-                            Text(
-                              goal!.inHours > 0
-                                  ? AppLocalizations.of(context)!.timeFormat(
-                                      AppLocalizations.of(context)!.goal,
-                                      goal!.inHours,
-                                      AppLocalizations.of(context)!.hourLetter,
-                                      goal!.inMinutes - goal!.inHours * 60,
-                                      AppLocalizations.of(context)!
-                                          .minuteLetter,
-                                    )
-                                  : AppLocalizations.of(context)!
-                                      .timeFormatMinutes(
-                                      AppLocalizations.of(context)!.goal,
-                                      goal!.inMinutes,
-                                      AppLocalizations.of(context)!
-                                          .minuteLetter,
-                                    ),
-                            ),
-                          if (startTime != null)
-                            ActivityTime(
-                              startTime: startTime!,
-                              endTime: endTime,
-                            ),
-                        ],
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        if (goal != null)
+                          Text(
+                            goal!.inHours > 0
+                                ? AppLocalizations.of(context)!.timeFormat(
+                                    AppLocalizations.of(context)!.goal,
+                                    goal!.inHours,
+                                    AppLocalizations.of(context)!.hourLetter,
+                                    goal!.inMinutes - goal!.inHours * 60,
+                                    AppLocalizations.of(context)!.minuteLetter,
+                                  )
+                                : AppLocalizations.of(context)!
+                                    .timeFormatMinutes(
+                                    AppLocalizations.of(context)!.goal,
+                                    goal!.inMinutes,
+                                    AppLocalizations.of(context)!.minuteLetter,
+                                  ),
+                          ),
+                        if (startTime != null)
+                          ActivityTime(
+                            startTime: startTime!,
+                            endTime: endTime,
+                          ),
+                      ],
                     ),
                   ],
                 ),

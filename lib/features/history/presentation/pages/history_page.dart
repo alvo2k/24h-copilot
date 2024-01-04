@@ -96,7 +96,19 @@ class HistoryPage extends StatelessWidget {
                     context,
                   ),
                   for (final activity in state.data.activities)
-                    ActivitySettingsCard.fromActivitySettings(activity),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ActivitySettingsCard(
+                        name: activity.name,
+                        color: activity.color,
+                        tags: activity.tags,
+                        goal: activity.goal != null
+                            ? Duration(minutes: activity.goal!)
+                            : null,
+                        startTime: activity.startTime,
+                        endTime: activity.endTime,
+                      ),
+                    ),
                 ],
               ),
             ),

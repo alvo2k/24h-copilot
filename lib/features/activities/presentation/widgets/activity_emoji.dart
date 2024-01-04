@@ -41,6 +41,8 @@ class ActivityEmoji extends StatelessWidget {
               style: TextStyle(
                 fontSize: 24,
                 fontFamily: 'NotoColorEmoji',
+                // to avoid tinted emoji when [TextButton] is disabled
+                color: Colors.red,
                 shadows: [
                   Shadow(
                     blurRadius: 8,

@@ -41,7 +41,7 @@ class ActivitiesSettingsPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final activity = state.activitiesSettings[index];
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Column(
                   children: [
                     ActivitySettingsCard.fromActivitySettings(

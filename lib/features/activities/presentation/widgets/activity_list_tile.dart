@@ -73,24 +73,26 @@ class ActivityListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         _buildLeftBar(context),
-        ActivitySettingsCard(
-          name: activity.name,
-          color: activity.color,
-          goal:
-              activity.goal != null ? Duration(minutes: activity.goal!) : null,
-          goalReached: activity.goalMet,
-          tags: activity.tags,
-          startTime: activity.startTime,
-          endTime: activity.endTime,
-          emoji: activity.emoji,
-          onEmojiSelected: activity.canChangeEmoji
-              ? (newEmoji) => context.read<ActivitiesBloc>().add(
-                    AddEmoji(
-                      activity.recordId,
-                      newEmoji,
-                    ),
-                  )
-              : null,
+        Flexible(
+          child: ActivitySettingsCard(
+            name: activity.name,
+            color: activity.color,
+            goal:
+                activity.goal != null ? Duration(minutes: activity.goal!) : null,
+            goalReached: activity.goalMet,
+            tags: activity.tags,
+            startTime: activity.startTime,
+            endTime: activity.endTime,
+            emoji: activity.emoji,
+            onEmojiSelected: activity.canChangeEmoji
+                ? (newEmoji) => context.read<ActivitiesBloc>().add(
+                      AddEmoji(
+                        activity.recordId,
+                        newEmoji,
+                      ),
+                    )
+                : null,
+          ),
         ),
       ],
     );

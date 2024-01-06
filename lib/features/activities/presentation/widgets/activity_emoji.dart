@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,7 +31,12 @@ class ActivityEmoji extends StatelessWidget {
             child: TextButton(
               child: Text(AppLocalizations.of(context)!.emojiSelectPrompt),
               onPressed: () => showDialogPicker(context),
-            ),
+            )
+                .animate(
+                  autoPlay: false,
+                  onInit: (controller) => controller.repeat(),
+                )
+                .shimmer(delay: 5.seconds, duration: 3.seconds),
           )
         : TextButton(
             onPressed: onEmojiSelected != null

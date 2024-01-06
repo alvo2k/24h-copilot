@@ -402,7 +402,7 @@ class ActivityDatabase extends _$ActivityDatabase
           ..orderBy([
             (r) => OrderingTerm(
                   expression: r.startTime,
-                  mode: OrderingMode.asc,
+                  mode: OrderingMode.desc,
                 )
           ])
           ..limit(100))
@@ -415,7 +415,7 @@ class ActivityDatabase extends _$ActivityDatabase
             // if there are two activities with the same name next to each other,
             // delete the record with the larger startTime
             (delete(records)
-                  ..where((r) => r.startTime.equals(list[i + 1].startTime)))
+                  ..where((r) => r.idRecord.equals(list[i + 1].idRecord)))
                 .go();
           }
         } on RangeError catch (_) {}

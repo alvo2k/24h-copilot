@@ -151,29 +151,35 @@ class __TagsState extends State<_Tags> {
   @override
   void initState() {
     super.initState();
-    _tagController.addListener(
-      () {
-        final position = _tagController.position;
-        setState(() {
-          if (position.maxScrollExtent == position.pixels) {
-            fadeEnd = false;
-          } else {
-            fadeEnd = true;
-          }
-          if (position.minScrollExtent == position.pixels) {
-            fadeStart = false;
-          } else {
-            fadeStart = true;
-          }
-        });
-      },
-    );
+    _tagController.addListener(_shader);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _shader());
   }
 
   @override
   void dispose() {
     _tagController.dispose();
     super.dispose();
+  }
+
+  void _shader() {
+    if (!mounted) return;
+    final position = _tagController.position;
+
+    final prevFadeStart = fadeStart;
+    final prevFadeEnd = fadeEnd;
+    if (position.maxScrollExtent == position.pixels) {
+      fadeEnd = false;
+    } else {
+      fadeEnd = true;
+    }
+    if (position.minScrollExtent == position.pixels) {
+      fadeStart = false;
+    } else {
+      fadeStart = true;
+    }
+    if (prevFadeEnd != fadeEnd || prevFadeStart != fadeStart) {
+      setState(() {});
+    }
   }
 
   @override

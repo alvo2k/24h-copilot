@@ -12,7 +12,6 @@ ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       colorHex: json['color'] as int,
       startTimeUnix: json['start_time'] as int,
-      amount: json['amount'] as int,
       inLineTags: json['tags'] as String?,
       endTimeUnix: json['end_time'] as int?,
       goal: json['goal'] as int?,
@@ -23,7 +22,6 @@ Map<String, dynamic> _$ActivityModelToJson(ActivityModel instance) =>
     <String, dynamic>{
       'goal': instance.goal,
       'name': instance.name,
-      'amount': instance.amount,
       'emoji': instance.emoji,
       'color': instance.colorHex,
       'end_time': instance.endTimeUnix,

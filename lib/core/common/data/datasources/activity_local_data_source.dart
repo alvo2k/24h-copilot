@@ -55,11 +55,7 @@ abstract interface class ActivityLocalDataSource with ActivityFindEndTime {
   Future<DriftActivityModel?> findActivitySettings(String name);
 
   /// Creates new [Activity] (name, color)
-  Future<DriftActivityModel> createActivity(
-    String name,
-    int colorHex, [
-    int amount,
-  ]);
+  Future<DriftActivityModel> createActivity(String name, int colorHex);
 
   Future<void> updateRecordEmoji(int idRecord, String emoji);
 

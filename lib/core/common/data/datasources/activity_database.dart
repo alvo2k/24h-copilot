@@ -36,8 +36,6 @@ class Activities extends Table {
   TextColumn get tags => text().nullable()();
 
   IntColumn get goal => integer().nullable()();
-
-  IntColumn get amount => integer()();
 }
 
 @LazySingleton()
@@ -53,15 +51,10 @@ class ActivityDatabase extends _$ActivityDatabase
   }
 
   @override
-  Future<DriftActivityModel> createActivity(
-    String name,
-    int colorHex, [
-    int amount = 1,
-  ]) async {
+  Future<DriftActivityModel> createActivity(String name, int colorHex) async {
     final activity = ActivitiesCompanion(
       name: Value(name),
       color: Value(colorHex),
-      amount: Value(amount),
     );
 
     await into(activities).insert(activity, mode: InsertMode.insertOrIgnore);
@@ -91,14 +84,6 @@ class ActivityDatabase extends _$ActivityDatabase
     );
 
     final recordId = await into(records).insert(record);
-
-    final activityToUpdate = await (select(activities)
-          ..where((activities) => activities.name.equals(activityName)))
-        .getSingle();
-
-    await update(activities).replace(
-      activityToUpdate.copyWith(amount: activityToUpdate.amount + 1),
-    );
 
     _removeDuplicatesRecords();
 
@@ -243,21 +228,12 @@ class ActivityDatabase extends _$ActivityDatabase
           ''');
           // await customStatement('DROP TABLE _records_old');
         }
-        if (from < 3) {
-          await customStatement(
-            'ALTER TABLE activities ADD COLUMN amount INTEGER NOT NULL DEFAULT 0',
-          );
-          await customStatement('''
-            UPDATE activities
-            SET amount = (SELECT COUNT(*) FROM records WHERE records.activity_name = activities.name)
-          ''');
-        }
       },
     );
   }
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 2;
 
   @override
   Future<List<String>?> searchActivities(String activityName) async {
@@ -365,16 +341,16 @@ class ActivityDatabase extends _$ActivityDatabase
 
   @override
   Stream<List<DriftActivityModel>> mostCommonActivities(int amount) {
-    final query = select(activities)
-      ..orderBy([
-        (activities) => OrderingTerm(
-              expression: activities.amount,
-              mode: OrderingMode.desc,
-            ),
-      ])
+    final query = select(records).join([
+      innerJoin(activities, activities.name.equalsExp(records.activityName))
+    ])
+      ..groupBy([records.activityName])
+      ..orderBy([OrderingTerm.desc(records.activityName.count())])
       ..limit(amount);
 
-    return query.watch();
+    return query
+        .watch()
+        .map((event) => event.map((e) => e.readTable(activities)).toList());
   }
 
   Future<DriftRecordModel?> _findFirstRecord(int from, [String? name]) async {
@@ -475,4 +451,5 @@ class RecordWithActivitySettings {
   final DriftRecordModel record;
 }
 
-LazyDatabase _openConnection() => LazyDatabase(() async => NativeDatabase(await dbFile()));
+LazyDatabase _openConnection() =>
+    LazyDatabase(() async => NativeDatabase(await dbFile()));

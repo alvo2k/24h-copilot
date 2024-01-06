@@ -8,7 +8,6 @@ import 'data/datasources/activity_database.dart';
 class ActivitySettings extends Equatable {
   const ActivitySettings({
     required this.name,
-    required this.amount,
     required this.color,
     this.tags,
     this.goal,
@@ -18,7 +17,6 @@ class ActivitySettings extends Equatable {
   final int? goal;
   final String name;
   final List<String>? tags;
-  final int amount;
 
   @override
   List<Object?> get props => [
@@ -26,7 +24,6 @@ class ActivitySettings extends Equatable {
         color,
         tags,
         goal,
-        amount,
       ];
 
   factory ActivitySettings.fromDrift(DriftActivityModel model) =>
@@ -35,7 +32,6 @@ class ActivitySettings extends Equatable {
         color: Color(model.color),
         goal: model.goal,
         tags: model.tags?.split(';'),
-        amount: model.amount,
       );
 
   ActivitySettings copyWith({
@@ -50,7 +46,6 @@ class ActivitySettings extends Equatable {
       goal: goal ?? this.goal,
       name: name ?? this.name,
       tags: tags ?? this.tags,
-      amount: amount ?? this.amount,
     );
   }
 }

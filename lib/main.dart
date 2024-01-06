@@ -6,6 +6,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scaled_app/scaled_app.dart';
 import 'package:screen_retriever/screen_retriever.dart';
@@ -38,6 +39,8 @@ void main() {
       _setupSwitchActivitiesFromNotification();
 
       FlutterError.onError = _flutterError;
+
+      Animate.restartOnHotReload = kDebugMode;
 
       await SentryFlutter.init(
         _sentryOptionsConfiguration,

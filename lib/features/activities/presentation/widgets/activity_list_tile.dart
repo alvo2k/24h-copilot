@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scaled_app/scaled_app.dart';
 
@@ -6,50 +7,49 @@ import '../../../../core/common/widgets/activity_settings_card.dart';
 import '../../domain/entities/activity.dart';
 import '../bloc/activities_bloc.dart';
 
-class ActivityListTile extends StatelessWidget {
+class ActivityListTile extends StatefulWidget {
   const ActivityListTile(this.activity, {super.key});
-
-  static const cardHeight = 125.0;
 
   final Activity activity;
 
-  static List<Widget> buildTags(List<String> tags, context) {
-    if (tags.isEmpty) {
-      return [];
+  @override
+  State<ActivityListTile> createState() => _ActivityListTileState();
+}
+
+class _ActivityListTileState extends State<ActivityListTile>
+    with SingleTickerProviderStateMixin {
+  static const cardHeight = 125.0;
+
+  late final _shimmerController = AnimationController(
+    vsync: this,
+    duration: 1.seconds,
+  );
+
+  @override
+  void dispose() {
+    _shimmerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant ActivityListTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.activity != widget.activity) {
+      _shimmerController.forward(from: 0.0);
     }
-    return tags
-        .map((tag) => SizedBox(
-              height: 35,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
-                  child: Text(
-                    '#$tag',
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium!
-                        .copyWith(color: Colors.green),
-                  ),
-                ),
-              ),
-            ))
-        .toList();
   }
 
   Widget _buildLeftBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 40, right: 8),
       child: Container(
-        color: activity.color,
+        color: widget.activity.color,
         width: 4,
         height: _determineLeftBarHeight(
-            activity.endTime == null
-                ? DateTime.now().difference(activity.startTime)
-                : activity.endTime!.difference(activity.startTime),
+            widget.activity.endTime == null
+                ? DateTime.now().difference(widget.activity.startTime)
+                : widget.activity.endTime!
+                    .difference(widget.activity.startTime),
             context),
       ),
     );
@@ -72,27 +72,33 @@ class ActivityListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _buildLeftBar(context),
+        _buildLeftBar(context).animate().slideX(begin: -1),
         Flexible(
           child: ActivitySettingsCard(
-            name: activity.name,
-            color: activity.color,
-            goal:
-                activity.goal != null ? Duration(minutes: activity.goal!) : null,
-            goalReached: activity.goalMet,
-            tags: activity.tags,
-            startTime: activity.startTime,
-            endTime: activity.endTime,
-            emoji: activity.emoji,
-            onEmojiSelected: activity.canChangeEmoji
+            name: widget.activity.name,
+            color: widget.activity.color,
+            goal: widget.activity.goal != null
+                ? Duration(minutes: widget.activity.goal!)
+                : null,
+            goalReached: widget.activity.goalMet,
+            tags: widget.activity.tags,
+            startTime: widget.activity.startTime,
+            endTime: widget.activity.endTime,
+            emoji: widget.activity.emoji,
+            onEmojiSelected: widget.activity.canChangeEmoji
                 ? (newEmoji) => context.read<ActivitiesBloc>().add(
                       AddEmoji(
-                        activity.recordId,
+                        widget.activity.recordId,
                         newEmoji,
                       ),
                     )
                 : null,
-          ),
+          )
+              .animate()
+              .fadeIn()
+              .slideX(begin: 1.5, end: 0)
+              .animate(controller: _shimmerController, autoPlay: false)
+              .shimmer(duration: _shimmerController.duration),
         ),
       ],
     );

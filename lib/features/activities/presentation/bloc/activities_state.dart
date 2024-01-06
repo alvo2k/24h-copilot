@@ -39,10 +39,14 @@ class PageState extends Equatable {
     required this.activityDays,
   });
 
+  bool get isEmpty =>
+      activityDays.length == 1 && activityDays[0].activitiesInThisDay.isEmpty;
+
   factory PageState.initial() => const PageState(
         recommendedActivities: [],
         activityDays: [],
       );
+
   PageState copyWith({
     List<ActivitySettings>? recommendedActivities,
     List<ActivityDay>? activityDays,

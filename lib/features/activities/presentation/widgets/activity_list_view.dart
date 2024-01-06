@@ -1,13 +1,14 @@
-import 'package:copilot/features/activities/presentation/bloc/edit_mode_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 import '../bloc/activities_bloc.dart';
+import '../bloc/edit_mode_cubit.dart';
 import '../pages/activities_page.dart';
 import 'activity_day_date.dart';
 import 'activity_day_widget.dart';
 import 'empty_activities_illustration.dart';
+import 'lazy_loading_indicator.dart';
 
 class ActivityListView extends StatefulWidget {
   const ActivityListView({super.key});
@@ -45,24 +46,22 @@ class _ActivityListViewState extends State<ActivityListView>
   @override
   Widget build(BuildContext context) {
     final controller = ActivityScrollController.of(context).controller;
-    return BlocBuilder<ActivitiesBloc, ActivitiesState>(
-      builder: (context, state) {
-        return switch (state) {
-          Initial() => const Center(child: CircularProgressIndicator()),
-          Loading() => const Center(child: CircularProgressIndicator()),
-          Loaded() => () {
-              if (state.pageState.activityDays.length == 1 &&
-                  state.pageState.activityDays[0].activitiesInThisDay.isEmpty) {
-                return const EmptyActivitiesIllustration();
-              }
-              return BlocListener<EditModeCubit, bool>(
-                listener: (context, state) => state
-                    ? separatorController.forward()
-                    : separatorController.reverse(),
-                child: ListView.builder(
+    return BlocListener<EditModeCubit, bool>(
+      listener: (context, state) =>
+          state ? separatorController.forward() : separatorController.reverse(),
+      child: BlocBuilder<ActivitiesBloc, ActivitiesState>(
+        builder: (context, state) {
+          return switch (state) {
+            Initial() => const Center(child: CircularProgressIndicator()),
+            Loading() => const Center(child: CircularProgressIndicator()),
+            Loaded() => () {
+                if (state.pageState.isEmpty) {
+                  return const EmptyActivitiesIllustration();
+                }
+
+                return ListView.builder(
                   key: const PageStorageKey('activityListView'),
                   controller: controller,
-                  shrinkWrap: true,
                   reverse: true,
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
@@ -74,17 +73,14 @@ class _ActivityListViewState extends State<ActivityListView>
                       return const SizedBox.shrink();
                     }
                     if (index == 0) {
-                      Future(() {
-                        // calls loadMoreDays() witch loads prev. day
-                        if (controller.hasClients) {
-                          controller.position.notifyListeners();
-                        }
-                      });
                       // if this is today, print icon at the end
                       return StickyHeader(
                         header: ActivityDayDate(day.date),
                         content: Column(
                           children: [
+                            if (index ==
+                                state.pageState.activityDays.length - 1)
+                              const LazyLoadingIndicator(),
                             ActivityDayWidget(
                               day,
                               sizeAnimation: separatorController,
@@ -94,7 +90,9 @@ class _ActivityListViewState extends State<ActivityListView>
                               children: [
                                 Padding(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 29.0, vertical: 16),
+                                    horizontal: 29.0,
+                                    vertical: 16,
+                                  ),
                                   child: Icon(Icons.access_time),
                                 ),
                               ],
@@ -103,20 +101,19 @@ class _ActivityListViewState extends State<ActivityListView>
                         ),
                       );
                     }
-                    if (index == state.pageState.activityDays.length - 1 &&
-                        day.activitiesInThisDay.isNotEmpty) {
+                    if (index == state.pageState.activityDays.length - 1) {
                       return StickyHeader(
                         header: ActivityDayDate(day.date),
-                        content: Column(children: [
-                          // Adds loading indicator at top of the list.
-                          // Empty ActivitiesDay means all data was loaded and no indicator needed
-                          const CircularProgressIndicator(),
-                          ActivityDayWidget(
-                            day,
-                            sizeAnimation: separatorController,
-                            opacityAnimation: opacity,
-                          ),
-                        ]),
+                        content: Column(
+                          children: [
+                            const LazyLoadingIndicator(),
+                            ActivityDayWidget(
+                              day,
+                              sizeAnimation: separatorController,
+                              opacityAnimation: opacity,
+                            ),
+                          ],
+                        ),
                       );
                     }
                     return StickyHeader(
@@ -128,12 +125,12 @@ class _ActivityListViewState extends State<ActivityListView>
                       ),
                     );
                   },
-                ),
-              );
-            }(),
-          Failure() => Center(child: Text(state.type.localize(context))),
-        };
-      },
+                );
+              }(),
+            Failure() => Center(child: Text(state.type.localize(context))),
+          };
+        },
+      ),
     );
   }
 }

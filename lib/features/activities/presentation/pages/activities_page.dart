@@ -113,10 +113,10 @@ class _ActivitiesPageState extends State<ActivitiesPage> {
               : null,
           body: ActivityScrollController(
             controller: controller,
-            child: Column(
+            child: const Column(
               children: [
-                const Expanded(child: ActivityListView()),
-                RecommendedActivities(child: const NewActivityField()),
+                Expanded(child: ActivityListView()),
+                RecommendedActivities(child: NewActivityField()),
               ],
             ),
           ),

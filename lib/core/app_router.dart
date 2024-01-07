@@ -69,6 +69,7 @@ final GoRouter router = GoRouter(
               routes: [
                 GoRoute(
                   path: ':name',
+                  onExit: ActivitySettingsPage.onExit,
                   pageBuilder: (context, state) => FadeTransitionLayoutPage(
                     context,
                     leftIsMain: false,

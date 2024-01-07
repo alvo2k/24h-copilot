@@ -1,10 +1,8 @@
 import 'dart:math';
 
-import 'package:equatable/equatable.dart';
-
 import '../../../../core/common/activity_settings.dart';
 
-class Activity extends ActivitySettings with EquatableMixin {
+class Activity extends ActivitySettings {
   Activity({
     required this.recordId,
     required super.name,
@@ -55,14 +53,14 @@ class Activity extends ActivitySettings with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [
+  List<Object> get props => [
         recordId,
         name,
         color,
         startTime,
-        tags,
-        endTime,
-        goal,
-        emoji,
+        tags ?? 0,
+        endTime ?? 0,
+        goal ?? 0,
+        emoji ?? 0,
       ];
 }

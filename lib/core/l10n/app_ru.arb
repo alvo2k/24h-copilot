@@ -228,6 +228,7 @@
   "@selectGoal": {
     "description": "Кнопка выбора цели у активности"
   },
+  "changeGoal": "Изменить цель",
   "tutorialPrompt": "Введите ниже чем хотите заняться сейчас.",
   "@tutorialPrompt": {
     "description": "Текст показывающийся при первом запуске приложения"
@@ -276,5 +277,9 @@
   "confirmUpload": "Подтвердите импорт",
   "dataWillBeLost": "Все текущие данные будут потеряны!",
   "areYouSure": "Вы уверены?",
-  "confirmOverride": "Перезаписать"
+  "confirmOverride": "Перезаписать",
+  "add": "Добавить",
+  "doYouWantToExit": "Вы действительно ходите выйти?",
+  "editsWontBeSaved": "Ваши изменения не будут сохранены",
+  "confirm": "Подтвердить"
 }

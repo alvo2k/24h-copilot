@@ -127,14 +127,14 @@ class ActivityModel extends Activity {
   }
 
   @override
-  List<Object?> get props => [
+  List<Object> get props => [
         idRecord,
         name,
         colorHex,
         startTimeUnix,
-        inLineTags,
-        endTimeUnix,
-        goal,
-        emoji,
+        inLineTags ?? 0,
+        endTimeUnix ?? 0,
+        goal ?? 0,
+        emoji ?? 0,
       ];
 }

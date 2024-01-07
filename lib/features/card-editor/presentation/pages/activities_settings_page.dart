@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/common/widgets/activity_settings_card.dart';
 import '../../../../core/common/widgets/common_drawer.dart';
+import '../../../../core/error/return_types.dart';
 import '../../../../core/utils/constants.dart';
 import '../bloc/card_editor_bloc.dart';
 import '../widgets/empty_card_editor_illustration.dart';
@@ -25,41 +26,40 @@ class ActivitiesSettingsPage extends StatelessWidget {
           : null,
       body: BlocBuilder<CardEditorBloc, CardEditorState>(
           builder: (context, state) {
-        if (state is CardEditorStateInitial) {
-          BlocProvider.of<CardEditorBloc>(context)
-              .add(LoadActivitiesSettings());
+        if (state == const CardEditorState()) {
+          context.read<CardEditorBloc>().add(LoadActivitiesSettings());
           return const Center(child: CircularProgressIndicator.adaptive());
-        } else if (state is CardEditorStateLoading) {
-          return const Center(child: CircularProgressIndicator.adaptive());
-        } else if (state is CardEditorStateLoaded) {
-          if (state.activitiesSettings.isEmpty) {
-            return const EmptyCardEditorIllustration();
-          }
-          return ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: state.activitiesSettings.length,
-            itemBuilder: (context, index) {
-              final activity = state.activitiesSettings[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  children: [
-                    ActivitySettingsCard.fromActivitySettings(
-                      activity,
-                      onPressed: () => context.go(
-                        '/card_editor/:${activity.name}',
-                        extra: activity,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        } else if (state is CardEditorStateFailure) {
-          return Center(child: Text(state.type.localize(context)));
         }
-        return const Center(child: Text('Unknown state'));
+        if (state.activitiesSettings != null &&
+            state.activitiesSettings!.isEmpty) {
+          return const EmptyCardEditorIllustration();
+        }
+        if (state.activitiesSettings == null) {
+          return Center(
+            child: Text((state.type ?? FailureType.unknown).localize(context)),
+          );
+        }
+        return ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: state.activitiesSettings!.length,
+          itemBuilder: (context, index) {
+            final activity = state.activitiesSettings![index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: [
+                  ActivitySettingsCard.fromActivitySettings(
+                    activity,
+                    onPressed: () => context.go(
+                      '/card_editor/:${activity.name}',
+                      extra: activity,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
       }),
     );
   }

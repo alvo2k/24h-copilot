@@ -1,5 +1,5 @@
 {
-    "@@locale" : "en",
+    "@@locale": "en",
     "activities": "Activities",
     "loginRegistration": "Login / Registration",
     "synchronization": "Synchronization",
@@ -50,6 +50,7 @@
     "color": "Color",
     "changeColor": "Change color",
     "selectGoal": "Select a goal",
+    "changeGoal": "Change the goal",
     "tutorialPrompt": "Enter what you want to do now.",
     "emptyHistory": "Here you can keep track of your activities.",
     "nothingToEdit": "Nothing to edit yet.",
@@ -83,5 +84,9 @@
     "confirmUpload": "Confirm upload",
     "dataWillBeLost": "All current data will be lost!",
     "areYouSure": "Are you sure?",
-    "confirmOverride": "Override"
+    "confirmOverride": "Override",
+    "add": "Add",
+    "doYouWantToExit": "Do you want to exit?",
+    "editsWontBeSaved": "Your edits will not be saved.",
+    "confirm": "Confirm"
 }

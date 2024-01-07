@@ -1,35 +1,35 @@
 part of 'card_editor_bloc.dart';
 
-abstract class CardEditorEvent extends Equatable {
+sealed class CardEditorEvent extends Equatable {
   const CardEditorEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadActivitiesSettings extends CardEditorEvent {}
+final class LoadActivitiesSettings extends CardEditorEvent {}
 
-class UpdateActivitiesSettings extends CardEditorEvent {
-  const UpdateActivitiesSettings({
-    required this.activityName,
-    required this.newActivityName,
-    required this.newColor,
-    this.tags,
-    this.newGoal,
-  });
+final class SaveChanges extends CardEditorEvent {
+  final void Function() onSuccess;
 
-  final String activityName;
-  final String newActivityName;
-  final Color newColor;
-  final int? newGoal;
+  const SaveChanges({required this.onSuccess});
+}
+final class ActivitySelected extends CardEditorEvent {
+  final ActivitySettings activity;
+
+  const ActivitySelected(this.activity);
+}
+
+final class UpdateField extends CardEditorEvent {
+  final String? activityName;
+  final Color? color;
+  final int? goal;
   final List<String>? tags;
 
-  @override
-  List<Object> get props => [
-        activityName,
-        newActivityName,
-        newColor,
-        tags ?? '',
-        newGoal ?? 0,
-      ];
+  const UpdateField({
+    this.activityName,
+    this.color,
+    this.goal,
+    this.tags,
+  });
 }

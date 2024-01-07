@@ -156,6 +156,12 @@ class __TagsState extends State<_Tags> {
   }
 
   @override
+  void didUpdateWidget(covariant _Tags oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    Future(() => _shader());
+  }
+
+  @override
   void dispose() {
     _tagController.dispose();
     super.dispose();

@@ -18,12 +18,19 @@ class ActivitySettings extends Equatable {
   final String name;
   final List<String>? tags;
 
+  Duration? get goalDuration {
+    if (goal != null) {
+      return Duration(minutes: goal!);
+    }
+    return null;
+  }
+
   @override
-  List<Object?> get props => [
+  List<Object> get props => [
         name,
-        color,
-        tags,
-        goal,
+        color.value,
+        tags ?? [],
+        goal ?? 0,
       ];
 
   factory ActivitySettings.fromDrift(DriftActivityModel model) =>

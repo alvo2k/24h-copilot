@@ -6,6 +6,8 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/common/activity_settings.dart';
 import '../../../../core/error/return_types.dart';
 import '../../../../core/usecases/usecase.dart';
+import '../../../../core/utils/constants.dart';
+import '../entities/validation_errors.dart';
 import '../repositories/activity_settings_repository.dart';
 
 @LazySingleton()
@@ -25,6 +27,19 @@ class UpdateActivitySettingsUsecase
       newGoal: params.newGoal,
       tags: params.tags,
     );
+  }
+
+  ValidationErrors? validate(String activityName, List<String> tags) {
+    if (activityName.trim().isEmpty) {
+      return ValidationErrors.activityNameIsEmpty;
+    }
+    if (activityName.trim().length > Constants.maxActivityName) {
+      return ValidationErrors.activityNameTooLong;
+    }
+    if (tags.join(';').length > Constants.maxTagsLength) {
+      return ValidationErrors.tooManyTags;
+    }
+    return null;
   }
 }
 

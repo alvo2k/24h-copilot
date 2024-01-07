@@ -1,27 +1,45 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'card_editor_bloc.dart';
 
-abstract class CardEditorState extends Equatable {
-  const CardEditorState();
+class CardEditorState extends Equatable {
+  const CardEditorState({
+    this.activitiesSettings,
+    this.type,
+    this.initialActivitySettings,
+    this.editedActivitySettings,
+    this.validationErrors,
+  });
+
+  final List<ActivitySettings>? activitiesSettings;
+  final FailureType? type;
+  final ValidationErrors? validationErrors;
+  final ActivitySettings? initialActivitySettings;
+  final ActivitySettings? editedActivitySettings;
 
   @override
-  List<Object> get props => [];
-}
+  List<Object> get props => [
+        activitiesSettings ?? 0,
+        type ?? 0,
+        validationErrors ?? 0,
+        initialActivitySettings ?? 0,
+        editedActivitySettings ?? 0,
+      ];
 
-class CardEditorStateInitial extends CardEditorState {}
-
-class CardEditorStateLoading extends CardEditorState {}
-
-class CardEditorStateLoaded extends CardEditorState {
-  const CardEditorStateLoaded(this.activitiesSettings);
-
-  final List<ActivitySettings> activitiesSettings;
-
-  @override
-  List<Object> get props => [activitiesSettings];
-}
-
-class CardEditorStateFailure extends CardEditorState {
-  const CardEditorStateFailure(this.type);
-
-  final FailureType type;
+  CardEditorState copyWith({
+    List<ActivitySettings>? activitiesSettings,
+    FailureType? type,
+    ActivitySettings? initialActivitySettings,
+    ActivitySettings? editedActivitySettings,
+    ValidationErrors? validationErrors,
+  }) {
+    return CardEditorState(
+      activitiesSettings: activitiesSettings ?? this.activitiesSettings,
+      type: type,
+      initialActivitySettings:
+          initialActivitySettings ?? this.initialActivitySettings,
+      editedActivitySettings:
+          editedActivitySettings ?? this.editedActivitySettings,
+      validationErrors: validationErrors,
+    );
+  }
 }

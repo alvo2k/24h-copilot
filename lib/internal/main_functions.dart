@@ -1,9 +1,8 @@
 part of '../main.dart';
 
 void _flutterError(FlutterErrorDetails details) async {
-  FlutterError.presentError(details);
   if (kDebugMode) {
-    print(details);
+    print(details.exception);
     return;
   }
   await Sentry.captureException(
@@ -31,6 +30,9 @@ void _sentryOptionsConfiguration(SentryFlutterOptions options) {
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
   // We recommend adjusting this value in production.
   options.tracesSampleRate = 1.0;
+  options.beforeSend = (event, {hint}) => kDebugMode ? null : event;
+  options.beforeSendTransaction =
+      (transaction) => kDebugMode ? null : transaction;
 }
 
 Future<void> _zoneError(Object error, StackTrace st) async {

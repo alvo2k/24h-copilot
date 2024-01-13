@@ -18,6 +18,15 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
     on<SaveChanges>(_save);
     on<UpdateField>(_update);
     on<ActivitySelected>(_activitySelected);
+    on<_Failure>(
+      (event, emit) => emit(state.copyWith(type: FailureType.unknown)),
+    );
+  }
+
+  @override
+  void onError(error, stackTrace) {
+    add(_Failure());
+    super.onError(error, stackTrace);
   }
 
   void _load(LoadActivitiesSettings event, Emitter emit) async {

@@ -9,11 +9,15 @@ sealed class CardEditorEvent extends Equatable {
 
 final class LoadActivitiesSettings extends CardEditorEvent {}
 
+final class _Failure extends CardEditorEvent {}
+
+
 final class SaveChanges extends CardEditorEvent {
   final void Function() onSuccess;
 
   const SaveChanges({required this.onSuccess});
 }
+
 final class ActivitySelected extends CardEditorEvent {
   final ActivitySettings activity;
 

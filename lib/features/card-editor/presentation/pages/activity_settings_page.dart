@@ -161,6 +161,14 @@ class _ActivitySettingsPageState extends State<ActivitySettingsPage> {
   }
 
   void _listener(BuildContext context, CardEditorState state) {
+    if (state.type != null) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: state.type!.localize(context),
+        ),
+      );
+    }
     if (state.validationErrors != null) {
       showTopSnackBar(
         Overlay.of(context),

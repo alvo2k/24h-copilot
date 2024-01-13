@@ -7,7 +7,7 @@ import '../../../../core/error/return_types.dart';
 
 abstract class ActivitySettingsRepository {
   /// This will load all existing [ActivitySettings]
-  Future<Either<Failure, List<ActivitySettings>>> loadActivitiesSettings();
+  Stream<List<ActivitySettings>> loadActivitiesSettings();
 
   Future<Either<Failure, ActivitySettings>> updateActivitySettings({
     required String activityName,

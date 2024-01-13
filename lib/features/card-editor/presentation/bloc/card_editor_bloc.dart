@@ -18,6 +18,7 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
     on<SaveChanges>(_save);
     on<UpdateField>(_update);
     on<ActivitySelected>(_activitySelected);
+    on<_ActivitiesSettingsFromStream>(_fromStream);
     on<_Failure>(
       (event, emit) => emit(state.copyWith(type: FailureType.unknown)),
     );
@@ -30,20 +31,16 @@ class CardEditorBloc extends Bloc<CardEditorEvent, CardEditorState> {
   }
 
   void _load(LoadActivitiesSettings event, Emitter emit) async {
-    final result = await loadUsecase(LoadActivitiesSettingsParams());
-    result.fold(
-      (l) => emit(
-        state.copyWith(
-          type: l.type,
-        ),
-      ),
-      (r) => emit(
-        state.copyWith(
-          activitiesSettings: r,
-        ),
-      ),
+    final result = loadUsecase();
+
+    result.listen(
+      (event) => add(_ActivitiesSettingsFromStream(event)),
+      onError: (a) => add(_Failure()),
     );
   }
+
+  void _fromStream(_ActivitiesSettingsFromStream event, Emitter emit) =>
+      emit(state.copyWith(activitiesSettings: event.activitiesSettings));
 
   void _save(SaveChanges event, Emitter emit) async {
     final validationResult = updateUsecase.validate(

@@ -4,30 +4,25 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/common/activity_settings.dart';
-import '../../../../core/common/data/datasources/activity_local_data_source.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/return_types.dart';
 import '../../domain/repositories/activity_settings_repository.dart';
+import '../datasources/activity_settings_datasource.dart';
 import '../models/activity_settings_model.dart';
 
 @LazySingleton(as: ActivitySettingsRepository)
 class ActivitySettingsRepositoryImpl extends ActivitySettingsRepository {
   ActivitySettingsRepositoryImpl(this.localDataSource);
 
-  final ActivityLocalDataSource localDataSource;
+  final ActivitySettingsDataSource localDataSource;
 
   @override
-  Future<Either<Failure, List<ActivitySettingsModel>>>
-      loadActivitiesSettings() async {
-    try {
-      final rows = await localDataSource.getActivitiesSettings();
-      final activities =
-          rows.map((row) => ActivitySettingsModel.fromDriftRow(row)).toList();
+  Stream<List<ActivitySettingsModel>> loadActivitiesSettings() {
+    final rows = localDataSource.activitySettings();
 
-      return Right(activities);
-    } on CacheException catch (_) {
-      return Left(Failure(type: FailureType.localStorage));
-    }
+    return rows.map((models) => models
+        .map((model) => ActivitySettingsModel.fromDriftRow(model))
+        .toList());
   }
 
   @override

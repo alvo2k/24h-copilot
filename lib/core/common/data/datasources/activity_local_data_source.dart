@@ -21,16 +21,6 @@ abstract interface class ActivityLocalDataSource with ActivityFindEndTime {
 
   Future<DriftRecordModel?> getFirstRecord();
 
-  Future<List<DriftActivityModel>> getActivitiesSettings();
-
-  Future<DriftActivityModel> updateActivitySettings({
-    required String activityName,
-    required String newActivityName,
-    required int newColorHex,
-    required String? tags,
-    required int? newGoal,
-  });
-
   /// Inserts into records and returns class with all model fields
   Future<RecordWithActivitySettings> createRecord({
     required String activityName,

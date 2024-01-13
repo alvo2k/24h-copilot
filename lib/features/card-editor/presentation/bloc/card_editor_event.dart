@@ -11,6 +11,11 @@ final class LoadActivitiesSettings extends CardEditorEvent {}
 
 final class _Failure extends CardEditorEvent {}
 
+final class _ActivitiesSettingsFromStream extends CardEditorEvent {
+  final List<ActivitySettings> activitiesSettings;
+
+  const _ActivitiesSettingsFromStream(this.activitiesSettings);
+}
 
 final class SaveChanges extends CardEditorEvent {
   final void Function() onSuccess;

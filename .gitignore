@@ -20,6 +20,7 @@ migrate_working_dir/
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 .vscode/launch.json
+.vscode/settings.json
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -32,7 +33,6 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
-.fvm/flutter_sdk
 .mason/
 flutter-stylizer-for-linux
 activities.sqlite
@@ -58,3 +58,7 @@ ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
 macos/firebase_app_id_file.json
 macos/Runner/GoogleService-Info.plist
+
+# FVM Version Cache
+.fvm/
+

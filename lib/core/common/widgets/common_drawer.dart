@@ -37,14 +37,17 @@ class CommonDrawer extends StatelessWidget {
                 // handle synchronization logic
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.edit_note),
-              title: Text(AppLocalizations.of(context)!.editActivities),
-              onTap: () {
-                Scaffold.of(context).closeDrawer();
-                context.go('/card_editor');
-              },
-            ),
+            // ListTile(
+            //   leading: const Icon(Icons.edit_note),
+            //   title: Text(AppLocalizations.of(context)!.editActivities),
+            //   onTap: () {
+            //     Scaffold.of(context).cl oseDrawer();
+            //     final navCubit = context.read<NavigationCubit>();
+            //     navCubit.onDestinationSelected(
+            //       AppNavigationDestination.editActivities.index,
+            //     );
+            //   },
+            // ),
             ListTile(
               leading: const Icon(Icons.feedback),
               title: Text(AppLocalizations.of(context)!.feedback),

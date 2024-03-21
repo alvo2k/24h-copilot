@@ -60,7 +60,7 @@ class ActivitySettingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints.loose(const Size(450, 125)),
+      constraints: const BoxConstraints.tightFor(width: 450, height: 125),
       child: InkWell(
         onTap: onPressed,
         customBorder: Theme.of(context).cardTheme.shape,

@@ -46,7 +46,7 @@ class _RecommendedActivitiesState extends State<RecommendedActivities>
           padding: const EdgeInsets.only(left: 42, right: 8, bottom: 8),
           child: Card(
             elevation: 0,
-            color: Theme.of(context).colorScheme.onInverseSurface,
+            color: Theme.of(context).cardColor,
             child: Column(
               children: [
                 BlocBuilder<ActivitiesBloc, ActivitiesState>(

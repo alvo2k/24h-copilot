@@ -49,7 +49,7 @@ class RecomendActivityChip extends StatelessWidget {
             ),
           ),
           backgroundColor: MaterialStateProperty.all(
-            Theme.of(context).cardColor,
+            Theme.of(context).colorScheme.onSecondary,
           ),
         ),
       ),

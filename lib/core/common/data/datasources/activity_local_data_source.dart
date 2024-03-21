@@ -49,7 +49,7 @@ abstract interface class ActivityLocalDataSource with ActivityFindEndTime {
 
   Future<void> updateRecordEmoji(int idRecord, String emoji);
 
-  Future<List<String>?> searchActivities(String activityName);
+  Future<List<DriftActivityModel>> searchActivities(String activityName);
 
   Future<List<String>> searchTags(String tag);
 

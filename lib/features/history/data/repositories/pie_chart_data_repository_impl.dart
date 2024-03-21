@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/common/activity_settings.dart';
 import '../../../../core/common/data/datasources/activity_local_data_source.dart';
 import '../../../../core/common/data/models/activity_model.dart';
 import '../../../../core/error/return_types.dart';
@@ -64,11 +65,16 @@ class PieChartDataRepositoryImpl extends PieChartDataRepository {
   }
 
   @override
-  Future<Either<Failure, List<String>>> getSuggestion(String search) async {
-    if (search.startsWith('#')) {
-      return Right(await localDataBase.searchTags(search.substring(1)));
-    } else {
-      return Right(await localDataBase.searchActivities(search) ?? []);
-    }
+  Future<List<ActivitySettings>> searchActivities(String search) async {
+    final result = await localDataBase.searchActivities(search);
+
+    return result.map((model) => ActivitySettings.fromDrift(model)).toList();
+  }
+
+  @override
+  Future<List<String>> searchTags(String search) async {
+    final result = await localDataBase.searchTags(search.substring(1));
+
+    return result;
   }
 }

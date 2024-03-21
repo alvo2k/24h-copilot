@@ -81,7 +81,7 @@ class ActivitySettingsCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
-                  if (tags != null) _Tags(tags: tags!),
+                  if (tags != null) ActivityTags(tags: tags!),
                 ],
               ),
               // emoji, goal, time
@@ -133,16 +133,16 @@ class ActivitySettingsCard extends StatelessWidget {
   }
 }
 
-class _Tags extends StatefulWidget {
-  const _Tags({required this.tags});
+class ActivityTags extends StatefulWidget {
+  const ActivityTags({super.key, required this.tags});
 
   final List<String> tags;
 
   @override
-  State<_Tags> createState() => __TagsState();
+  State<ActivityTags> createState() => _ActivityTagsState();
 }
 
-class __TagsState extends State<_Tags> {
+class _ActivityTagsState extends State<ActivityTags> {
   final _tagController = ScrollController();
   bool fadeStart = false;
   bool fadeEnd = false;
@@ -156,7 +156,7 @@ class __TagsState extends State<_Tags> {
   }
 
   @override
-  void didUpdateWidget(covariant _Tags oldWidget) {
+  void didUpdateWidget(covariant ActivityTags oldWidget) {
     super.didUpdateWidget(oldWidget);
     Future(() => _shader());
   }

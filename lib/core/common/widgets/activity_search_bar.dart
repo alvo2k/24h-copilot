@@ -11,6 +11,8 @@ import 'package:go_router/go_router.dart';
 import '../../../features/activities/presentation/bloc/edit_mode_cubit.dart';
 import '../../../features/history/presentation/bloc/history_bloc.dart';
 import '../../../features/history/presentation/bloc/search_suggestions_cubit.dart';
+import 'activity_color.dart';
+import 'activity_settings_card.dart';
 
 class ActivitySearchBar extends StatefulWidget implements PreferredSizeWidget {
   const ActivitySearchBar({
@@ -200,14 +202,17 @@ class _ActivitySearchBarState extends State<ActivitySearchBar>
                     _controller.clear();
                     context.read<SearchSuggestionsCubit>().search('');
                   }),
-                  onSubmitted: (search) {
+                  onSubmitted: (_) {
                     final suggestions =
                         context.read<SearchSuggestionsCubit>().state;
-                    if (suggestions.isNotEmpty) {
-                      _onSuggestionTap(suggestions.first);
-                    } else {
-                      _textFieldFocusNode.requestFocus();
+                    if (suggestions.activities.isNotEmpty) {
+                      _onSuggestionTap(suggestions.activities.first.name);
+
+                      return;
+                    } else if (suggestions.tags.isNotEmpty) {
+                      // TODO add page for tags
                     }
+                    _textFieldFocusNode.requestFocus();
                   },
                 );
               },
@@ -276,48 +281,91 @@ class AnimatedSearchResults extends StatelessWidget {
             bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
         child: Material(
           color: Theme.of(context).cardColor,
-          child: BlocBuilder<SearchSuggestionsCubit, List<String>>(
-            builder: (context, searchSuggestions) => AnimatedBuilder(
-              animation: animationController,
-              builder: (context, child) => SizedBox(
-                width: width,
-                height: 30 *
-                    max(searchSuggestions.length, 1) *
-                    animationController.value,
-                child: ListView.separated(
-                  itemCount: max(searchSuggestions.length, 1),
-                  itemBuilder: (context, index) => InkWell(
-                    onTap: searchSuggestions.elementAtOrNull(index) != null
-                        ? () => onTap?.call(searchSuggestions[index])
-                        : null,
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 2,
-                      ),
+          child: BlocBuilder<SearchSuggestionsCubit, SearchSuggestion>(
+            builder: (context, searchSuggestions) {
+              var resultLength = max(
+                searchSuggestions.activities.length,
+                searchSuggestions.tags.length,
+              );
+              resultLength = max(resultLength, 1);
+              return AnimatedBuilder(
+                animation: animationController,
+                builder: (context, child) => SizedBox(
+                  width: width,
+                  height: 30 * resultLength * animationController.value,
+                  child: ListView.separated(
+                    itemCount: resultLength,
+                    itemBuilder: (context, index) => SearchSuggestionTile(
+                      onTap: onTap,
                       width: width,
-                      height: 30,
-                      color: index == 0
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : Theme.of(context).cardColor,
-                      child: Text(
-                        searchSuggestions.elementAtOrNull(index) ??
-                            AppLocalizations.of(context)!.searchNotFound,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
+                      index: index,
+                    ),
+                    separatorBuilder: (context, index) => const Divider(
+                      height: 1,
+                      thickness: 1,
+                      indent: 4,
+                      endIndent: 4,
                     ),
                   ),
-                  separatorBuilder: (context, index) => const Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: 4,
-                    endIndent: 4,
-                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SearchSuggestionTile extends StatelessWidget {
+  const SearchSuggestionTile({
+    super.key,
+    required this.onTap,
+    required this.width,
+    required this.index,
+  });
+
+  final void Function(String search)? onTap;
+  final double width;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final searchSuggestions = context.read<SearchSuggestionsCubit>().state;
+    final isActivity = searchSuggestions.activities.isNotEmpty;
+    return InkWell(
+      onTap: isActivity
+          ? () => onTap?.call(searchSuggestions.activities[index].name)
+          : null,
+      child: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 2,
+        ),
+        height: 30,
+        color: index == 0
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).cardColor,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (isActivity)
+              ActivityColor(
+                color: searchSuggestions.activities[index].color,
+                padding: const EdgeInsets.only(right: 12),
+              ),
+            Text(
+              isActivity
+                  ? searchSuggestions.activities[index].name
+                  : searchSuggestions.tags.elementAtOrNull(index) ??
+                      AppLocalizations.of(context)!.searchNotFound,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            if (isActivity)
+              ActivityTags(
+                  tags: searchSuggestions.activities[index].tags ?? []),
+          ],
         ),
       ),
     );

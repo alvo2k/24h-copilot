@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/common/activity_settings.dart';
 import '../../../../core/common/data/models/activity_model.dart';
 import '../entities/pie_chart_data.dart';
 import '../repositories/pie_chart_data_repositoty.dart';
@@ -79,12 +80,12 @@ class PieChartDataUsecase {
     );
   }
 
-  Future<List<String>> getSuggestions(String search) async {
-    final suggestions = await repository.getSuggestion(search);
-    return suggestions.fold(
-      (failure) => [],
-      (suggestions) => suggestions,
-    );
+  Future<List<ActivitySettings>> searchActivities(String search) async {
+    return await repository.searchActivities(search);
+  }
+
+  Future<List<String>> searchTags(String search) async {
+    return await repository.searchTags(search);
   }
 
   Future<DateTime?> firstRecordDate() {

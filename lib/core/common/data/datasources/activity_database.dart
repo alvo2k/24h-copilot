@@ -232,12 +232,12 @@ class ActivityDatabase extends _$ActivityDatabase
   int get schemaVersion => 2;
 
   @override
-  Future<List<String>?> searchActivities(String activityName) async {
+  Future<List<DriftActivityModel>> searchActivities(String activityName) async {
     final result = await (select(activities)
           ..where((a) => a.name.like('%$activityName%')))
         .get();
 
-    return result.map((a) => a.name).toList();
+    return result;
   }
 
   @override
